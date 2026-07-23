@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appTitle": "Magpie Nest",
+  "@appTitle": {
+    "description": "The main title of the application shown in the app bar"
+  }
+}
