@@ -1,0 +1,7 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Magpie Nest",
+  "@appTitle": {
+    "description": "Главный заголовок приложения, отображаемый в панели приложения"
+  }
+}
