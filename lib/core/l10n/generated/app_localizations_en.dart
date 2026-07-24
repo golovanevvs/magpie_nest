@@ -11,4 +11,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appTitle => 'Magpie Nest';
+
+  @override
+  String get navLibrary => 'Library';
+
+  @override
+  String get navAllSnippets => 'All Snippets';
+
+  @override
+  String get navFavorites => 'Favorites';
+
+  @override
+  String get navTrash => 'Trash';
+
+  @override
+  String get sidebarInbox => 'Inbox';
+
+  @override
+  String get sidebarFavorites => 'Favorites';
+
+  @override
+  String get sidebarTrash => 'Trash';
+
+  @override
+  String get viewerSelectSnippet => 'Select a snippet to view';
+
+  @override
+  String get listNoSnippets => 'No snippets';
 }

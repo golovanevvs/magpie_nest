@@ -11,4 +11,31 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get appTitle => 'Magpie Nest';
+
+  @override
+  String get navLibrary => 'Библиотека';
+
+  @override
+  String get navAllSnippets => 'Все сниппеты';
+
+  @override
+  String get navFavorites => 'Избранное';
+
+  @override
+  String get navTrash => 'Корзина';
+
+  @override
+  String get sidebarInbox => 'Входящие';
+
+  @override
+  String get sidebarFavorites => 'Избранное';
+
+  @override
+  String get sidebarTrash => 'Корзина';
+
+  @override
+  String get viewerSelectSnippet => 'Выберите сниппет для просмотра';
+
+  @override
+  String get listNoSnippets => 'Нет сниппетов';
 }

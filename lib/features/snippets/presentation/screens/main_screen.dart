@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 
 /// Main screen with a four-panel layout (similar to massCode).
@@ -41,22 +42,22 @@ class _MainScreenState extends State<MainScreen> {
               _handleNavigationChange(index);
             },
             labelType: NavigationRailLabelType.all,
-            destinations: const [
+            destinations: [
               NavigationRailDestination(
                 icon: Icon(Icons.folder_open),
-                label: Text('Library'),
+                label: Text(AppLocalizations.of(context)!.navLibrary),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.all_inbox),
-                label: Text('All Snippets'),
+                label: Text(AppLocalizations.of(context)!.navAllSnippets),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.star),
-                label: Text('Favorites'),
+                label: Text(AppLocalizations.of(context)!.navFavorites),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.delete),
-                label: Text('Trash'),
+                label: Text(AppLocalizations.of(context)!.navTrash),
               ),
             ],
           ),
@@ -108,7 +109,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           ListTile(
             leading: const Icon(Icons.all_inbox),
-            title: const Text('Inbox'),
+            title: Text(AppLocalizations.of(context)!.sidebarInbox),
             onTap: () => widget.controller.selectFolder(null),
           ),
           const Divider(),
@@ -125,15 +126,21 @@ class _MainScreenState extends State<MainScreen> {
       ),
 
       // Favorites section
-      2 => const Padding(
+      2 => Padding(
         padding: EdgeInsets.all(16),
-        child: Text('Favorites', style: TextStyle(fontWeight: FontWeight.bold)),
+        child: Text(
+          AppLocalizations.of(context)!.sidebarFavorites,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
 
       // Trash section
-      3 => const Padding(
+      3 => Padding(
         padding: EdgeInsets.all(16),
-        child: Text('Trash', style: TextStyle(fontWeight: FontWeight.bold)),
+        child: Text(
+          AppLocalizations.of(context)!.sidebarTrash,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
 
       // All other cases (e.g., 1 - All Snippets)
@@ -149,7 +156,7 @@ class _MainScreenState extends State<MainScreen> {
     final snippets = widget.controller.snippets;
 
     if (snippets.isEmpty) {
-      return const Center(child: Text('No snippets'));
+      return Center(child: Text(AppLocalizations.of(context)!.listNoSnippets));
     }
 
     return ListView.builder(
@@ -190,13 +197,13 @@ class _MainScreenState extends State<MainScreen> {
     final snippet = widget.controller.selectedSnippet;
 
     if (snippet == null) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.code, size: 64, color: Colors.grey),
             SizedBox(height: 16),
-            Text('Select a snippet to view'),
+            Text(AppLocalizations.of(context)!.viewerSelectSnippet),
           ],
         ),
       );

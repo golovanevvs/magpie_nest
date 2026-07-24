@@ -12,8 +12,8 @@ import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repo
 /// This controller acts as a bridge between the domain layer
 /// (repositories) and the presentation layer (UI widgets).
 class AppController extends ChangeNotifier {
-  final IFolderRepository _folderRepository;
-  final ISnippetRepository _snippetRepository;
+  final IFolderRepository folderRepository;
+  final ISnippetRepository snippetRepository;
 
   List<Folder> _folders = [];
   List<Snippet> _snippets = [];
@@ -22,10 +22,9 @@ class AppController extends ChangeNotifier {
   Snippet? _selectedSnippet;
 
   AppController({
-    required IFolderRepository folderRepository,
-    required ISnippetRepository snippetRepository,
-  }) : _folderRepository = folderRepository,
-       _snippetRepository = snippetRepository;
+    required this.folderRepository,
+    required this.snippetRepository,
+  });
 
   /// Returns all loaded folders.
   List<Folder> get folders => _folders;
@@ -43,7 +42,7 @@ class AppController extends ChangeNotifier {
   ///
   /// This method should be called once when the main screen is first displayed.
   Future<void> initialize() async {
-    _folders = await _folderRepository.getAllFolders();
+    _folders = await folderRepository.getAllFolders();
     _selectedFolder = null;
     await _loadSnippetsForFolder(null);
     notifyListeners();
@@ -70,7 +69,7 @@ class AppController extends ChangeNotifier {
   Future<void> loadFavoriteSnippets() async {
     _selectedFolder = null;
     _selectedSnippet = null;
-    _snippets = await _snippetRepository.getFavoriteSnippets();
+    _snippets = await snippetRepository.getFavoriteSnippets();
     notifyListeners();
   }
 
@@ -78,7 +77,7 @@ class AppController extends ChangeNotifier {
   Future<void> loadDeletedSnippets() async {
     _selectedFolder = null;
     _selectedSnippet = null;
-    _snippets = await _snippetRepository.getDeletedSnippets();
+    _snippets = await snippetRepository.getDeletedSnippets();
     notifyListeners();
   }
 
@@ -88,10 +87,10 @@ class AppController extends ChangeNotifier {
   /// Otherwise, loads snippets belonging to the specified folder.
   Future<void> _loadSnippetsForFolder(String? folderId) async {
     if (folderId == null) {
-      final all = await _snippetRepository.getAllSnippets();
+      final all = await snippetRepository.getAllSnippets();
       _snippets = all.where((s) => !s.isDeleted).toList();
     } else {
-      _snippets = await _snippetRepository.getSnippetsByFolderId(folderId);
+      _snippets = await snippetRepository.getSnippetsByFolderId(folderId);
     }
   }
 }

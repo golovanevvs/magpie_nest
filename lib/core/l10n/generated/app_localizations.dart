@@ -103,6 +103,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Magpie Nest'**
   String get appTitle;
+
+  /// Navigation rail label for the Library section
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get navLibrary;
+
+  /// Navigation rail label for the All Snippets section
+  ///
+  /// In en, this message translates to:
+  /// **'All Snippets'**
+  String get navAllSnippets;
+
+  /// Navigation rail label for the Favorites section
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get navFavorites;
+
+  /// Navigation rail label for the Trash section
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get navTrash;
+
+  /// Sidebar label for the Inbox virtual folder
+  ///
+  /// In en, this message translates to:
+  /// **'Inbox'**
+  String get sidebarInbox;
+
+  /// Sidebar title for the Favorites section
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get sidebarFavorites;
+
+  /// Sidebar title for the Trash section
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get sidebarTrash;
+
+  /// Placeholder text shown when no snippet is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Select a snippet to view'**
+  String get viewerSelectSnippet;
+
+  /// Placeholder text shown when the snippet list is empty
+  ///
+  /// In en, this message translates to:
+  /// **'No snippets'**
+  String get listNoSnippets;
 }
 
 class _AppLocalizationsDelegate

@@ -3,5 +3,41 @@
   "appTitle": "Magpie Nest",
   "@appTitle": {
     "description": "The main title of the application shown in the app bar"
+  },
+  "navLibrary": "Library",
+  "@navLibrary": {
+    "description": "Navigation rail label for the Library section"
+  },
+  "navAllSnippets": "All Snippets",
+  "@navAllSnippets": {
+    "description": "Navigation rail label for the All Snippets section"
+  },
+  "navFavorites": "Favorites",
+  "@navFavorites": {
+    "description": "Navigation rail label for the Favorites section"
+  },
+  "navTrash": "Trash",
+  "@navTrash": {
+    "description": "Navigation rail label for the Trash section"
+  },
+  "sidebarInbox": "Inbox",
+  "@sidebarInbox": {
+    "description": "Sidebar label for the Inbox virtual folder"
+  },
+  "sidebarFavorites": "Favorites",
+  "@sidebarFavorites": {
+    "description": "Sidebar title for the Favorites section"
+  },
+  "sidebarTrash": "Trash",
+  "@sidebarTrash": {
+    "description": "Sidebar title for the Trash section"
+  },
+  "viewerSelectSnippet": "Select a snippet to view",
+  "@viewerSelectSnippet": {
+    "description": "Placeholder text shown when no snippet is selected"
+  },
+  "listNoSnippets": "No snippets",
+  "@listNoSnippets": {
+    "description": "Placeholder text shown when the snippet list is empty"
   }
 }

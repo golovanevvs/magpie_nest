@@ -3,5 +3,41 @@
   "appTitle": "Magpie Nest",
   "@appTitle": {
     "description": "Главный заголовок приложения, отображаемый в панели приложения"
+  },
+  "navLibrary": "Библиотека",
+  "@navLibrary": {
+    "description": "Метка навигационной панели для раздела Библиотека"
+  },
+  "navAllSnippets": "Все сниппеты",
+  "@navAllSnippets": {
+    "description": "Метка навигационной панели для раздела Все сниппеты"
+  },
+  "navFavorites": "Избранное",
+  "@navFavorites": {
+    "description": "Метка навигационной панели для раздела Избранное"
+  },
+  "navTrash": "Корзина",
+  "@navTrash": {
+    "description": "Метка навигационной панели для раздела Корзина"
+  },
+  "sidebarInbox": "Входящие",
+  "@sidebarInbox": {
+    "description": "Метка боковой панели для виртуальной папки Входящие"
+  },
+  "sidebarFavorites": "Избранное",
+  "@sidebarFavorites": {
+    "description": "Заголовок боковой панели для раздела Избранное"
+  },
+  "sidebarTrash": "Корзина",
+  "@sidebarTrash": {
+    "description": "Заголовок боковой панели для раздела Корзина"
+  },
+  "viewerSelectSnippet": "Выберите сниппет для просмотра",
+  "@viewerSelectSnippet": {
+    "description": "Текст-заполнитель, показываемый, когда ни один сниппет не выбран"
+  },
+  "listNoSnippets": "Нет сниппетов",
+  "@listNoSnippets": {
+    "description": "Текст-заполнитель, показываемый, когда список сниппетов пуст"
   }
 }
