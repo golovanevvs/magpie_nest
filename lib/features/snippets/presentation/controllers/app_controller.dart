@@ -65,6 +65,32 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Toggles the favorite status of the snippet with the given [id].
+  ///
+  /// Updates the snippet in the repository and refreshes the local state.
+  Future<void> toggleFavorite(String id) async {
+    final snippet = await snippetRepository.getSnippetById(id);
+    if (snippet == null) return;
+
+    final updated = snippet.copyWith(
+      isFavorite: !snippet.isFavorite,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final snippetIndex = _snippets.indexWhere((s) => s.id == id);
+    if (snippetIndex >= 0) {
+      _snippets[snippetIndex] = updated;
+    }
+
+    if (_selectedSnippet?.id == id) {
+      _selectedSnippet = updated;
+    }
+
+    notifyListeners();
+  }
+
   /// Loads only favorite snippets into the list.
   Future<void> loadFavoriteSnippets() async {
     _selectedFolder = null;

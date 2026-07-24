@@ -223,9 +223,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               IconButton(
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
-                onPressed: () {
-                  // TODO: Toggle favorite
-                },
+                onPressed: () => widget.controller.toggleFavorite(snippet.id),
               ),
             ],
           ),
