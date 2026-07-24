@@ -12,12 +12,12 @@ abstract class ISnippetRepository {
   Future<List<Snippet>> getAllSnippets();
 
   /// Returns the snippet with the given [id], or `null` if not found.
-  Future<Snippet> getSnippetById(String id);
+  Future<Snippet?> getSnippetById(String id);
 
   /// Returns snippets in the folder with the given [folderId].
   ///
   /// If [folderId] is `null`, returns snippets from the Inbox.
-  Future<List<Snippet>> getSippetsByFolderId(String? folderId);
+  Future<List<Snippet>> getSnippetsByFolderId(String? folderId);
 
   /// Returns all favorite snippets.
   Future<List<Snippet>> getFavoriteSnippets();
