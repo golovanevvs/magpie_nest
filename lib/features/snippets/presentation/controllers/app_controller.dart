@@ -23,6 +23,7 @@ class AppController extends ChangeNotifier {
 
   Folder? _selectedFolder;
   Snippet? _selectedSnippet;
+  String? _selectedTag;
   SidebarSection _activeSection = SidebarSection.all;
 
   AppController({
@@ -33,8 +34,20 @@ class AppController extends ChangeNotifier {
   /// Returns all loaded folders.
   List<Folder> get folders => _folders;
 
-  /// Returns snippets filtered by the current selection.
-  List<Snippet> get snippets => _snippets;
+  /// Returns snippets filtered by the current selection and selected tag.
+  List<Snippet> get snippets {
+    if (_selectedTag == null || _selectedTag!.isEmpty) return _snippets;
+    return _snippets.where((s) => s.tags.contains(_selectedTag)).toList();
+  }
+
+  /// Returns all unique tags from the currently loaded snippets.
+  Set<String> get tags {
+    final result = <String>{};
+    for (final snippet in _snippets) {
+      result.addAll(snippet.tags);
+    }
+    return result;
+  }
 
   /// Returns the currently selected folder, or `null` if a virtual folder is active.
   Folder? get selectedFolder => _selectedFolder;
@@ -44,6 +57,9 @@ class AppController extends ChangeNotifier {
 
   /// Returns the currently active sidebar section.
   SidebarSection get activeSection => _activeSection;
+
+  /// Returns the currently selected tag, or `null` if no tag is selected.
+  String? get selectedTag => _selectedTag;
 
   /// Initializes the controller by loading all folders and selecting "All Snippets" by default.
   ///
@@ -58,10 +74,11 @@ class AppController extends ChangeNotifier {
 
   /// Selects a folder and loads the corresponding snippets.
   ///
-  /// Resets the active section and the selected snippet.
+  /// Resets the active section, selected tag and the selected snippet.
   Future<void> selectFolder(Folder? folder) async {
     _selectedFolder = folder;
     _selectedSnippet = null;
+    _selectedTag = null;
     _activeSection = SidebarSection.all;
     await _loadSnippetsBySection();
     notifyListeners();
@@ -69,12 +86,22 @@ class AppController extends ChangeNotifier {
 
   /// Selects a sidebar section and loads the corresponding snippets.
   ///
-  /// Resets the selected folder and snippet.
+  /// Resets the selected folder, tag and snippet.
   Future<void> selectSection(SidebarSection section) async {
     _activeSection = section;
     _selectedFolder = null;
     _selectedSnippet = null;
+    _selectedTag = null;
     await _loadSnippetsBySection();
+    notifyListeners();
+  }
+
+  /// Selects a tag and filters the snippet list.
+  ///
+  /// Keeps the current active section/folder, but clears the selected snippet.
+  void selectTag(String? tag) {
+    _selectedTag = tag;
+    _selectedSnippet = null;
     notifyListeners();
   }
 

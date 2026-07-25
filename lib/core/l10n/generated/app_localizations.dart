@@ -170,6 +170,24 @@ abstract class AppLocalizations {
   /// **'No folders found'**
   String get sidebarNoFolders;
 
+  /// Sidebar section title for library items
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get sidebarLibrary;
+
+  /// Sidebar section title for folder tree
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get sidebarFolders;
+
+  /// Sidebar section title for tags list
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get sidebarTags;
+
   /// Placeholder text shown when no snippet is selected
   ///
   /// In en, this message translates to:

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/folder_tree.dart';
 
-/// Library header with a button to add a new folder.
-class LibraryHeader extends StatelessWidget {
+/// Header for the Folders section with a button to add a new folder.
+class FoldersHeader extends StatelessWidget {
   final AppController controller;
 
-  const LibraryHeader({super.key, required this.controller});
+  const FoldersHeader({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class LibraryHeader extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              l10n.navLibrary,
+              l10n.sidebarFolders,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
@@ -44,15 +45,6 @@ class LibraryHeader extends StatelessWidget {
     final newFolder = await controller.createFolder(l10n.untitledFolder);
 
     if (!context.mounted) return;
-    // Notify the parent that a new folder is being edited.
-    FolderEditNotification(newFolder.id, newFolder.name).dispatch(context);
+    StartFolderEditNotification(newFolder.id, newFolder.name).dispatch(context);
   }
-}
-
-/// Notification dispatched when the user starts editing a folder name.
-class FolderEditNotification extends Notification {
-  final String folderId;
-  final String initialName;
-
-  const FolderEditNotification(this.folderId, this.initialName);
 }

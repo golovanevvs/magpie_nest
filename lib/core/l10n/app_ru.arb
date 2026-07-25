@@ -48,6 +48,18 @@
   "@sidebarNoFolders": {
     "description": "Сообщение, когда поиск не дал результатов"
   },
+  "sidebarLibrary": "Библиотека",
+  "@sidebarLibrary": {
+    "description": "Заголовок раздела библиотеки в боковой панели"
+  },
+  "sidebarFolders": "Папки",
+  "@sidebarFolders": {
+    "description": "Заголовок раздела папок в боковой панели"
+  },
+  "sidebarTags": "Теги",
+  "@sidebarTags": {
+    "description": "Заголовок раздела тегов в боковой панели"
+  },
   "viewerSelectSnippet": "Выберите сниппет для просмотра",
   "@viewerSelectSnippet": {
     "description": "Текст-заполнитель, показываемый, когда ни один сниппет не выбран"

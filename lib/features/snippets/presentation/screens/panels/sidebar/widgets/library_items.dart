@@ -3,11 +3,11 @@ import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/sidebar_item.dart';
 
-/// Virtual folders section in the sidebar (All Snippets, Inbox, Favorites, Trash).
-class VirtualFolders extends StatelessWidget {
+/// Library items section (Inbox, Favorites, All Snippets, Trash).
+class LibraryItems extends StatelessWidget {
   final AppController controller;
 
-  const VirtualFolders({super.key, required this.controller});
+  const LibraryItems({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +17,6 @@ class VirtualFolders extends StatelessWidget {
 
     return Column(
       children: [
-        SidebarItem(
-          icon: Icons.all_inbox,
-          label: l10n.navAllSnippets,
-          selected: selectedFolder == null && section == SidebarSection.all,
-          onTap: () => controller.selectSection(SidebarSection.all),
-        ),
         SidebarItem(
           icon: Icons.inbox,
           label: l10n.sidebarInbox,
@@ -34,6 +28,12 @@ class VirtualFolders extends StatelessWidget {
           label: l10n.navFavorites,
           selected: section == SidebarSection.favorites,
           onTap: () => controller.selectSection(SidebarSection.favorites),
+        ),
+        SidebarItem(
+          icon: Icons.all_inbox,
+          label: l10n.navAllSnippets,
+          selected: selectedFolder == null && section == SidebarSection.all,
+          onTap: () => controller.selectSection(SidebarSection.all),
         ),
         SidebarItem(
           icon: Icons.delete,

@@ -46,6 +46,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sidebarNoFolders => 'Папки не найдены';
 
   @override
+  String get sidebarLibrary => 'Библиотека';
+
+  @override
+  String get sidebarFolders => 'Папки';
+
+  @override
+  String get sidebarTags => 'Теги';
+
+  @override
   String get viewerSelectSnippet => 'Выберите сниппет для просмотра';
 
   @override

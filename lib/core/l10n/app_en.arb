@@ -48,6 +48,18 @@
   "@sidebarNoFolders": {
     "description": "Message shown when no folders match the search query"
   },
+  "sidebarLibrary": "Library",
+  "@sidebarLibrary": {
+    "description": "Sidebar section title for library items"
+  },
+  "sidebarFolders": "Folders",
+  "@sidebarFolders": {
+    "description": "Sidebar section title for folder tree"
+  },
+  "sidebarTags": "Tags",
+  "@sidebarTags": {
+    "description": "Sidebar section title for tags list"
+  },
   "viewerSelectSnippet": "Select a snippet to view",
   "@viewerSelectSnippet": {
     "description": "Placeholder text shown when no snippet is selected"
