@@ -1,6 +1,6 @@
 /// Model representing a code snippet.
 ///
-/// The architecture follows the massCode design:
+/// The design:
 /// - [language] is a free-form string (not an enum), used for syntax highlighting.
 /// - [folderId] references a folder. If `null`, the snippet is in the "Inbox".
 /// - [isDeleted] indicates soft-deletion (the snippet is moved to the "Trash").

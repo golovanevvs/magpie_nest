@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/panels/navigation_rail_panel.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar_panel.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_list_panel.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_viewer_panel.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/panels/activity_bar/activity_bar.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/sidebar.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_list/snippet_list.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/snippet_preview.dart';
 
-/// Main screen with a four-panel layout (similar to massCode).
+/// Main screen with a four-panel layout.
 ///
 /// Layout structure:
-/// 1. Navigation Rail (leftmost) - Snippets and Settings buttons
+/// 1. Activity Bar (leftmost) - Snippets and Settings buttons
 /// 2. Sidebar - shows folders (in Snippets mode) or section info
 /// 3. Snippet List - shows snippets in the selected folder/section
-/// 4. Snippet Viewer (rightmost) - displays the selected snippet's content
+/// 4. Snippet Preview (rightmost) - displays the selected snippet's content
 class MainScreen extends StatefulWidget {
   final AppController controller;
 
@@ -46,10 +46,10 @@ class _MainScreenState extends State<MainScreen> {
         return Scaffold(
           body: Row(
             children: [
-              // Panel 1: Navigation Rail
+              // Panel 1: Activity Bar
               SizedBox(
                 height: double.infinity,
-                child: NavigationRailPanel(
+                child: ActivityBar(
                   selectedIndex: _selectedIndex,
                   onDestinationSelected: _handleNavigationChange,
                 ),
@@ -59,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
               // Panel 2: Sidebar
               SizedBox(
                 width: _sidebarWidth,
-                child: SidebarPanel(
+                child: Sidebar(
                   selectedIndex: _selectedIndex,
                   controller: widget.controller,
                 ),
@@ -79,7 +79,7 @@ class _MainScreenState extends State<MainScreen> {
               // Panel 3: Snippet List
               SizedBox(
                 width: _snippetListWidth,
-                child: SnippetListPanel(controller: widget.controller),
+                child: SnippetList(controller: widget.controller),
               ),
               _buildResizableDivider(
                 onDrag: (delta) {
@@ -93,9 +93,9 @@ class _MainScreenState extends State<MainScreen> {
                 },
               ),
 
-              // Panel 4: Snippet Viewer
+              // Panel 4: Snippet Preview
               Expanded(
-                child: SnippetViewerPanel(
+                child: SnippetPreview(
                   selectedIndex: _selectedIndex,
                   controller: widget.controller,
                 ),

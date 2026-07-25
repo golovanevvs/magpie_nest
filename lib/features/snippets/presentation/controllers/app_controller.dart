@@ -144,7 +144,7 @@ class AppController extends ChangeNotifier {
 
   /// Restores the snippet with the given [id] from the Trash.
   ///
-  /// The snippet is always moved to the Inbox, matching massCode behavior.
+  /// The snippet is always moved to the Inbox.
   Future<void> restoreSnippet(String id) async {
     var restored = await snippetRepository.getSnippetById(id);
     if (restored == null) return;

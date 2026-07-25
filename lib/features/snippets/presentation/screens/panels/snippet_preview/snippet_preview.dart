@@ -7,15 +7,15 @@ import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delete_confirmation_dialog.dart';
 
-/// Snippet viewer panel (Panel 4).
+/// Snippet preview panel (Panel 4).
 ///
 /// Displays the selected snippet's name, language, tags, and content
 /// with syntax highlighting.
-class SnippetViewerPanel extends StatelessWidget {
+class SnippetPreview extends StatelessWidget {
   final int selectedIndex;
   final AppController controller;
 
-  const SnippetViewerPanel({
+  const SnippetPreview({
     super.key,
     required this.selectedIndex,
     required this.controller,

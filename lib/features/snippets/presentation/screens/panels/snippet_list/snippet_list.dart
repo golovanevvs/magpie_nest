@@ -8,10 +8,10 @@ import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/creat
 ///
 /// Displays all snippets from the current selection (folder or section).
 /// Includes a button to create a new snippet.
-class SnippetListPanel extends StatelessWidget {
+class SnippetList extends StatelessWidget {
   final AppController controller;
 
-  const SnippetListPanel({super.key, required this.controller});
+  const SnippetList({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
