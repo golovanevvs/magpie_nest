@@ -3,6 +3,13 @@ import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 
+/// Sidebar panel styled after massCode.
+///
+/// Contains:
+/// - A search field to filter folders.
+/// - Virtual folders: All Snippets, Inbox, Favorites, Trash.
+/// - A "Library" header with a button to add new folders.
+/// - The user folder tree with nested indentation.
 class SidebarPanel extends StatefulWidget {
   final int selectedIndex;
   final AppController controller;
@@ -18,81 +25,162 @@ class SidebarPanel extends StatefulWidget {
 }
 
 class _SidebarPanelState extends State<SidebarPanel> {
+  String _searchQuery = '';
   String? _editingFolderId;
   final TextEditingController _editController = TextEditingController();
   final FocusNode _editFocusNode = FocusNode();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
     _editController.dispose();
     _editFocusNode.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return switch (widget.selectedIndex) {
-      0 => _buildLibrarySidebar(context),
-      2 => _buildFavoritesSidebar(context),
-      3 => _buildTrashSidebar(context),
-      _ => const SizedBox.shrink(),
-    };
+    return Column(
+      children: [
+        _buildSearchField(context),
+        _buildVirtualFolders(context),
+        const Divider(height: 1),
+        _buildLibraryHeader(context),
+        const Divider(height: 1),
+        Expanded(child: _buildFolderTree(context)),
+      ],
+    );
   }
 
-  Widget _buildLibrarySidebar(BuildContext context) {
+  Widget _buildSearchField(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          hintText: l10n.sidebarSearchHint,
+          prefixIcon: const Icon(Icons.search, size: 18),
+          isDense: true,
+          border: const OutlineInputBorder(),
+          contentPadding: const EdgeInsets.symmetric(vertical: 8),
+        ),
+        style: const TextStyle(fontSize: 14),
+        onChanged: (value) =>
+            setState(() => _searchQuery = value.trim().toLowerCase()),
+      ),
+    );
+  }
+
+  Widget _buildVirtualFolders(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final section = widget.controller.activeSection;
+    final selectedFolder = widget.controller.selectedFolder;
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Text(
-                l10n.navLibrary,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.add, size: 20),
-                tooltip: l10n.buttonNewFolder,
-                onPressed: () => _createFolderAndSelect(context),
-                visualDensity: VisualDensity.compact,
-              ),
-            ],
-          ),
+        _SidebarItem(
+          icon: Icons.all_inbox,
+          label: l10n.navAllSnippets,
+          selected: selectedFolder == null && section == SidebarSection.all,
+          onTap: () => widget.controller.selectSection(SidebarSection.all),
         ),
-        const Divider(height: 1),
-        ListTile(
-          leading: const Icon(Icons.all_inbox, size: 20),
-          title: Text(l10n.sidebarInbox, style: const TextStyle(fontSize: 14)),
-          dense: true,
-          selected: widget.controller.selectedFolder == null,
-          onTap: () => widget.controller.selectFolder(null),
+        _SidebarItem(
+          icon: Icons.inbox,
+          label: l10n.sidebarInbox,
+          selected: selectedFolder == null && section == SidebarSection.inbox,
+          onTap: () => widget.controller.selectSection(SidebarSection.inbox),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: widget.controller.folders.length,
-            itemBuilder: (context, index) {
-              final folder = widget.controller.folders[index];
-              return _buildFolderItem(context, folder);
-            },
-          ),
+        _SidebarItem(
+          icon: Icons.star,
+          label: l10n.navFavorites,
+          selected: section == SidebarSection.favorites,
+          onTap: () =>
+              widget.controller.selectSection(SidebarSection.favorites),
+        ),
+        _SidebarItem(
+          icon: Icons.delete,
+          label: l10n.navTrash,
+          selected: section == SidebarSection.trash,
+          onTap: () => widget.controller.selectSection(SidebarSection.trash),
         ),
       ],
     );
   }
 
+  Widget _buildLibraryHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              l10n.navLibrary,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.add, size: 18),
+            tooltip: l10n.buttonNewFolder,
+            onPressed: () => _createFolderAndSelect(context),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFolderTree(BuildContext context) {
+    final folders = _filterFolders(widget.controller.folders);
+
+    if (folders.isEmpty && _searchQuery.isNotEmpty) {
+      return Center(
+        child: Text(
+          AppLocalizations.of(context)!.sidebarNoFolders,
+          style: TextStyle(color: Theme.of(context).hintColor, fontSize: 13),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: folders.length,
+      itemBuilder: (context, index) =>
+          _buildFolderItem(context, folders[index]),
+    );
+  }
+
+  List<Folder> _filterFolders(List<Folder> folders) {
+    if (_searchQuery.isEmpty) return folders;
+
+    return folders
+        .where((folder) => folder.name.toLowerCase().contains(_searchQuery))
+        .toList();
+  }
+
   Widget _buildFolderItem(BuildContext context, Folder folder) {
     final l10n = AppLocalizations.of(context)!;
     final isEditing = _editingFolderId == folder.id;
+    final isSelected = widget.controller.selectedFolder?.id == folder.id;
+    final indentation = folder.isRoot ? 0.0 : 24.0;
 
     if (isEditing) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: EdgeInsets.only(
+          left: indentation + 8,
+          right: 8,
+          top: 4,
+          bottom: 4,
+        ),
         child: TextField(
           controller: _editController,
           focusNode: _editFocusNode,
@@ -104,19 +192,18 @@ class _SidebarPanelState extends State<SidebarPanel> {
           ),
           style: const TextStyle(fontSize: 14),
           onSubmitted: (_) => _finishEditing(folder.id),
-          onTapOutside: (_) =>
-              _finishEditing(folder.id), // Сохранение при клике вне
+          onTapOutside: (_) => _finishEditing(folder.id),
         ),
       );
     }
 
     return GestureDetector(
       onDoubleTap: () => _startEditing(folder),
-      child: ListTile(
-        leading: const Icon(Icons.folder, size: 20),
-        title: Text(folder.name, style: const TextStyle(fontSize: 14)),
-        dense: true,
-        selected: widget.controller.selectedFolder?.id == folder.id,
+      child: _SidebarItem(
+        icon: Icons.folder,
+        label: folder.name,
+        selected: isSelected,
+        indent: indentation,
         onTap: () => widget.controller.selectFolder(folder),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -126,12 +213,16 @@ class _SidebarPanelState extends State<SidebarPanel> {
               tooltip: l10n.buttonRename,
               onPressed: () => _startEditing(folder),
               visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
             ),
             IconButton(
               icon: const Icon(Icons.delete, size: 16),
               tooltip: l10n.buttonDelete,
               onPressed: () => _confirmDelete(context, folder),
               visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
             ),
           ],
         ),
@@ -141,8 +232,6 @@ class _SidebarPanelState extends State<SidebarPanel> {
 
   Future<void> _createFolderAndSelect(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
-
-    // Передаём локализованное имя в контроллер
     final newFolder = await widget.controller.createFolder(l10n.untitledFolder);
 
     setState(() {
@@ -205,24 +294,51 @@ class _SidebarPanelState extends State<SidebarPanel> {
       await widget.controller.deleteFolder(folder.id);
     }
   }
+}
 
-  Widget _buildFavoritesSidebar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Text(
-        AppLocalizations.of(context)!.sidebarFavorites,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-    );
-  }
+/// Reusable sidebar list item with optional indentation and trailing actions.
+class _SidebarItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final double indent;
+  final Widget? trailing;
 
-  Widget _buildTrashSidebar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Text(
-        AppLocalizations.of(context)!.sidebarTrash,
-        style: const TextStyle(fontWeight: FontWeight.bold),
+  const _SidebarItem({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.indent = 0,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 18,
+        color: selected ? colorScheme.primary : null,
       ),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: 14,
+          color: selected ? colorScheme.primary : null,
+          fontWeight: selected ? FontWeight.w500 : FontWeight.normal,
+        ),
+      ),
+      dense: true,
+      selected: selected,
+      selectedTileColor: colorScheme.primaryContainer.withAlpha(51),
+      contentPadding: EdgeInsets.only(left: 16 + indent, right: 8),
+      visualDensity: VisualDensity.compact,
+      onTap: onTap,
+      trailing: trailing,
     );
   }
 }

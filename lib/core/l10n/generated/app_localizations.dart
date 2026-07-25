@@ -146,6 +146,18 @@ abstract class AppLocalizations {
   /// **'Trash'**
   String get sidebarTrash;
 
+  /// Hint text for the folder search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search folders'**
+  String get sidebarSearchHint;
+
+  /// Message shown when no folders match the search query
+  ///
+  /// In en, this message translates to:
+  /// **'No folders found'**
+  String get sidebarNoFolders;
+
   /// Placeholder text shown when no snippet is selected
   ///
   /// In en, this message translates to:

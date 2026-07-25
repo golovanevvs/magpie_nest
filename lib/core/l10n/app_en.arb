@@ -32,6 +32,14 @@
   "@sidebarTrash": {
     "description": "Sidebar title for the Trash section"
   },
+  "sidebarSearchHint": "Search folders",
+  "@sidebarSearchHint": {
+    "description": "Hint text for the folder search field"
+  },
+  "sidebarNoFolders": "No folders found",
+  "@sidebarNoFolders": {
+    "description": "Message shown when no folders match the search query"
+  },
   "viewerSelectSnippet": "Select a snippet to view",
   "@viewerSelectSnippet": {
     "description": "Placeholder text shown when no snippet is selected"

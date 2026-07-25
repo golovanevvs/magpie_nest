@@ -87,10 +87,10 @@ class _MainScreenState extends State<MainScreen> {
         widget.controller.selectFolder(null);
         break;
       case 2: // Favorites
-        widget.controller.loadFavoriteSnippets();
+        widget.controller.selectSection(SidebarSection.favorites);
         break;
       case 3: // Trash
-        widget.controller.loadDeletedSnippets();
+        widget.controller.selectSection(SidebarSection.trash);
         break;
     }
   }

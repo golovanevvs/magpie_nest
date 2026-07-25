@@ -34,6 +34,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sidebarTrash => 'Trash';
 
   @override
+  String get sidebarSearchHint => 'Search folders';
+
+  @override
+  String get sidebarNoFolders => 'No folders found';
+
+  @override
   String get viewerSelectSnippet => 'Select a snippet to view';
 
   @override

@@ -4,6 +4,9 @@ import 'package:magpie_nest/features/folders/domain/repositories/i_folder_reposi
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 
+/// Available sidebar sections that filter the snippet list.
+enum SidebarSection { all, inbox, favorites, trash }
+
 /// Controller for managing the main screen state.
 ///
 /// Holds the selected folder and snippet, and provides methods
@@ -20,6 +23,7 @@ class AppController extends ChangeNotifier {
 
   Folder? _selectedFolder;
   Snippet? _selectedSnippet;
+  SidebarSection _activeSection = SidebarSection.all;
 
   AppController({
     required this.folderRepository,
@@ -32,31 +36,45 @@ class AppController extends ChangeNotifier {
   /// Returns snippets filtered by the current selection.
   List<Snippet> get snippets => _snippets;
 
-  /// Returns the currently selected folder, or `null` if "All Snippets" is active.
+  /// Returns the currently selected folder, or `null` if a virtual folder is active.
   Folder? get selectedFolder => _selectedFolder;
 
   /// Returns the currently selected snippet for viewing.
   Snippet? get selectedSnippet => _selectedSnippet;
+
+  /// Returns the currently active sidebar section.
+  SidebarSection get activeSection => _activeSection;
 
   /// Initializes the controller by loading all folders and selecting "All Snippets" by default.
   ///
   /// This method should be called once when the main screen is first displayed.
   Future<void> initialize() async {
     _folders = (await folderRepository.getAllFolders()).toList();
-    _snippets = (await snippetRepository.getAllSnippets()).toList();
     _selectedFolder = null;
-    await _loadSnippetsForFolder(null);
+    _activeSection = SidebarSection.all;
+    await _loadSnippetsBySection();
     notifyListeners();
   }
 
   /// Selects a folder and loads the corresponding snippets.
   ///
-  /// Pass `null` to show all snippets (virtual "All Snippets" folder).
-  /// Resets the selected snippet when the folder changes.
+  /// Resets the active section and the selected snippet.
   Future<void> selectFolder(Folder? folder) async {
     _selectedFolder = folder;
     _selectedSnippet = null;
-    await _loadSnippetsForFolder(folder?.id);
+    _activeSection = SidebarSection.all;
+    await _loadSnippetsBySection();
+    notifyListeners();
+  }
+
+  /// Selects a sidebar section and loads the corresponding snippets.
+  ///
+  /// Resets the selected folder and snippet.
+  Future<void> selectSection(SidebarSection section) async {
+    _activeSection = section;
+    _selectedFolder = null;
+    _selectedSnippet = null;
+    await _loadSnippetsBySection();
     notifyListeners();
   }
 
@@ -80,9 +98,13 @@ class AppController extends ChangeNotifier {
 
     await snippetRepository.saveSnippet(updated);
 
-    final snippetIndex = _snippets.indexWhere((s) => s.id == id);
-    if (snippetIndex >= 0) {
-      _snippets[snippetIndex] = updated;
+    if (_activeSection == SidebarSection.favorites && !updated.isFavorite) {
+      _snippets.removeWhere((s) => s.id == id);
+    } else {
+      final snippetIndex = _snippets.indexWhere((s) => s.id == id);
+      if (snippetIndex >= 0) {
+        _snippets[snippetIndex] = updated;
+      }
     }
 
     if (_selectedSnippet?.id == id) {
@@ -99,7 +121,19 @@ class AppController extends ChangeNotifier {
   Future<void> deleteSnippet(String id) async {
     await snippetRepository.deleteSnippet(id);
 
-    _snippets.removeWhere((s) => s.id == id);
+    if (_activeSection == SidebarSection.trash) {
+      final restored = await snippetRepository.getSnippetById(id);
+      if (restored != null) {
+        final index = _snippets.indexWhere((s) => s.id == id);
+        if (index >= 0) {
+          _snippets[index] = restored;
+        } else {
+          _snippets.add(restored);
+        }
+      }
+    } else {
+      _snippets.removeWhere((s) => s.id == id);
+    }
 
     if (_selectedSnippet?.id == id) {
       _selectedSnippet = null;
@@ -114,7 +148,19 @@ class AppController extends ChangeNotifier {
   Future<void> restoreSnippet(String id) async {
     await snippetRepository.restoreSnippet(id);
 
-    _snippets.removeWhere((s) => s.id == id);
+    if (_activeSection == SidebarSection.trash) {
+      _snippets.removeWhere((s) => s.id == id);
+    } else {
+      final restored = await snippetRepository.getSnippetById(id);
+      if (restored != null && !restored.isDeleted) {
+        final index = _snippets.indexWhere((s) => s.id == id);
+        if (index >= 0) {
+          _snippets[index] = restored;
+        } else {
+          _snippets.add(restored);
+        }
+      }
+    }
 
     if (_selectedSnippet?.id == id) {
       _selectedSnippet = null;
@@ -123,33 +169,25 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Loads only favorite snippets into the list.
-  Future<void> loadFavoriteSnippets() async {
-    _selectedFolder = null;
-    _selectedSnippet = null;
-    _snippets = (await snippetRepository.getFavoriteSnippets()).toList();
-    notifyListeners();
-  }
-
-  /// Loads only deleted snippets (from Trash) into the list.
-  Future<void> loadDeletedSnippets() async {
-    _selectedFolder = null;
-    _selectedSnippet = null;
-    _snippets = (await snippetRepository.getDeletedSnippets()).toList();
-    notifyListeners();
-  }
-
-  /// Loads snippets based on the folder ID.
-  ///
-  /// If [folderId] is `null`, loads all non-deleted snippets (virtual "All Snippets").
-  /// Otherwise, loads snippets belonging to the specified folder.
-  Future<void> _loadSnippetsForFolder(String? folderId) async {
-    if (folderId == null) {
-      final all = await snippetRepository.getAllSnippets();
-      _snippets = all.where((s) => !s.isDeleted).toList();
-    } else {
-      _snippets = (await snippetRepository.getSnippetsByFolderId(folderId))
-          .toList();
+  /// Loads snippets based on the active section and selected folder.
+  Future<void> _loadSnippetsBySection() async {
+    switch (_activeSection) {
+      case SidebarSection.all:
+        final all = await snippetRepository.getAllSnippets();
+        if (_selectedFolder == null) {
+          _snippets = all.where((s) => !s.isDeleted).toList();
+        } else {
+          _snippets = all
+              .where((s) => !s.isDeleted && s.folderId == _selectedFolder!.id)
+              .toList();
+        }
+      case SidebarSection.inbox:
+        final all = await snippetRepository.getAllSnippets();
+        _snippets = all.where((s) => !s.isDeleted && s.isInbox).toList();
+      case SidebarSection.favorites:
+        _snippets = (await snippetRepository.getFavoriteSnippets()).toList();
+      case SidebarSection.trash:
+        _snippets = (await snippetRepository.getDeletedSnippets()).toList();
     }
     notifyListeners();
   }
@@ -161,7 +199,17 @@ class AppController extends ChangeNotifier {
     final newSnippet = snippet.copyWith(folderId: _selectedFolder?.id);
 
     await snippetRepository.saveSnippet(newSnippet);
-    _snippets.insert(0, newSnippet);
+
+    final shouldShow = switch (_activeSection) {
+      SidebarSection.all => newSnippet.folderId == _selectedFolder?.id,
+      SidebarSection.inbox => newSnippet.isInbox,
+      SidebarSection.favorites => newSnippet.isFavorite,
+      SidebarSection.trash => newSnippet.isDeleted,
+    };
+
+    if (shouldShow) {
+      _snippets.insert(0, newSnippet);
+    }
 
     notifyListeners();
   }
@@ -224,7 +272,7 @@ class AppController extends ChangeNotifier {
 
     if (_selectedFolder?.id == id) {
       _selectedFolder = null;
-      await _loadSnippetsForFolder(null);
+      await _loadSnippetsBySection();
     }
 
     notifyListeners();

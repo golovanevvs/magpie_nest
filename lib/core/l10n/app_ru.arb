@@ -32,6 +32,14 @@
   "@sidebarTrash": {
     "description": "Заголовок боковой панели для раздела Корзина"
   },
+  "sidebarSearchHint": "Поиск папок",
+  "@sidebarSearchHint": {
+    "description": "Подсказка в поле поиска папок"
+  },
+  "sidebarNoFolders": "Папки не найдены",
+  "@sidebarNoFolders": {
+    "description": "Сообщение, когда поиск не дал результатов"
+  },
   "viewerSelectSnippet": "Выберите сниппет для просмотра",
   "@viewerSelectSnippet": {
     "description": "Текст-заполнитель, показываемый, когда ни один сниппет не выбран"
