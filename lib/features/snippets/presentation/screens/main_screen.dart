@@ -30,82 +30,77 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          // Panel 1: Navigation Rail
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-              _handleNavigationChange(index);
-            },
-            labelType: NavigationRailLabelType.all,
-            destinations: [
-              NavigationRailDestination(
-                icon: Icon(Icons.folder_open),
-                label: Text(AppLocalizations.of(context)!.navLibrary),
+    return ListenableBuilder(
+      listenable: widget.controller,
+      builder: (context, child) {
+        return Scaffold(
+          body: Row(
+            children: [
+              // Panel 1: Navigation Rail
+              NavigationRail(
+                selectedIndex: _selectedIndex,
+                onDestinationSelected: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                  _handleNavigationChange(index);
+                },
+                labelType: NavigationRailLabelType.all,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.folder_open),
+                    label: Text(AppLocalizations.of(context)!.navLibrary),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.all_inbox),
+                    label: Text(AppLocalizations.of(context)!.navAllSnippets),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.star),
+                    label: Text(AppLocalizations.of(context)!.navFavorites),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.delete),
+                    label: Text(AppLocalizations.of(context)!.navTrash),
+                  ),
+                ],
               ),
-              NavigationRailDestination(
-                icon: Icon(Icons.all_inbox),
-                label: Text(AppLocalizations.of(context)!.navAllSnippets),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.star),
-                label: Text(AppLocalizations.of(context)!.navFavorites),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.delete),
-                label: Text(AppLocalizations.of(context)!.navTrash),
-              ),
+              const VerticalDivider(width: 1),
+
+              // Panel 2: Sidebar
+              SizedBox(width: 200, child: _buildSidebar(context)),
+              const VerticalDivider(width: 1),
+
+              // Panel 3: Snippet List
+              SizedBox(width: 300, child: _buildSnippetList(context)),
+              const VerticalDivider(width: 1),
+
+              // Panel 4: Snippet Viewer
+              Expanded(child: _buildSnippetViewer(context)),
             ],
           ),
-          const VerticalDivider(width: 1),
-
-          // Panel 2: Sidebar (folders or section info)
-          SizedBox(width: 200, child: _buildSidebar()),
-          const VerticalDivider(width: 1),
-
-          // Panel 3: Snippet List
-          SizedBox(width: 300, child: _buildSnippetList()),
-          const VerticalDivider(width: 1),
-
-          // Panel 4: Snippet Viewer
-          Expanded(child: _buildSnippetViewer()),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  /// Handles navigation rail selection changes.
-  ///
-  /// Updates the controller's state based on the selected section.
   void _handleNavigationChange(int index) {
-    setState(() {
-      switch (index) {
-        case 0: // Library - show folders
-        case 1: // All Snippets
-          widget.controller.selectFolder(null);
-          break;
-        case 2: // Favorites
-          widget.controller.loadFavoriteSnippets();
-          break;
-        case 3: // Trash
-          widget.controller.loadDeletedSnippets();
-          break;
-      }
-    });
+    switch (index) {
+      case 0: // Library
+      case 1: // All Snippets
+        widget.controller.selectFolder(null);
+        break;
+      case 2: // Favorites
+        widget.controller.loadFavoriteSnippets();
+        break;
+      case 3: // Trash
+        widget.controller.loadDeletedSnippets();
+        break;
+    }
   }
 
-  /// Builds the sidebar panel based on the current navigation selection.
-  ///
-  /// In Library mode, shows the folder tree.
-  /// In other modes, shows section-specific information.
-  Widget _buildSidebar() {
+  Widget _buildSidebar(BuildContext context) {
     return switch (_selectedIndex) {
-      // Library mode - show folders
       0 => ListView(
         children: [
           ListTile(
@@ -119,41 +114,30 @@ class _MainScreenState extends State<MainScreen> {
               leading: const Icon(Icons.folder),
               title: Text(folder.name),
               selected: widget.controller.selectedFolder?.id == folder.id,
-              onTap: () =>
-                  setState(() => widget.controller.selectFolder(folder)),
+              onTap: () => widget.controller.selectFolder(folder),
             );
           }),
         ],
       ),
-
-      // Favorites section
       2 => Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Text(
           AppLocalizations.of(context)!.sidebarFavorites,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-
-      // Trash section
       3 => Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Text(
           AppLocalizations.of(context)!.sidebarTrash,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-
-      // All other cases (e.g., 1 - All Snippets)
-      // Return an empty widget to hide the sidebar
       _ => const SizedBox.shrink(),
     };
   }
 
-  /// Builds the snippet list panel.
-  ///
-  /// Displays all snippets from the current selection (folder or section).
-  Widget _buildSnippetList() {
+  Widget _buildSnippetList(BuildContext context) {
     final snippets = widget.controller.snippets;
 
     if (snippets.isEmpty) {
@@ -169,19 +153,16 @@ class _MainScreenState extends State<MainScreen> {
           subtitle: Text(snippet.language),
           leading: Icon(_getLanguageIcon(snippet.language)),
           selected: widget.controller.selectedSnippet?.id == snippet.id,
-          onTap: () => setState(() => widget.controller.selectSnippet(snippet)),
+          onTap: () => widget.controller.selectSnippet(snippet),
         );
       },
     );
   }
 
-  /// Returns an appropriate icon for the given programming language.
   IconData _getLanguageIcon(String language) {
     switch (language.toLowerCase()) {
       case 'dart':
-        return Icons.code;
       case 'go':
-        return Icons.code;
       case 'typescript':
       case 'javascript':
         return Icons.code;
@@ -190,11 +171,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  /// Builds the snippet viewer panel.
-  ///
-  /// Displays the selected snippet's name, language, tags, and content.
-  /// Shows a placeholder when no snippet is selected.
-  Widget _buildSnippetViewer() {
+  Widget _buildSnippetViewer(BuildContext context) {
     final snippet = widget.controller.selectedSnippet;
 
     if (snippet == null) {
@@ -202,13 +179,14 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.code, size: 64, color: Colors.grey),
-            SizedBox(height: 16),
+            const Icon(Icons.code, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
             Text(AppLocalizations.of(context)!.viewerSelectSnippet),
           ],
         ),
       );
     }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -224,9 +202,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               IconButton(
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
-                onPressed: () => setState(
-                  () => widget.controller.toggleFavorite(snippet.id),
-                ),
+                onPressed: () => widget.controller.toggleFavorite(snippet.id),
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline),
@@ -263,9 +239,6 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  /// Shows a confirmation dialog before deleting the snippet.
-  ///
-  /// If the user confirms, calls [AppController.deleteSnippet].
   Future<void> _confirmDeleteSnippet(
     BuildContext context,
     Snippet snippet,
