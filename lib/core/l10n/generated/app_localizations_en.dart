@@ -51,4 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogDelete => 'Delete';
+
+  @override
+  String get buttonRestore => 'Restore';
 }

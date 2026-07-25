@@ -200,14 +200,21 @@ class _MainScreenState extends State<MainScreen> {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
+              if (_selectedIndex == 3)
+                IconButton(
+                  icon: const Icon(Icons.restore_from_trash),
+                  tooltip: AppLocalizations.of(context)!.buttonRestore,
+                  onPressed: () => widget.controller.restoreSnippet(snippet.id),
+                ),
               IconButton(
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
                 onPressed: () => widget.controller.toggleFavorite(snippet.id),
               ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: () => _confirmDeleteSnippet(context, snippet),
-              ),
+              if (_selectedIndex != 3)
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: () => _confirmDeleteSnippet(context, snippet),
+                ),
             ],
           ),
           const SizedBox(height: 8),

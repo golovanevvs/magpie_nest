@@ -51,4 +51,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get dialogDelete => 'Удалить';
+
+  @override
+  String get buttonRestore => 'Восстановить';
 }

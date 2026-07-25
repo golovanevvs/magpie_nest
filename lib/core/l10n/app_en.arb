@@ -55,5 +55,9 @@
   "dialogDelete": "Delete",
   "@dialogDelete": {
     "description": "Label for the delete button in dialogs"
+  },
+    "buttonRestore": "Restore",
+  "@buttonRestore": {
+    "description": "Label for the restore button in the snippet viewer"
   }
 }

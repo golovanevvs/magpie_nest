@@ -55,5 +55,9 @@
   "dialogDelete": "Удалить",
   "@dialogDelete": {
     "description": "Метка кнопки удаления в диалогах"
+  },
+    "buttonRestore": "Восстановить",
+  "@buttonRestore": {
+    "description": "Метка кнопки восстановления в просмотрщике сниппетов"
   }
 }

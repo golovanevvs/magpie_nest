@@ -107,6 +107,21 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Restores the snippet with the given [id] from the Trash.
+  ///
+  /// Updates the snippet in the repository and refreshes the local state.
+  Future<void> restoreSnippet(String id) async {
+    await snippetRepository.restoreSnippet(id);
+
+    _snippets.removeWhere((s) => s.id == id);
+
+    if (_selectedSnippet?.id == id) {
+      _selectedSnippet = null;
+    }
+
+    notifyListeners();
+  }
+
   /// Loads only favorite snippets into the list.
   Future<void> loadFavoriteSnippets() async {
     _selectedFolder = null;

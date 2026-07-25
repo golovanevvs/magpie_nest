@@ -181,6 +181,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get dialogDelete;
+
+  /// Label for the restore button in the snippet viewer
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get buttonRestore;
 }
 
 class _AppLocalizationsDelegate
