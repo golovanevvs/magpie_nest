@@ -9,7 +9,7 @@ import 'package:magpie_nest/features/snippets/presentation/controllers/app_contr
 /// - A search field to filter folders.
 /// - Virtual folders: All Snippets, Inbox, Favorites, Trash.
 /// - A "Library" header with a button to add new folders.
-/// - The user folder tree with nested indentation.
+/// - The user folder tree with nested indentation and expand/collapse.
 class SidebarPanel extends StatefulWidget {
   final int selectedIndex;
   final AppController controller;
@@ -27,6 +27,7 @@ class SidebarPanel extends StatefulWidget {
 class _SidebarPanelState extends State<SidebarPanel> {
   String _searchQuery = '';
   String? _editingFolderId;
+  final Set<String> _expandedFolderIds = {};
   final TextEditingController _editController = TextEditingController();
   final FocusNode _editFocusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
@@ -141,9 +142,9 @@ class _SidebarPanelState extends State<SidebarPanel> {
   }
 
   Widget _buildFolderTree(BuildContext context) {
-    final folders = _filterFolders(widget.controller.folders);
+    final rootFolders = _visibleFolders(widget.controller.folders);
 
-    if (folders.isEmpty && _searchQuery.isNotEmpty) {
+    if (rootFolders.isEmpty && _searchQuery.isNotEmpty) {
       return Center(
         child: Text(
           AppLocalizations.of(context)!.sidebarNoFolders,
@@ -153,29 +154,57 @@ class _SidebarPanelState extends State<SidebarPanel> {
     }
 
     return ListView.builder(
-      itemCount: folders.length,
+      itemCount: rootFolders.length,
       itemBuilder: (context, index) =>
-          _buildFolderItem(context, folders[index]),
+          _buildFolderItem(context, rootFolders[index]),
     );
   }
 
-  List<Folder> _filterFolders(List<Folder> folders) {
-    if (_searchQuery.isEmpty) return folders;
+  List<Folder> _visibleFolders(List<Folder> folders) {
+    if (_searchQuery.isEmpty) {
+      return folders.where((f) => f.isRoot).toList();
+    }
+
+    final matchedIds = <String>{};
+    for (final folder in folders) {
+      if (folder.name.toLowerCase().contains(_searchQuery)) {
+        matchedIds.add(folder.id);
+      }
+    }
 
     return folders
-        .where((folder) => folder.name.toLowerCase().contains(_searchQuery))
+        .where(
+          (folder) =>
+              folder.isRoot && _isVisibleInSearch(folder, folders, matchedIds),
+        )
         .toList();
+  }
+
+  bool _isVisibleInSearch(
+    Folder folder,
+    List<Folder> allFolders,
+    Set<String> matchedIds,
+  ) {
+    if (matchedIds.contains(folder.id)) return true;
+    final children = allFolders.where((f) => f.parentId == folder.id);
+    for (final child in children) {
+      if (_isVisibleInSearch(child, allFolders, matchedIds)) return true;
+    }
+    return false;
   }
 
   Widget _buildFolderItem(BuildContext context, Folder folder) {
     final isEditing = _editingFolderId == folder.id;
     final isSelected = widget.controller.selectedFolder?.id == folder.id;
-    final indentation = folder.isRoot ? 0.0 : 24.0;
+    final children = _childFolders(folder);
+    final hasChildren = children.isNotEmpty;
+    final isExpanded = _expandedFolderIds.contains(folder.id);
+    final depth = _folderDepth(folder);
 
     if (isEditing) {
       return Padding(
         padding: EdgeInsets.only(
-          left: indentation + 8,
+          left: 16 + depth * 24,
           right: 8,
           top: 4,
           bottom: 4,
@@ -196,18 +225,62 @@ class _SidebarPanelState extends State<SidebarPanel> {
       );
     }
 
-    return GestureDetector(
-      onDoubleTap: () => _startEditing(folder),
-      onSecondaryTapUp: (details) =>
-          _showFolderContextMenu(context, folder, details.globalPosition),
-      child: _SidebarItem(
-        icon: Icons.folder,
-        label: folder.name,
-        selected: isSelected,
-        indent: indentation,
-        onTap: () => widget.controller.selectFolder(folder),
-      ),
+    return Column(
+      children: [
+        GestureDetector(
+          onDoubleTap: () => _startEditing(folder),
+          onSecondaryTapUp: (details) =>
+              _showFolderContextMenu(context, folder, details.globalPosition),
+          child: _SidebarItem(
+            icon: Icons.folder,
+            label: folder.name,
+            selected: isSelected,
+            indent: depth * 24,
+            expandIcon: hasChildren
+                ? isExpanded
+                      ? Icons.keyboard_arrow_down
+                      : Icons.chevron_right
+                : null,
+            onTap: () => widget.controller.selectFolder(folder),
+            onExpandTap: hasChildren
+                ? () => _toggleFolderExpansion(folder.id)
+                : null,
+          ),
+        ),
+        if (isExpanded)
+          ...children.map((child) => _buildFolderItem(context, child)),
+      ],
     );
+  }
+
+  List<Folder> _childFolders(Folder parent) {
+    return widget.controller.folders
+        .where((f) => f.parentId == parent.id)
+        .toList();
+  }
+
+  int _folderDepth(Folder folder) {
+    var depth = 0;
+    var current = folder;
+    while (current.parentId != null) {
+      final parent = widget.controller.folders.firstWhereOrNull(
+        (f) => f.id == current.parentId,
+      );
+      if (parent == null) break;
+      depth++;
+      current = parent;
+    }
+    return depth;
+  }
+
+  void _toggleFolderExpansion(String folderId) {
+    setState(() {
+      if (_expandedFolderIds.contains(folderId)) {
+        _expandedFolderIds.remove(folderId);
+      } else {
+        _expandedFolderIds.add(folderId);
+      }
+    });
   }
 
   void _showFolderContextMenu(
@@ -279,6 +352,7 @@ class _SidebarPanelState extends State<SidebarPanel> {
     );
 
     setState(() {
+      _expandedFolderIds.add(parentId);
       _editingFolderId = newFolder.id;
       _editController.text = newFolder.name;
     });
@@ -340,13 +414,15 @@ class _SidebarPanelState extends State<SidebarPanel> {
   }
 }
 
-/// Reusable sidebar list item with optional indentation.
+/// Reusable sidebar list item with optional indentation and expand icon.
 class _SidebarItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
   final double indent;
+  final IconData? expandIcon;
+  final VoidCallback? onExpandTap;
 
   const _SidebarItem({
     required this.icon,
@@ -354,6 +430,8 @@ class _SidebarItem extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.indent = 0,
+    this.expandIcon,
+    this.onExpandTap,
   });
 
   @override
@@ -374,12 +452,32 @@ class _SidebarItem extends StatelessWidget {
           fontWeight: selected ? FontWeight.w500 : FontWeight.normal,
         ),
       ),
+      minLeadingWidth: 0,
       dense: true,
       selected: selected,
       selectedTileColor: colorScheme.primaryContainer.withAlpha(51),
       contentPadding: EdgeInsets.only(left: 16 + indent, right: 8),
       visualDensity: VisualDensity.compact,
       onTap: onTap,
+      trailing: expandIcon != null
+          ? GestureDetector(
+              onTap: onExpandTap,
+              child: Icon(
+                expandIcon,
+                size: 18,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            )
+          : null,
     );
+  }
+}
+
+extension _FirstWhereOrNullExtension<E> on Iterable<E> {
+  E? firstWhereOrNull(bool Function(E) test) {
+    for (final element in this) {
+      if (test(element)) return element;
+    }
+    return null;
   }
 }

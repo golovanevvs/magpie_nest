@@ -144,32 +144,26 @@ class AppController extends ChangeNotifier {
 
   /// Restores the snippet with the given [id] from the Trash.
   ///
-  /// If the snippet's folder no longer exists, it is moved to the Inbox.
+  /// The snippet is always moved to the Inbox, matching massCode behavior.
   Future<void> restoreSnippet(String id) async {
-    await snippetRepository.restoreSnippet(id);
-
-    final restored = await snippetRepository.getSnippetById(id);
+    var restored = await snippetRepository.getSnippetById(id);
     if (restored == null) return;
 
-    final folderExists =
-        restored.folderId != null &&
-        await folderRepository.getFolderById(restored.folderId!) != null;
-    final updated = folderExists
-        ? restored
-        : restored.copyWith(clearFolderId: true, updatedAt: DateTime.now());
-
-    if (!folderExists) {
-      await snippetRepository.saveSnippet(updated);
-    }
+    restored = restored.copyWith(
+      isDeleted: false,
+      clearFolderId: true,
+      updatedAt: DateTime.now(),
+    );
+    await snippetRepository.saveSnippet(restored);
 
     if (_activeSection == SidebarSection.trash) {
       _snippets.removeWhere((s) => s.id == id);
     } else {
       final index = _snippets.indexWhere((s) => s.id == id);
       if (index >= 0) {
-        _snippets[index] = updated;
-      } else if (!updated.isDeleted) {
-        _snippets.add(updated);
+        _snippets[index] = restored;
+      } else {
+        _snippets.add(restored);
       }
     }
 
