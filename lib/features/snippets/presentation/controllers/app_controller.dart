@@ -216,14 +216,14 @@ class AppController extends ChangeNotifier {
 
   /// Creates a new folder and returns it.
   ///
-  /// Generates a unique name based on [initialName] (e.g., "Untitled Folder 1").
+  /// Generates a unique name based on [initialName] (e.g., "New Folder 1").
   Future<Folder> createFolder(String initialName) async {
-    String newName = initialName;
+    String newName = '$initialName 1';
     int counter = 1;
 
     while (_folders.any((f) => f.name.toLowerCase() == newName.toLowerCase())) {
-      newName = '$initialName $counter';
       counter++;
+      newName = '$initialName $counter';
     }
 
     final folder = Folder(

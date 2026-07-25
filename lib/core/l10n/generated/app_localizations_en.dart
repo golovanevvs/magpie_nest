@@ -89,7 +89,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buttonNewSnippet => 'New Snippet';
 
   @override
-  String get untitledFolder => 'Untitled Folder';
+  String get untitledFolder => 'New Folder';
 
   @override
   String get buttonNewFolder => 'New Folder';

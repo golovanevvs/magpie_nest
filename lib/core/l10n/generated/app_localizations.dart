@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// Default name for a newly created folder
   ///
   /// In en, this message translates to:
-  /// **'Untitled Folder'**
+  /// **'New Folder'**
   String get untitledFolder;
 
   /// Tooltip for the new folder button

@@ -104,7 +104,7 @@
   "@buttonNewSnippet": {
     "description": "Метка кнопки создания нового сниппета"
   },
-    "untitledFolder": "Папка без названия",
+  "untitledFolder": "Новая папка",
   "@untitledFolder": {
     "description": "Имя по умолчанию для новой папки"
   },

@@ -89,7 +89,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get buttonNewSnippet => 'Новый сниппет';
 
   @override
-  String get untitledFolder => 'Папка без названия';
+  String get untitledFolder => 'Новая папка';
 
   @override
   String get buttonNewFolder => 'Новая папка';

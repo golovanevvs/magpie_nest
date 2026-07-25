@@ -104,7 +104,7 @@
   "@buttonNewSnippet": {
     "description": "Label for the button to create a new snippet"
   },
-  "untitledFolder": "Untitled Folder",
+  "untitledFolder": "New Folder",
   "@untitledFolder": {
     "description": "Default name for a newly created folder"
   },
