@@ -67,5 +67,33 @@
   "snackbarCopied": "Скопировано в буфер обмена",
   "@snackbarCopied": {
     "description": "Сообщение, показываемое после копирования кода в буфер обмена"
+  },
+    "dialogCreateSnippetTitle": "Создать новый сниппет",
+  "@dialogCreateSnippetTitle": {
+    "description": "Заголовок диалога создания нового сниппета"
+  },
+  "fieldSnippetName": "Название сниппета",
+  "@fieldSnippetName": {
+    "description": "Метка поля ввода названия сниппета"
+  },
+  "fieldLanguage": "Язык",
+  "@fieldLanguage": {
+    "description": "Метка выпадающего списка выбора языка"
+  },
+  "fieldContent": "Содержимое",
+  "@fieldContent": {
+    "description": "Метка поля ввода содержимого сниппета"
+  },
+  "dialogCreate": "Создать",
+  "@dialogCreate": {
+    "description": "Метка кнопки создания в диалогах"
+  },
+  "errorNameRequired": "Название сниппета обязательно",
+  "@errorNameRequired": {
+    "description": "Сообщение об ошибке, когда название сниппета пустое"
+  },
+  "buttonNewSnippet": "Новый сниппет",
+  "@buttonNewSnippet": {
+    "description": "Метка кнопки создания нового сниппета"
   }
 }

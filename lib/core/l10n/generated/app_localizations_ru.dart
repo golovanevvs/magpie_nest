@@ -60,4 +60,25 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get snackbarCopied => 'Скопировано в буфер обмена';
+
+  @override
+  String get dialogCreateSnippetTitle => 'Создать новый сниппет';
+
+  @override
+  String get fieldSnippetName => 'Название сниппета';
+
+  @override
+  String get fieldLanguage => 'Язык';
+
+  @override
+  String get fieldContent => 'Содержимое';
+
+  @override
+  String get dialogCreate => 'Создать';
+
+  @override
+  String get errorNameRequired => 'Название сниппета обязательно';
+
+  @override
+  String get buttonNewSnippet => 'Новый сниппет';
 }

@@ -60,4 +60,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get snackbarCopied => 'Copied to clipboard';
+
+  @override
+  String get dialogCreateSnippetTitle => 'Create New Snippet';
+
+  @override
+  String get fieldSnippetName => 'Snippet Name';
+
+  @override
+  String get fieldLanguage => 'Language';
+
+  @override
+  String get fieldContent => 'Content';
+
+  @override
+  String get dialogCreate => 'Create';
+
+  @override
+  String get errorNameRequired => 'Snippet name is required';
+
+  @override
+  String get buttonNewSnippet => 'New Snippet';
 }

@@ -150,4 +150,16 @@ class AppController extends ChangeNotifier {
       _snippets = await snippetRepository.getSnippetsByFolderId(folderId);
     }
   }
+
+  /// Creates a new snippet and adds it to the repository.
+  ///
+  /// The snippet is added to the current folder (or Inbox if no folder is selected).
+  Future<void> createSnippet(Snippet snippet) async {
+    final newSnippet = snippet.copyWith(folderId: _selectedFolder?.id);
+
+    await snippetRepository.saveSnippet(newSnippet);
+    _snippets.insert(0, newSnippet);
+
+    notifyListeners();
+  }
 }

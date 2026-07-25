@@ -199,6 +199,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied to clipboard'**
   String get snackbarCopied;
+
+  /// Title of the dialog for creating a new snippet
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Snippet'**
+  String get dialogCreateSnippetTitle;
+
+  /// Label for the snippet name input field
+  ///
+  /// In en, this message translates to:
+  /// **'Snippet Name'**
+  String get fieldSnippetName;
+
+  /// Label for the language selection dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get fieldLanguage;
+
+  /// Label for the snippet content input field
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get fieldContent;
+
+  /// Label for the create button in dialogs
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get dialogCreate;
+
+  /// Error message shown when snippet name is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Snippet name is required'**
+  String get errorNameRequired;
+
+  /// Label for the button to create a new snippet
+  ///
+  /// In en, this message translates to:
+  /// **'New Snippet'**
+  String get buttonNewSnippet;
 }
 
 class _AppLocalizationsDelegate

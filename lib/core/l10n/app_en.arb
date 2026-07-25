@@ -67,5 +67,33 @@
   "snackbarCopied": "Copied to clipboard",
   "@snackbarCopied": {
     "description": "Message shown after copying code to clipboard"
+  },
+    "dialogCreateSnippetTitle": "Create New Snippet",
+  "@dialogCreateSnippetTitle": {
+    "description": "Title of the dialog for creating a new snippet"
+  },
+  "fieldSnippetName": "Snippet Name",
+  "@fieldSnippetName": {
+    "description": "Label for the snippet name input field"
+  },
+  "fieldLanguage": "Language",
+  "@fieldLanguage": {
+    "description": "Label for the language selection dropdown"
+  },
+  "fieldContent": "Content",
+  "@fieldContent": {
+    "description": "Label for the snippet content input field"
+  },
+  "dialogCreate": "Create",
+  "@dialogCreate": {
+    "description": "Label for the create button in dialogs"
+  },
+  "errorNameRequired": "Snippet name is required",
+  "@errorNameRequired": {
+    "description": "Error message shown when snippet name is empty"
+  },
+  "buttonNewSnippet": "New Snippet",
+  "@buttonNewSnippet": {
+    "description": "Label for the button to create a new snippet"
   }
 }

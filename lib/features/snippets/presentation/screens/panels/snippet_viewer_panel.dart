@@ -131,7 +131,7 @@ class SnippetViewerPanel extends StatelessWidget {
             child: SingleChildScrollView(
               child: HighlightView(
                 snippet.content,
-                language: _mapLanguageToHighlight(snippet.language),
+                language: snippet.language,
                 theme: atomOneDarkTheme,
                 padding: const EdgeInsets.all(12),
                 textStyle: const TextStyle(
@@ -158,48 +158,6 @@ class SnippetViewerPanel extends StatelessWidget {
 
     if (shouldDelete == true) {
       controller.deleteSnippet(snippet.id);
-    }
-  }
-
-  /// Maps user-entered language names to highlight.js supported language identifiers.
-  String _mapLanguageToHighlight(String language) {
-    switch (language.toLowerCase()) {
-      case 'dart':
-        return 'dart';
-      case 'go':
-        return 'go';
-      case 'typescript':
-        return 'typescript';
-      case 'javascript':
-        return 'javascript';
-      case 'bash':
-      case 'shell':
-        return 'bash';
-      case 'python':
-        return 'python';
-      case 'java':
-        return 'java';
-      case 'c#':
-      case 'csharp':
-        return 'csharp';
-      case 'c++':
-      case 'cpp':
-        return 'cpp';
-      case 'html':
-        return 'xml';
-      case 'css':
-        return 'css';
-      case 'json':
-        return 'json';
-      case 'yaml':
-        return 'yaml';
-      case 'sql':
-        return 'sql';
-      case 'plaintext':
-      case 'text':
-        return 'plaintext';
-      default:
-        return language.toLowerCase();
     }
   }
 }
