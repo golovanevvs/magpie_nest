@@ -187,6 +187,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore'**
   String get buttonRestore;
+
+  /// Tooltip for the copy button in the code viewer
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to clipboard'**
+  String get buttonCopy;
+
+  /// Message shown after copying code to clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get snackbarCopied;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
@@ -228,16 +231,75 @@ class _MainScreenState extends State<MainScreen> {
           const SizedBox(height: 16),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8),
+                color: const Color(0xFF282C34),
               ),
-              child: SingleChildScrollView(
-                child: Text(
-                  snippet.content,
-                  style: const TextStyle(fontFamily: 'monospace', fontSize: 14),
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF21252B),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          snippet.language,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.copy,
+                            color: Colors.white70,
+                            size: 18,
+                          ),
+                          tooltip: AppLocalizations.of(context)!.buttonCopy,
+                          onPressed: () {
+                            Clipboard.setData(
+                              ClipboardData(text: snippet.content),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(context)!.snackbarCopied,
+                                ),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: HighlightView(
+                        snippet.content,
+                        language: _mapLanguageToHighlight(snippet.language),
+                        theme: atomOneDarkTheme,
+                        padding: const EdgeInsets.all(12),
+                        textStyle: const TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 14,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -272,6 +334,51 @@ class _MainScreenState extends State<MainScreen> {
 
     if (shouldDelete == true) {
       widget.controller.deleteSnippet(snippet.id);
+    }
+  }
+
+  /// Maps user-entered language names to highlight.js supported language identifiers.
+  ///
+  /// Returns a language code recognized by the highlight.js library.
+  /// Falls back to 'plaintext' for unsupported languages.
+  String _mapLanguageToHighlight(String language) {
+    switch (language.toLowerCase()) {
+      case 'dart':
+        return 'dart';
+      case 'go':
+        return 'go';
+      case 'typescript':
+        return 'typescript';
+      case 'javascript':
+        return 'javascript';
+      case 'bash':
+      case 'shell':
+        return 'bash';
+      case 'python':
+        return 'python';
+      case 'java':
+        return 'java';
+      case 'c#':
+      case 'csharp':
+        return 'csharp';
+      case 'c++':
+      case 'cpp':
+        return 'cpp';
+      case 'html':
+        return 'xml';
+      case 'css':
+        return 'css';
+      case 'json':
+        return 'json';
+      case 'yaml':
+        return 'yaml';
+      case 'sql':
+        return 'sql';
+      case 'plaintext':
+      case 'text':
+        return 'plaintext';
+      default:
+        return language.toLowerCase();
     }
   }
 }

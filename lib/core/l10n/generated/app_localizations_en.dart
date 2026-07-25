@@ -54,4 +54,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buttonRestore => 'Restore';
+
+  @override
+  String get buttonCopy => 'Copy to clipboard';
+
+  @override
+  String get snackbarCopied => 'Copied to clipboard';
 }

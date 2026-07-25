@@ -59,5 +59,13 @@
     "buttonRestore": "Restore",
   "@buttonRestore": {
     "description": "Label for the restore button in the snippet viewer"
+  },
+    "buttonCopy": "Copy to clipboard",
+  "@buttonCopy": {
+    "description": "Tooltip for the copy button in the code viewer"
+  },
+  "snackbarCopied": "Copied to clipboard",
+  "@snackbarCopied": {
+    "description": "Message shown after copying code to clipboard"
   }
 }
