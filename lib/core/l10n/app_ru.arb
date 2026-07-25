@@ -124,8 +124,24 @@
   "@dialogDeleteFolderTitle": {
     "description": "Заголовок диалога подтверждения при удалении папки"
   },
-  "dialogDeleteFolderMessage": "Вы уверены, что хотите удалить эту папку? Все сниппеты внутри будут перемещены во Входящие.",
+  "dialogDeleteFolderMessage": "Вы уверены, что хотите удалить эту папку? Все сниппеты внутри будут перемещены в Корзину.",
   "@dialogDeleteFolderMessage": {
     "description": "Сообщение в диалоге подтверждения удаления папки"
+  },
+  "contextMenuNewFolder": "Новая папка",
+  "@contextMenuNewFolder": {
+    "description": "Пункт контекстного меню для создания новой подпапки"
+  },
+  "contextMenuRename": "Переименовать",
+  "@contextMenuRename": {
+    "description": "Пункт контекстного меню для переименования папки"
+  },
+  "contextMenuSetIcon": "Установить иконку",
+  "@contextMenuSetIcon": {
+    "description": "Пункт контекстного меню для установки иконки папки"
+  },
+  "contextMenuDefaultLanguage": "Язык по умолчанию",
+  "@contextMenuDefaultLanguage": {
+    "description": "Пункт контекстного меню для выбора языка сниппетов по умолчанию"
   }
 }

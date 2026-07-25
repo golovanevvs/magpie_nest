@@ -144,21 +144,32 @@ class AppController extends ChangeNotifier {
 
   /// Restores the snippet with the given [id] from the Trash.
   ///
-  /// Updates the snippet in the repository and refreshes the local state.
+  /// If the snippet's folder no longer exists, it is moved to the Inbox.
   Future<void> restoreSnippet(String id) async {
     await snippetRepository.restoreSnippet(id);
+
+    final restored = await snippetRepository.getSnippetById(id);
+    if (restored == null) return;
+
+    final folderExists =
+        restored.folderId != null &&
+        await folderRepository.getFolderById(restored.folderId!) != null;
+    final updated = folderExists
+        ? restored
+        : restored.copyWith(clearFolderId: true, updatedAt: DateTime.now());
+
+    if (!folderExists) {
+      await snippetRepository.saveSnippet(updated);
+    }
 
     if (_activeSection == SidebarSection.trash) {
       _snippets.removeWhere((s) => s.id == id);
     } else {
-      final restored = await snippetRepository.getSnippetById(id);
-      if (restored != null && !restored.isDeleted) {
-        final index = _snippets.indexWhere((s) => s.id == id);
-        if (index >= 0) {
-          _snippets[index] = restored;
-        } else {
-          _snippets.add(restored);
-        }
+      final index = _snippets.indexWhere((s) => s.id == id);
+      if (index >= 0) {
+        _snippets[index] = updated;
+      } else if (!updated.isDeleted) {
+        _snippets.add(updated);
       }
     }
 
@@ -217,7 +228,8 @@ class AppController extends ChangeNotifier {
   /// Creates a new folder and returns it.
   ///
   /// Generates a unique name based on [initialName] (e.g., "New Folder 1").
-  Future<Folder> createFolder(String initialName) async {
+  /// If [parentId] is provided, the folder is created as a subfolder.
+  Future<Folder> createFolder(String initialName, {String? parentId}) async {
     String newName = '$initialName 1';
     int counter = 1;
 
@@ -229,6 +241,7 @@ class AppController extends ChangeNotifier {
     final folder = Folder(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: newName,
+      parentId: parentId,
       sortOrder: _folders.length,
     );
 
@@ -260,11 +273,16 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Deletes the folder and moves its snippets to Inbox.
+  /// Deletes the folder and moves its snippets to the Trash.
+  ///
+  /// Snippets keep their folderId reference so restoration logic can decide
+  /// whether to return them to the original folder or to the Inbox.
   Future<void> deleteFolder(String id) async {
     final snippetsInFolder = await snippetRepository.getSnippetsByFolderId(id);
     for (final snippet in snippetsInFolder) {
-      await snippetRepository.saveSnippet(snippet.copyWith(folderId: null));
+      await snippetRepository.saveSnippet(
+        snippet.copyWith(isDeleted: true, updatedAt: DateTime.now()),
+      );
     }
 
     await folderRepository.deleteFolder(id);

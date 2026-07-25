@@ -287,8 +287,32 @@ abstract class AppLocalizations {
   /// Message shown in the delete folder confirmation dialog
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete this folder? All snippets inside will be moved to Inbox.'**
+  /// **'Are you sure you want to delete this folder? All snippets inside will be moved to the Trash.'**
   String get dialogDeleteFolderMessage;
+
+  /// Context menu item to create a new subfolder
+  ///
+  /// In en, this message translates to:
+  /// **'New Folder'**
+  String get contextMenuNewFolder;
+
+  /// Context menu item to rename a folder
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get contextMenuRename;
+
+  /// Context menu item to set a folder icon
+  ///
+  /// In en, this message translates to:
+  /// **'Set Icon'**
+  String get contextMenuSetIcon;
+
+  /// Context menu item to set a folder's default snippet language
+  ///
+  /// In en, this message translates to:
+  /// **'Default Language'**
+  String get contextMenuDefaultLanguage;
 }
 
 class _AppLocalizationsDelegate

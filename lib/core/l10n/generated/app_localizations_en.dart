@@ -105,5 +105,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogDeleteFolderMessage =>
-      'Are you sure you want to delete this folder? All snippets inside will be moved to Inbox.';
+      'Are you sure you want to delete this folder? All snippets inside will be moved to the Trash.';
+
+  @override
+  String get contextMenuNewFolder => 'New Folder';
+
+  @override
+  String get contextMenuRename => 'Rename';
+
+  @override
+  String get contextMenuSetIcon => 'Set Icon';
+
+  @override
+  String get contextMenuDefaultLanguage => 'Default Language';
 }

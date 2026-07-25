@@ -105,5 +105,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get dialogDeleteFolderMessage =>
-      'Вы уверены, что хотите удалить эту папку? Все сниппеты внутри будут перемещены во Входящие.';
+      'Вы уверены, что хотите удалить эту папку? Все сниппеты внутри будут перемещены в Корзину.';
+
+  @override
+  String get contextMenuNewFolder => 'Новая папка';
+
+  @override
+  String get contextMenuRename => 'Переименовать';
+
+  @override
+  String get contextMenuSetIcon => 'Установить иконку';
+
+  @override
+  String get contextMenuDefaultLanguage => 'Язык по умолчанию';
 }

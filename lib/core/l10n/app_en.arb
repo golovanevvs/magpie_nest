@@ -124,8 +124,24 @@
   "@dialogDeleteFolderTitle": {
     "description": "Title of the confirmation dialog when deleting a folder"
   },
-  "dialogDeleteFolderMessage": "Are you sure you want to delete this folder? All snippets inside will be moved to Inbox.",
+  "dialogDeleteFolderMessage": "Are you sure you want to delete this folder? All snippets inside will be moved to the Trash.",
   "@dialogDeleteFolderMessage": {
     "description": "Message shown in the delete folder confirmation dialog"
+  },
+  "contextMenuNewFolder": "New Folder",
+  "@contextMenuNewFolder": {
+    "description": "Context menu item to create a new subfolder"
+  },
+  "contextMenuRename": "Rename",
+  "@contextMenuRename": {
+    "description": "Context menu item to rename a folder"
+  },
+  "contextMenuSetIcon": "Set Icon",
+  "@contextMenuSetIcon": {
+    "description": "Context menu item to set a folder icon"
+  },
+  "contextMenuDefaultLanguage": "Default Language",
+  "@contextMenuDefaultLanguage": {
+    "description": "Context menu item to set a folder's default snippet language"
   }
 }

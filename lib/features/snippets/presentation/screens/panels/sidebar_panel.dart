@@ -168,7 +168,6 @@ class _SidebarPanelState extends State<SidebarPanel> {
   }
 
   Widget _buildFolderItem(BuildContext context, Folder folder) {
-    final l10n = AppLocalizations.of(context)!;
     final isEditing = _editingFolderId == folder.id;
     final isSelected = widget.controller.selectedFolder?.id == folder.id;
     final indentation = folder.isRoot ? 0.0 : 24.0;
@@ -199,40 +198,85 @@ class _SidebarPanelState extends State<SidebarPanel> {
 
     return GestureDetector(
       onDoubleTap: () => _startEditing(folder),
+      onSecondaryTapUp: (details) =>
+          _showFolderContextMenu(context, folder, details.globalPosition),
       child: _SidebarItem(
         icon: Icons.folder,
         label: folder.name,
         selected: isSelected,
         indent: indentation,
         onTap: () => widget.controller.selectFolder(folder),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit, size: 16),
-              tooltip: l10n.buttonRename,
-              onPressed: () => _startEditing(folder),
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete, size: 16),
-              tooltip: l10n.buttonDelete,
-              onPressed: () => _confirmDelete(context, folder),
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-            ),
-          ],
-        ),
       ),
+    );
+  }
+
+  void _showFolderContextMenu(
+    BuildContext context,
+    Folder folder,
+    Offset position,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showMenu<void>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        position.dx + 1,
+        position.dy + 1,
+      ),
+      items: [
+        PopupMenuItem<void>(
+          onTap: () => _createSubFolderAndSelect(context, folder.id),
+          child: Text(l10n.contextMenuNewFolder),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<void>(
+          onTap: () => _startEditing(folder),
+          child: Text(l10n.contextMenuRename),
+        ),
+        PopupMenuItem<void>(
+          onTap: () => _confirmDelete(context, folder),
+          child: Text(l10n.buttonDelete),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<void>(onTap: () {}, child: Text(l10n.contextMenuSetIcon)),
+        const PopupMenuDivider(),
+        PopupMenuItem<void>(
+          onTap: () {},
+          child: Text(l10n.contextMenuDefaultLanguage),
+        ),
+      ],
     );
   }
 
   Future<void> _createFolderAndSelect(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final newFolder = await widget.controller.createFolder(l10n.untitledFolder);
+
+    setState(() {
+      _editingFolderId = newFolder.id;
+      _editController.text = newFolder.name;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _editFocusNode.requestFocus();
+      _editController.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: _editController.text.length,
+      );
+    });
+  }
+
+  Future<void> _createSubFolderAndSelect(
+    BuildContext context,
+    String parentId,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final newFolder = await widget.controller.createFolder(
+      l10n.untitledFolder,
+      parentId: parentId,
+    );
 
     setState(() {
       _editingFolderId = newFolder.id;
@@ -296,14 +340,13 @@ class _SidebarPanelState extends State<SidebarPanel> {
   }
 }
 
-/// Reusable sidebar list item with optional indentation and trailing actions.
+/// Reusable sidebar list item with optional indentation.
 class _SidebarItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
   final double indent;
-  final Widget? trailing;
 
   const _SidebarItem({
     required this.icon,
@@ -311,7 +354,6 @@ class _SidebarItem extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.indent = 0,
-    this.trailing,
   });
 
   @override
@@ -338,7 +380,6 @@ class _SidebarItem extends StatelessWidget {
       contentPadding: EdgeInsets.only(left: 16 + indent, right: 8),
       visualDensity: VisualDensity.compact,
       onTap: onTap,
-      trailing: trailing,
     );
   }
 }
