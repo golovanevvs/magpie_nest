@@ -39,5 +39,21 @@
   "listNoSnippets": "No snippets",
   "@listNoSnippets": {
     "description": "Placeholder text shown when the snippet list is empty"
+  },
+    "dialogDeleteTitle": "Delete Snippet",
+  "@dialogDeleteTitle": {
+    "description": "Title of the confirmation dialog when deleting a snippet"
+  },
+  "dialogDeleteMessage": "Are you sure you want to delete this snippet? It will be moved to the Trash.",
+  "@dialogDeleteMessage": {
+    "description": "Message shown in the delete confirmation dialog"
+  },
+  "dialogCancel": "Cancel",
+  "@dialogCancel": {
+    "description": "Label for the cancel button in dialogs"
+  },
+  "dialogDelete": "Delete",
+  "@dialogDelete": {
+    "description": "Label for the delete button in dialogs"
   }
 }

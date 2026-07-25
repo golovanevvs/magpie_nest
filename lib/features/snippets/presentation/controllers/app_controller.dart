@@ -91,6 +91,22 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Soft-deletes the snippet with the given [id] (moves it to the Trash).
+  ///
+  /// Updates the snippet in the repository and refreshes the local state.
+  /// The snippet can later be restored using [restoreSnippet].
+  Future<void> deleteSnippet(String id) async {
+    await snippetRepository.deleteSnippet(id);
+
+    _snippets.removeWhere((s) => s.id == id);
+
+    if (_selectedSnippet?.id == id) {
+      _selectedSnippet = null;
+    }
+
+    notifyListeners();
+  }
+
   /// Loads only favorite snippets into the list.
   Future<void> loadFavoriteSnippets() async {
     _selectedFolder = null;

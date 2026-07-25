@@ -38,4 +38,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get listNoSnippets => 'Нет сниппетов';
+
+  @override
+  String get dialogDeleteTitle => 'Удалить сниппет';
+
+  @override
+  String get dialogDeleteMessage =>
+      'Вы уверены, что хотите удалить этот сниппет? Он будет перемещён в корзину.';
+
+  @override
+  String get dialogCancel => 'Отмена';
+
+  @override
+  String get dialogDelete => 'Удалить';
 }

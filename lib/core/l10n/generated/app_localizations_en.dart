@@ -38,4 +38,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listNoSnippets => 'No snippets';
+
+  @override
+  String get dialogDeleteTitle => 'Delete Snippet';
+
+  @override
+  String get dialogDeleteMessage =>
+      'Are you sure you want to delete this snippet? It will be moved to the Trash.';
+
+  @override
+  String get dialogCancel => 'Cancel';
+
+  @override
+  String get dialogDelete => 'Delete';
 }

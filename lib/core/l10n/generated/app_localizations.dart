@@ -157,6 +157,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No snippets'**
   String get listNoSnippets;
+
+  /// Title of the confirmation dialog when deleting a snippet
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Snippet'**
+  String get dialogDeleteTitle;
+
+  /// Message shown in the delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this snippet? It will be moved to the Trash.'**
+  String get dialogDeleteMessage;
+
+  /// Label for the cancel button in dialogs
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialogCancel;
+
+  /// Label for the delete button in dialogs
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get dialogDelete;
 }
 
 class _AppLocalizationsDelegate

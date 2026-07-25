@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 
 /// Main screen with a four-panel layout (similar to massCode).
@@ -168,7 +169,7 @@ class _MainScreenState extends State<MainScreen> {
           subtitle: Text(snippet.language),
           leading: Icon(_getLanguageIcon(snippet.language)),
           selected: widget.controller.selectedSnippet?.id == snippet.id,
-          onTap: () => widget.controller.selectSnippet(snippet),
+          onTap: () => setState(() => widget.controller.selectSnippet(snippet)),
         );
       },
     );
@@ -223,7 +224,13 @@ class _MainScreenState extends State<MainScreen> {
               ),
               IconButton(
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
-                onPressed: () => widget.controller.toggleFavorite(snippet.id),
+                onPressed: () => setState(
+                  () => widget.controller.toggleFavorite(snippet.id),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () => _confirmDeleteSnippet(context, snippet),
               ),
             ],
           ),
@@ -254,5 +261,37 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
+  }
+
+  /// Shows a confirmation dialog before deleting the snippet.
+  ///
+  /// If the user confirms, calls [AppController.deleteSnippet].
+  Future<void> _confirmDeleteSnippet(
+    BuildContext context,
+    Snippet snippet,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.dialogDeleteTitle),
+        content: Text(l10n.dialogDeleteMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.dialogCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.dialogDelete),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      widget.controller.deleteSnippet(snippet.id);
+    }
   }
 }

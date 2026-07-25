@@ -39,5 +39,21 @@
   "listNoSnippets": "Нет сниппетов",
   "@listNoSnippets": {
     "description": "Текст-заполнитель, показываемый, когда список сниппетов пуст"
+  },
+    "dialogDeleteTitle": "Удалить сниппет",
+  "@dialogDeleteTitle": {
+    "description": "Заголовок диалога подтверждения при удалении сниппета"
+  },
+  "dialogDeleteMessage": "Вы уверены, что хотите удалить этот сниппет? Он будет перемещён в корзину.",
+  "@dialogDeleteMessage": {
+    "description": "Сообщение в диалоге подтверждения удаления"
+  },
+  "dialogCancel": "Отмена",
+  "@dialogCancel": {
+    "description": "Метка кнопки отмены в диалогах"
+  },
+  "dialogDelete": "Удалить",
+  "@dialogDelete": {
+    "description": "Метка кнопки удаления в диалогах"
   }
 }
