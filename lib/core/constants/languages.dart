@@ -35,9 +35,14 @@ class SupportedLanguages {
   /// Returns a list of all supported languages with display names.
   ///
   /// The display names are in English. For localization, use [getDisplayName].
-  static List<Map<String, String>> get allWithNames => all.map((code) {
-    return {'code': code, 'name': _getDisplayNames()[code] ?? code};
-  }).toList();
+  static List<Map<String, String>> get allWithNames {
+    final list = all.map((code) {
+      return {'code': code, 'name': _getDisplayNames()[code] ?? code};
+    }).toList();
+
+    list.sort((a, b) => a['name']!.compareTo(b['name']!));
+    return list;
+  }
 
   /// Returns the display name for a language code.
   ///
