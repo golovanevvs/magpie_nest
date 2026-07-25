@@ -81,4 +81,23 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get buttonNewSnippet => 'Новый сниппет';
+
+  @override
+  String get untitledFolder => 'Папка без названия';
+
+  @override
+  String get buttonNewFolder => 'Новая папка';
+
+  @override
+  String get buttonRename => 'Переименовать';
+
+  @override
+  String get buttonDelete => 'Удалить';
+
+  @override
+  String get dialogDeleteFolderTitle => 'Удалить папку';
+
+  @override
+  String get dialogDeleteFolderMessage =>
+      'Вы уверены, что хотите удалить эту папку? Все сниппеты внутри будут перемещены во Входящие.';
 }

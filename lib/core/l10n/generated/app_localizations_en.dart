@@ -81,4 +81,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buttonNewSnippet => 'New Snippet';
+
+  @override
+  String get untitledFolder => 'Untitled Folder';
+
+  @override
+  String get buttonNewFolder => 'New Folder';
+
+  @override
+  String get buttonRename => 'Rename';
+
+  @override
+  String get buttonDelete => 'Delete';
+
+  @override
+  String get dialogDeleteFolderTitle => 'Delete Folder';
+
+  @override
+  String get dialogDeleteFolderMessage =>
+      'Are you sure you want to delete this folder? All snippets inside will be moved to Inbox.';
 }

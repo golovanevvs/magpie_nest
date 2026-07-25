@@ -95,5 +95,29 @@
   "buttonNewSnippet": "Новый сниппет",
   "@buttonNewSnippet": {
     "description": "Метка кнопки создания нового сниппета"
+  },
+    "untitledFolder": "Папка без названия",
+  "@untitledFolder": {
+    "description": "Имя по умолчанию для новой папки"
+  },
+  "buttonNewFolder": "Новая папка",
+  "@buttonNewFolder": {
+    "description": "Подсказка для кнопки создания новой папки"
+  },
+  "buttonRename": "Переименовать",
+  "@buttonRename": {
+    "description": "Подсказка для кнопки переименования"
+  },
+  "buttonDelete": "Удалить",
+  "@buttonDelete": {
+    "description": "Подсказка для кнопки удаления"
+  },
+  "dialogDeleteFolderTitle": "Удалить папку",
+  "@dialogDeleteFolderTitle": {
+    "description": "Заголовок диалога подтверждения при удалении папки"
+  },
+  "dialogDeleteFolderMessage": "Вы уверены, что хотите удалить эту папку? Все сниппеты внутри будут перемещены во Входящие.",
+  "@dialogDeleteFolderMessage": {
+    "description": "Сообщение в диалоге подтверждения удаления папки"
   }
 }

@@ -241,6 +241,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Snippet'**
   String get buttonNewSnippet;
+
+  /// Default name for a newly created folder
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Folder'**
+  String get untitledFolder;
+
+  /// Tooltip for the new folder button
+  ///
+  /// In en, this message translates to:
+  /// **'New Folder'**
+  String get buttonNewFolder;
+
+  /// Tooltip for the rename button
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get buttonRename;
+
+  /// Tooltip for the delete button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get buttonDelete;
+
+  /// Title of the confirmation dialog when deleting a folder
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Folder'**
+  String get dialogDeleteFolderTitle;
+
+  /// Message shown in the delete folder confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this folder? All snippets inside will be moved to Inbox.'**
+  String get dialogDeleteFolderMessage;
 }
 
 class _AppLocalizationsDelegate

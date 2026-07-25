@@ -42,7 +42,8 @@ class AppController extends ChangeNotifier {
   ///
   /// This method should be called once when the main screen is first displayed.
   Future<void> initialize() async {
-    _folders = await folderRepository.getAllFolders();
+    _folders = (await folderRepository.getAllFolders()).toList();
+    _snippets = (await snippetRepository.getAllSnippets()).toList();
     _selectedFolder = null;
     await _loadSnippetsForFolder(null);
     notifyListeners();
@@ -126,7 +127,7 @@ class AppController extends ChangeNotifier {
   Future<void> loadFavoriteSnippets() async {
     _selectedFolder = null;
     _selectedSnippet = null;
-    _snippets = await snippetRepository.getFavoriteSnippets();
+    _snippets = (await snippetRepository.getFavoriteSnippets()).toList();
     notifyListeners();
   }
 
@@ -134,7 +135,7 @@ class AppController extends ChangeNotifier {
   Future<void> loadDeletedSnippets() async {
     _selectedFolder = null;
     _selectedSnippet = null;
-    _snippets = await snippetRepository.getDeletedSnippets();
+    _snippets = (await snippetRepository.getDeletedSnippets()).toList();
     notifyListeners();
   }
 
@@ -147,8 +148,10 @@ class AppController extends ChangeNotifier {
       final all = await snippetRepository.getAllSnippets();
       _snippets = all.where((s) => !s.isDeleted).toList();
     } else {
-      _snippets = await snippetRepository.getSnippetsByFolderId(folderId);
+      _snippets = (await snippetRepository.getSnippetsByFolderId(folderId))
+          .toList();
     }
+    notifyListeners();
   }
 
   /// Creates a new snippet and adds it to the repository.
@@ -159,6 +162,70 @@ class AppController extends ChangeNotifier {
 
     await snippetRepository.saveSnippet(newSnippet);
     _snippets.insert(0, newSnippet);
+
+    notifyListeners();
+  }
+
+  /// Creates a new folder and returns it.
+  ///
+  /// Generates a unique name based on [initialName] (e.g., "Untitled Folder 1").
+  Future<Folder> createFolder(String initialName) async {
+    String newName = initialName;
+    int counter = 1;
+
+    while (_folders.any((f) => f.name.toLowerCase() == newName.toLowerCase())) {
+      newName = '$initialName $counter';
+      counter++;
+    }
+
+    final folder = Folder(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: newName,
+      sortOrder: _folders.length,
+    );
+
+    await folderRepository.saveFolder(folder);
+    _folders.add(folder);
+
+    _selectedFolder = folder;
+
+    notifyListeners();
+    return folder;
+  }
+
+  /// Renames the folder with the given [id].
+  Future<void> renameFolder(String id, String newName) async {
+    final folder = await folderRepository.getFolderById(id);
+    if (folder == null) return;
+
+    final trimmedName = newName.trim();
+    if (trimmedName.isEmpty || trimmedName == folder.name) return;
+
+    final updated = folder.copyWith(name: trimmedName);
+    await folderRepository.saveFolder(updated);
+
+    final index = _folders.indexWhere((f) => f.id == id);
+    if (index >= 0) {
+      _folders[index] = updated;
+    }
+
+    notifyListeners();
+  }
+
+  /// Deletes the folder and moves its snippets to Inbox.
+  Future<void> deleteFolder(String id) async {
+    final snippetsInFolder = await snippetRepository.getSnippetsByFolderId(id);
+    for (final snippet in snippetsInFolder) {
+      await snippetRepository.saveSnippet(snippet.copyWith(folderId: null));
+    }
+
+    await folderRepository.deleteFolder(id);
+    _folders.removeWhere((f) => f.id == id);
+
+    if (_selectedFolder?.id == id) {
+      _selectedFolder = null;
+      await _loadSnippetsForFolder(null);
+    }
 
     notifyListeners();
   }
