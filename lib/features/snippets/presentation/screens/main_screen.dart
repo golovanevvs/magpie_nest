@@ -24,6 +24,14 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0; // 0=Library, 1=All Snippets, 2=Favorites, 3=Trash
 
+  double _sidebarWidth = 200;
+  double _snippetListWidth = 300;
+
+  static const double _minSidebarWidth = 120;
+  static const double _maxSidebarWidth = 400;
+  static const double _minSnippetListWidth = 150;
+  static const double _maxSnippetListWidth = 600;
+
   @override
   void initState() {
     super.initState();
@@ -47,20 +55,40 @@ class _MainScreenState extends State<MainScreen> {
 
               // Panel 2: Sidebar
               SizedBox(
-                width: 200,
+                width: _sidebarWidth,
                 child: SidebarPanel(
                   selectedIndex: _selectedIndex,
                   controller: widget.controller,
                 ),
               ),
-              const VerticalDivider(width: 1),
+              _buildResizableDivider(
+                onDrag: (delta) {
+                  setState(() {
+                    _sidebarWidth = _clamp(
+                      _sidebarWidth + delta,
+                      _minSidebarWidth,
+                      _maxSidebarWidth,
+                    );
+                  });
+                },
+              ),
 
               // Panel 3: Snippet List
               SizedBox(
-                width: 300,
+                width: _snippetListWidth,
                 child: SnippetListPanel(controller: widget.controller),
               ),
-              const VerticalDivider(width: 1),
+              _buildResizableDivider(
+                onDrag: (delta) {
+                  setState(() {
+                    _snippetListWidth = _clamp(
+                      _snippetListWidth + delta,
+                      _minSnippetListWidth,
+                      _maxSnippetListWidth,
+                    );
+                  });
+                },
+              ),
 
               // Panel 4: Snippet Viewer
               Expanded(
@@ -74,6 +102,28 @@ class _MainScreenState extends State<MainScreen> {
         );
       },
     );
+  }
+
+  Widget _buildResizableDivider({required ValueChanged<double> onDrag}) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragUpdate: (details) => onDrag(details.delta.dx),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.resizeColumn,
+        child: Container(
+          width: 8,
+          color: Colors.transparent,
+          alignment: Alignment.center,
+          child: const VerticalDivider(width: 1),
+        ),
+      ),
+    );
+  }
+
+  double _clamp(double value, double min, double max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
   }
 
   void _handleNavigationChange(int index) {
