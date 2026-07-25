@@ -12,6 +12,14 @@
   "@navAllSnippets": {
     "description": "Метка навигационной панели для раздела Все сниппеты"
   },
+  "navSnippets": "Сниппеты",
+  "@navSnippets": {
+    "description": "Метка навигационной панели для раздела Сниппеты"
+  },
+  "navSettings": "Настройки",
+  "@navSettings": {
+    "description": "Метка навигационной панели для раздела Настройки"
+  },
   "navFavorites": "Избранное",
   "@navFavorites": {
     "description": "Метка навигационной панели для раздела Избранное"

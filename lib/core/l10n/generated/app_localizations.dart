@@ -116,6 +116,18 @@ abstract class AppLocalizations {
   /// **'All Snippets'**
   String get navAllSnippets;
 
+  /// Navigation rail label for the Snippets section
+  ///
+  /// In en, this message translates to:
+  /// **'Snippets'**
+  String get navSnippets;
+
+  /// Navigation rail label for the Settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
   /// Navigation rail label for the Favorites section
   ///
   /// In en, this message translates to:

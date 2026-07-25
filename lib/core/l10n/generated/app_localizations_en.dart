@@ -19,6 +19,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navAllSnippets => 'All Snippets';
 
   @override
+  String get navSnippets => 'Snippets';
+
+  @override
+  String get navSettings => 'Settings';
+
+  @override
   String get navFavorites => 'Favorites';
 
   @override

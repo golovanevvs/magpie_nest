@@ -19,6 +19,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navAllSnippets => 'Все сниппеты';
 
   @override
+  String get navSnippets => 'Сниппеты';
+
+  @override
+  String get navSettings => 'Настройки';
+
+  @override
   String get navFavorites => 'Избранное';
 
   @override

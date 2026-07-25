@@ -12,6 +12,14 @@
   "@navAllSnippets": {
     "description": "Navigation rail label for the All Snippets section"
   },
+  "navSnippets": "Snippets",
+  "@navSnippets": {
+    "description": "Navigation rail label for the Snippets section"
+  },
+  "navSettings": "Settings",
+  "@navSettings": {
+    "description": "Navigation rail label for the Settings section"
+  },
   "navFavorites": "Favorites",
   "@navFavorites": {
     "description": "Navigation rail label for the Favorites section"

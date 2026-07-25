@@ -8,8 +8,8 @@ import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippe
 /// Main screen with a four-panel layout (similar to massCode).
 ///
 /// Layout structure:
-/// 1. Navigation Rail (leftmost) - switches between Library, All Snippets, Favorites, Trash
-/// 2. Sidebar - shows folders (in Library mode) or section info
+/// 1. Navigation Rail (leftmost) - Snippets and Settings buttons
+/// 2. Sidebar - shows folders (in Snippets mode) or section info
 /// 3. Snippet List - shows snippets in the selected folder/section
 /// 4. Snippet Viewer (rightmost) - displays the selected snippet's content
 class MainScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0; // 0=Library, 1=All Snippets, 2=Favorites, 3=Trash
+  int _selectedIndex = 0; // 0=Snippets, 1=Settings
 
   double _sidebarWidth = 200;
   double _snippetListWidth = 300;
@@ -47,9 +47,12 @@ class _MainScreenState extends State<MainScreen> {
           body: Row(
             children: [
               // Panel 1: Navigation Rail
-              NavigationRailPanel(
-                selectedIndex: _selectedIndex,
-                onDestinationSelected: _handleNavigationChange,
+              SizedBox(
+                height: double.infinity,
+                child: NavigationRailPanel(
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: _handleNavigationChange,
+                ),
               ),
               const VerticalDivider(width: 1),
 
@@ -132,15 +135,11 @@ class _MainScreenState extends State<MainScreen> {
     });
 
     switch (index) {
-      case 0: // Library
-      case 1: // All Snippets
+      case 0: // Snippets
         widget.controller.selectFolder(null);
         break;
-      case 2: // Favorites
-        widget.controller.selectSection(SidebarSection.favorites);
-        break;
-      case 3: // Trash
-        widget.controller.selectSection(SidebarSection.trash);
+      case 1: // Settings
+        // TODO: open settings panel
         break;
     }
   }
