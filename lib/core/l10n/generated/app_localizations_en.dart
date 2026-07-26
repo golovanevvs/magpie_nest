@@ -104,7 +104,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buttonNewSnippet => 'New Snippet';
 
   @override
-  String get untitledFolder => 'New Folder';
+  String get defaultFolderName => 'Folder';
 
   @override
   String get buttonNewFolder => 'New Folder';
@@ -133,4 +133,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contextMenuDefaultLanguage => 'Default Language';
+
+  @override
+  String get defaultSnippetName => 'Snippet';
+
+  @override
+  String get errorNameCannotBeEmpty => 'Name cannot be empty';
 }

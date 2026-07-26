@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/folders/domain/repositories/i_folder_repository.dart';
+import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 
@@ -224,6 +225,50 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Creates a new snippet with a generated unique name and adds it to the repository.
+  ///
+  /// The snippet is added to the current folder (or Inbox if no folder is selected).
+  /// Returns the created snippet so the UI can select it immediately.
+  Future<Snippet> createDefaultSnippet(String defaultName) async {
+    String newName = '$defaultName 1';
+    int counter = 1;
+
+    while (_snippets.any(
+      (s) => s.name.toLowerCase() == newName.toLowerCase(),
+    )) {
+      counter++;
+      newName = '$defaultName $counter';
+    }
+
+    final snippet = Snippet(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: newName,
+      fragments: const [
+        Fragment(id: '1', name: 'fragment', language: 'plaintext', content: ''),
+      ],
+      folderId: _selectedFolder?.id,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(snippet);
+
+    final shouldShow = switch (_activeSection) {
+      SidebarSection.all => snippet.folderId == _selectedFolder?.id,
+      SidebarSection.inbox => snippet.isInbox,
+      SidebarSection.favorites => snippet.isFavorite,
+      SidebarSection.trash => snippet.isDeleted,
+    };
+
+    if (shouldShow) {
+      _snippets.insert(0, snippet);
+    }
+
+    _selectedSnippet = snippet;
+    notifyListeners();
+    return snippet;
+  }
+
   /// Creates a new snippet and adds it to the repository.
   ///
   /// The snippet is added to the current folder (or Inbox if no folder is selected).
@@ -241,6 +286,36 @@ class AppController extends ChangeNotifier {
 
     if (shouldShow) {
       _snippets.insert(0, newSnippet);
+    }
+
+    notifyListeners();
+  }
+
+  /// Updates the name of the snippet with the given [id].
+  ///
+  /// Empty names are ignored. The snippet is saved to the repository
+  /// and the local state is refreshed.
+  Future<void> updateSnippetName(String id, String newName) async {
+    final trimmedName = newName.trim();
+    if (trimmedName.isEmpty) return;
+
+    final snippet = await snippetRepository.getSnippetById(id);
+    if (snippet == null) return;
+
+    final updated = snippet.copyWith(
+      name: trimmedName,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final index = _snippets.indexWhere((s) => s.id == id);
+    if (index >= 0) {
+      _snippets[index] = updated;
+    }
+
+    if (_selectedSnippet?.id == id) {
+      _selectedSnippet = updated;
     }
 
     notifyListeners();

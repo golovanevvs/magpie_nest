@@ -4,7 +4,6 @@ import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/create_snippet_dialog.dart';
 
 /// Snippet list panel (Panel 3).
 ///
@@ -32,7 +31,8 @@ class SnippetList extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: () => _showCreateDialog(context),
+              onPressed: () =>
+                  controller.createDefaultSnippet(l10n.defaultSnippetName),
               icon: const Icon(Icons.add),
               label: Text(l10n.buttonNewSnippet),
             ),
@@ -59,17 +59,6 @@ class SnippetList extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Future<void> _showCreateDialog(BuildContext context) async {
-    final snippet = await showDialog<Snippet>(
-      context: context,
-      builder: (context) => const CreateSnippetDialog(),
-    );
-
-    if (snippet != null) {
-      controller.createSnippet(snippet);
-    }
   }
 }
 

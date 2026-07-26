@@ -284,11 +284,11 @@ abstract class AppLocalizations {
   /// **'New Snippet'**
   String get buttonNewSnippet;
 
-  /// Default name for a newly created folder
+  /// Default base name for newly created folders
   ///
   /// In en, this message translates to:
-  /// **'New Folder'**
-  String get untitledFolder;
+  /// **'Folder'**
+  String get defaultFolderName;
 
   /// Tooltip for the new folder button
   ///
@@ -343,6 +343,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default Language'**
   String get contextMenuDefaultLanguage;
+
+  /// Default base name for newly created snippets
+  ///
+  /// In en, this message translates to:
+  /// **'Snippet'**
+  String get defaultSnippetName;
+
+  /// Error shown when snippet or folder name is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot be empty'**
+  String get errorNameCannotBeEmpty;
 }
 
 class _AppLocalizationsDelegate

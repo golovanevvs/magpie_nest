@@ -124,9 +124,9 @@
   "@buttonNewSnippet": {
     "description": "Метка кнопки создания нового сниппета"
   },
-  "untitledFolder": "Новая папка",
-  "@untitledFolder": {
-    "description": "Имя по умолчанию для новой папки"
+  "defaultFolderName": "Папка",
+  "@defaultFolderName": {
+    "description": "Базовое имя по умолчанию для новых папок"
   },
   "buttonNewFolder": "Новая папка",
   "@buttonNewFolder": {
@@ -163,5 +163,13 @@
   "contextMenuDefaultLanguage": "Язык по умолчанию",
   "@contextMenuDefaultLanguage": {
     "description": "Пункт контекстного меню для выбора языка сниппетов по умолчанию"
+  },
+  "defaultSnippetName": "Сниппет",
+  "@defaultSnippetName": {
+    "description": "Базовое имя по умолчанию для новых сниппетов"
+  },
+  "errorNameCannotBeEmpty": "Имя не может быть пустым",
+  "@errorNameCannotBeEmpty": {
+    "description": "Ошибка при пустом имени сниппета или папки"
   }
 }

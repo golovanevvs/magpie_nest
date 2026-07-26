@@ -204,7 +204,7 @@ class _FolderTreeState extends State<FolderTree> {
   Future<void> _createSubFolder(String parentId) async {
     final l10n = AppLocalizations.of(context)!;
     final newFolder = await widget.controller.createFolder(
-      l10n.untitledFolder,
+      l10n.defaultFolderName,
       parentId: parentId,
     );
 

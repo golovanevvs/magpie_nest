@@ -11,7 +11,7 @@ import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delet
 ///
 /// Displays the selected snippet's name, language, tags, and content
 /// with syntax highlighting.
-class SnippetPreview extends StatelessWidget {
+class SnippetPreview extends StatefulWidget {
   final int selectedIndex;
   final AppController controller;
 
@@ -22,7 +22,72 @@ class SnippetPreview extends StatelessWidget {
   });
 
   @override
+  State<SnippetPreview> createState() => _SnippetPreviewState();
+}
+
+class _SnippetPreviewState extends State<SnippetPreview> {
+  late final TextEditingController _nameController;
+  String _lastValidName = '';
+  bool _nameIsEmpty = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final snippet = widget.controller.selectedSnippet;
+    final name = snippet?.name ?? '';
+    _nameController = TextEditingController(text: name);
+    _lastValidName = name;
+  }
+
+  @override
+  void didUpdateWidget(covariant SnippetPreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final snippet = widget.controller.selectedSnippet;
+    if (snippet == null) return;
+
+    if (oldWidget.controller.selectedSnippet?.id != snippet.id ||
+        _nameController.text != snippet.name) {
+      _nameController.text = snippet.name;
+      _lastValidName = snippet.name;
+      _nameIsEmpty = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  void _onNameChanged(String value, AppLocalizations l10n) {
+    final controller = widget.controller;
+    final snippet = controller.selectedSnippet;
+    if (snippet == null) return;
+
+    if (value.isEmpty) {
+      setState(() {
+        _nameIsEmpty = true;
+      });
+      _nameController.text = _lastValidName;
+      _nameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _lastValidName.length),
+      );
+      return;
+    }
+
+    if (_nameIsEmpty) {
+      setState(() {
+        _nameIsEmpty = false;
+      });
+    }
+
+    _lastValidName = value;
+    controller.updateSnippetName(snippet.id, value);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = widget.controller;
     final snippet = controller.selectedSnippet;
     final l10n = AppLocalizations.of(context)!;
 
@@ -47,12 +112,23 @@ class SnippetPreview extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  snippet.name,
+                child: TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    hintText: l10n.fieldSnippetName,
+                    errorText: _nameIsEmpty
+                        ? l10n.errorNameCannotBeEmpty
+                        : null,
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
                   style: Theme.of(context).textTheme.headlineSmall,
+                  onChanged: (value) => _onNameChanged(value, l10n),
                 ),
               ),
-              if (selectedIndex == 3)
+              if (widget.selectedIndex == 3)
                 IconButton(
                   icon: const Icon(Icons.restore_from_trash),
                   tooltip: l10n.buttonRestore,
@@ -62,7 +138,7 @@ class SnippetPreview extends StatelessWidget {
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
                 onPressed: () => controller.toggleFavorite(snippet.id),
               ),
-              if (selectedIndex != 3)
+              if (widget.selectedIndex != 3)
                 IconButton(
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () => _confirmDeleteSnippet(context, snippet),
@@ -159,7 +235,7 @@ class SnippetPreview extends StatelessWidget {
     );
 
     if (shouldDelete == true) {
-      controller.deleteSnippet(snippet.id);
+      widget.controller.deleteSnippet(snippet.id);
     }
   }
 }

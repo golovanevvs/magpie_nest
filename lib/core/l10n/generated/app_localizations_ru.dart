@@ -104,7 +104,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get buttonNewSnippet => 'Новый сниппет';
 
   @override
-  String get untitledFolder => 'Новая папка';
+  String get defaultFolderName => 'Папка';
 
   @override
   String get buttonNewFolder => 'Новая папка';
@@ -133,4 +133,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get contextMenuDefaultLanguage => 'Язык по умолчанию';
+
+  @override
+  String get defaultSnippetName => 'Сниппет';
+
+  @override
+  String get errorNameCannotBeEmpty => 'Имя не может быть пустым';
 }

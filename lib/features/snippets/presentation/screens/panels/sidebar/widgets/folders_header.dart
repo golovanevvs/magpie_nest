@@ -42,7 +42,7 @@ class FoldersHeader extends StatelessWidget {
 
   Future<void> _createFolderAndSelect(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
-    final newFolder = await controller.createFolder(l10n.untitledFolder);
+    final newFolder = await controller.createFolder(l10n.defaultFolderName);
 
     if (!context.mounted) return;
     StartFolderEditNotification(newFolder.id, newFolder.name).dispatch(context);

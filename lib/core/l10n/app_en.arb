@@ -124,9 +124,9 @@
   "@buttonNewSnippet": {
     "description": "Label for the button to create a new snippet"
   },
-  "untitledFolder": "New Folder",
-  "@untitledFolder": {
-    "description": "Default name for a newly created folder"
+  "defaultFolderName": "Folder",
+  "@defaultFolderName": {
+    "description": "Default base name for newly created folders"
   },
   "buttonNewFolder": "New Folder",
   "@buttonNewFolder": {
@@ -163,5 +163,13 @@
   "contextMenuDefaultLanguage": "Default Language",
   "@contextMenuDefaultLanguage": {
     "description": "Context menu item to set a folder's default snippet language"
+  },
+  "defaultSnippetName": "Snippet",
+  "@defaultSnippetName": {
+    "description": "Default base name for newly created snippets"
+  },
+  "errorNameCannotBeEmpty": "Name cannot be empty",
+  "@errorNameCannotBeEmpty": {
+    "description": "Error shown when snippet or folder name is empty"
   }
 }
