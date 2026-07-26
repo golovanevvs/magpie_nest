@@ -1,3 +1,4 @@
+import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -11,10 +12,16 @@ class InMemorySnippetRepository implements ISnippetRepository {
     Snippet(
       id: const Uuid().v4(),
       name: 'Hello World in Dart',
-      content: '''void main() {
+      fragments: const [
+        Fragment(
+          id: '1',
+          name: 'main.dart',
+          language: 'dart',
+          content: '''void main() {
   print('Hello, World!');
 }''',
-      language: 'dart',
+        ),
+      ],
       folderId: 'folder-work',
       tags: const ['beginner', 'console'],
       isFavorite: true,
@@ -24,7 +31,12 @@ class InMemorySnippetRepository implements ISnippetRepository {
     Snippet(
       id: const Uuid().v4(),
       name: 'HTTP Server in Go',
-      content: '''package main
+      fragments: const [
+        Fragment(
+          id: '1',
+          name: 'main.go',
+          language: 'go',
+          content: '''package main
 
 import (
     "fmt"
@@ -39,7 +51,8 @@ func main() {
     http.HandleFunc("/", handler)
     http.ListenAndServe(":8080", nil)
 }''',
-      language: 'go',
+        ),
+      ],
       folderId: 'folder-api',
       tags: const ['backend', 'networking'],
       createdAt: DateTime.now().subtract(const Duration(days: 3)),
@@ -48,7 +61,12 @@ func main() {
     Snippet(
       id: const Uuid().v4(),
       name: 'React Button Component',
-      content: '''import React from 'react';
+      fragments: const [
+        Fragment(
+          id: '1',
+          name: 'Button.tsx',
+          language: 'typescript',
+          content: '''import React from 'react';
 
 interface ButtonProps {
   label: string;
@@ -70,7 +88,8 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };''',
-      language: 'typescript',
+        ),
+      ],
       folderId: 'folder-react',
       tags: const ['react', 'component', 'ui'],
       isFavorite: true,
@@ -80,7 +99,12 @@ export const Button: React.FC<ButtonProps> = ({
     Snippet(
       id: const Uuid().v4(),
       name: 'Bash Backup Script',
-      content: '''#!/bin/bash
+      fragments: const [
+        Fragment(
+          id: '1',
+          name: 'backup.sh',
+          language: 'bash',
+          content: '''#!/bin/bash
 
 # Backup script
 SOURCE_DIR="/home/user/documents"
@@ -90,7 +114,8 @@ DATE=\$(date +%Y%m%d)
 tar -czf "\$BACKUP_DIR/backup_\$DATE.tar.gz" "\$SOURCE_DIR"
 
 echo "Backup completed: backup_\$DATE.tar.gz"''',
-      language: 'bash',
+        ),
+      ],
       folderId: 'folder-scripts',
       tags: const ['automation', 'backup'],
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
@@ -99,9 +124,15 @@ echo "Backup completed: backup_\$DATE.tar.gz"''',
     Snippet(
       id: const Uuid().v4(),
       name: 'Quick Note',
-      content: '''// TODO: Implement this feature later
+      fragments: const [
+        Fragment(
+          id: '1',
+          name: 'note.txt',
+          language: 'plaintext',
+          content: '''// TODO: Implement this feature later
 // Remember to check the API documentation''',
-      language: 'plaintext',
+        ),
+      ],
       tags: const ['note', 'todo'],
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
@@ -109,9 +140,15 @@ echo "Backup completed: backup_\$DATE.tar.gz"''',
     Snippet(
       id: const Uuid().v4(),
       name: 'Old Experiment',
-      content: '''// This was an old experiment
+      fragments: const [
+        Fragment(
+          id: '1',
+          name: 'experiment.js',
+          language: 'javascript',
+          content: '''// This was an old experiment
 // No longer needed''',
-      language: 'javascript',
+        ),
+      ],
       isDeleted: true,
       createdAt: DateTime.now().subtract(const Duration(days: 10)),
       updatedAt: DateTime.now().subtract(const Duration(days: 10)),

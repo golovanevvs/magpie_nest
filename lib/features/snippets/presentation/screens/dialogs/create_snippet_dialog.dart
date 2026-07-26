@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/core/constants/languages.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 
 class CreateSnippetDialog extends StatefulWidget {
@@ -100,8 +101,14 @@ class _CreateSnippetDialogState extends State<CreateSnippetDialog> {
             final snippet = Snippet(
               id: DateTime.now().millisecondsSinceEpoch.toString(),
               name: name,
-              content: content,
-              language: _selectedLanguage,
+              fragments: [
+                Fragment(
+                  id: '1',
+                  name: name,
+                  language: _selectedLanguage,
+                  content: content,
+                ),
+              ],
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
             );

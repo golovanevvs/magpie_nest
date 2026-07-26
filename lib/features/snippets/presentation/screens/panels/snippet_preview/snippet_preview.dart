@@ -73,7 +73,7 @@ class SnippetPreview extends StatelessWidget {
           Wrap(
             spacing: 8,
             children: [
-              Chip(label: Text(snippet.language)),
+              Chip(label: Text(snippet.activeFragment.language)),
               ...snippet.tags.map((tag) => Chip(label: Text(tag))),
             ],
           ),
@@ -107,7 +107,7 @@ class SnippetPreview extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  snippet.language,
+                  snippet.activeFragment.language,
                   style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
                 const Spacer(),
@@ -115,7 +115,9 @@ class SnippetPreview extends StatelessWidget {
                   icon: const Icon(Icons.copy, color: Colors.white70, size: 18),
                   tooltip: l10n.buttonCopy,
                   onPressed: () {
-                    Clipboard.setData(ClipboardData(text: snippet.content));
+                    Clipboard.setData(
+                      ClipboardData(text: snippet.activeFragment.content),
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(l10n.snackbarCopied),
@@ -130,8 +132,8 @@ class SnippetPreview extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: HighlightView(
-                snippet.content,
-                language: snippet.language,
+                snippet.activeFragment.content,
+                language: snippet.activeFragment.language,
                 theme: atomOneDarkTheme,
                 padding: const EdgeInsets.all(12),
                 textStyle: const TextStyle(
