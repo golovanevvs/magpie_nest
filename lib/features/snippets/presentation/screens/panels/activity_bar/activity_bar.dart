@@ -61,6 +61,7 @@ class ActivityBar extends StatelessWidget {
       message: label,
       child: InkResponse(
         onTap: () => onDestinationSelected(index),
+        mouseCursor: SystemMouseCursors.click,
         child: Container(
           width: 72,
           padding: const EdgeInsets.symmetric(vertical: 12),
