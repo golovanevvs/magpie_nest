@@ -1,0 +1,58 @@
+import 'package:highlight/highlight.dart'
+    show highlight; // ← ВАЖНО: используем глобальный экземпляр
+import 'package:highlight/languages/bash.dart';
+import 'package:highlight/languages/cpp.dart';
+import 'package:highlight/languages/cs.dart';
+import 'package:highlight/languages/css.dart';
+import 'package:highlight/languages/dart.dart';
+import 'package:highlight/languages/go.dart';
+import 'package:highlight/languages/java.dart';
+import 'package:highlight/languages/javascript.dart';
+import 'package:highlight/languages/json.dart';
+import 'package:highlight/languages/kotlin.dart';
+import 'package:highlight/languages/markdown.dart';
+import 'package:highlight/languages/php.dart';
+import 'package:highlight/languages/powershell.dart';
+import 'package:highlight/languages/python.dart';
+import 'package:highlight/languages/ruby.dart';
+import 'package:highlight/languages/rust.dart';
+import 'package:highlight/languages/scss.dart';
+import 'package:highlight/languages/sql.dart';
+import 'package:highlight/languages/swift.dart';
+import 'package:highlight/languages/typescript.dart';
+import 'package:highlight/languages/xml.dart';
+import 'package:highlight/languages/yaml.dart';
+
+/// Registers all supported languages with the global highlight instance.
+/// Must be called once before the app starts (in main()).
+void registerLanguages() {
+  highlight.registerLanguage('bash', bash);
+  highlight.registerLanguage('cpp', cpp);
+  highlight.registerLanguage('c', cpp);
+  highlight.registerLanguage('cs', cs);
+  highlight.registerLanguage('csharp', cs);
+  highlight.registerLanguage('css', css);
+  highlight.registerLanguage('dart', dart);
+  highlight.registerLanguage('go', go);
+  highlight.registerLanguage('golang', go);
+  highlight.registerLanguage('html', xml);
+  highlight.registerLanguage('java', java);
+  highlight.registerLanguage('javascript', javascript);
+  highlight.registerLanguage('js', javascript);
+  highlight.registerLanguage('json', json);
+  highlight.registerLanguage('kotlin', kotlin);
+  highlight.registerLanguage('markdown', markdown);
+  highlight.registerLanguage('php', php);
+  highlight.registerLanguage('powershell', powershell);
+  highlight.registerLanguage('python', python);
+  highlight.registerLanguage('ruby', ruby);
+  highlight.registerLanguage('rust', rust);
+  highlight.registerLanguage('scss', scss);
+  highlight.registerLanguage('sql', sql);
+  highlight.registerLanguage('swift', swift);
+  highlight.registerLanguage('typescript', typescript);
+  highlight.registerLanguage('ts', typescript);
+  highlight.registerLanguage('xml', xml);
+  highlight.registerLanguage('yaml', yaml);
+  highlight.registerLanguage('yml', yaml);
+}

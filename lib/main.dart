@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:magpie_nest/core/highlight/languages_registry.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/theme/app_theme.dart';
 import 'package:magpie_nest/features/folders/data/repositories/in_memory_folder_repository.dart';
@@ -8,6 +9,8 @@ import 'package:magpie_nest/features/snippets/presentation/controllers/app_contr
 import 'package:magpie_nest/features/snippets/presentation/screens/main_screen.dart';
 
 void main() {
+  registerLanguages();
+
   final folderRepository = InMemoryFolderRepository();
   final snippetRepository = InMemorySnippetRepository();
 

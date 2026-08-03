@@ -1,7 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
+
+// Импортируем только переменные языков, класс Language нам не нужен
+import 'package:highlight/languages/bash.dart';
+import 'package:highlight/languages/cpp.dart';
+import 'package:highlight/languages/cs.dart';
+import 'package:highlight/languages/css.dart';
+import 'package:highlight/languages/dart.dart';
+import 'package:highlight/languages/go.dart';
+import 'package:highlight/languages/java.dart';
+import 'package:highlight/languages/javascript.dart';
+import 'package:highlight/languages/json.dart';
+import 'package:highlight/languages/kotlin.dart';
+import 'package:highlight/languages/markdown.dart';
+import 'package:highlight/languages/php.dart';
+import 'package:highlight/languages/powershell.dart';
+import 'package:highlight/languages/python.dart';
+import 'package:highlight/languages/ruby.dart';
+import 'package:highlight/languages/rust.dart';
+import 'package:highlight/languages/scss.dart';
+import 'package:highlight/languages/sql.dart';
+import 'package:highlight/languages/swift.dart';
+import 'package:highlight/languages/typescript.dart';
+import 'package:highlight/languages/xml.dart';
+import 'package:highlight/languages/yaml.dart';
+
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
@@ -10,7 +35,7 @@ import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delet
 /// Snippet preview panel (Panel 4).
 ///
 /// Displays the selected snippet's name, language, tags, and content
-/// with syntax highlighting.
+/// with syntax highlighting and inline editing.
 class SnippetPreview extends StatefulWidget {
   final int selectedIndex;
   final AppController controller;
@@ -27,8 +52,10 @@ class SnippetPreview extends StatefulWidget {
 
 class _SnippetPreviewState extends State<SnippetPreview> {
   late final TextEditingController _nameController;
+  late CodeController _codeController;
   String _lastValidName = '';
   bool _nameIsEmpty = false;
+  String? _lastSnippetId; // ← НОВОЕ: храним предыдущий ID
 
   @override
   void initState() {
@@ -37,6 +64,18 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final name = snippet?.name ?? '';
     _nameController = TextEditingController(text: name);
     _lastValidName = name;
+    _lastSnippetId = snippet?.id; // ← НОВОЕ
+
+    _codeController = CodeController(
+      text: snippet?.fragments.isNotEmpty == true
+          ? snippet!.fragments.first.content
+          : '',
+      language: _mapLanguage(
+        snippet?.fragments.isNotEmpty == true
+            ? snippet!.fragments.first.language
+            : '',
+      ),
+    );
   }
 
   @override
@@ -45,8 +84,39 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final snippet = widget.controller.selectedSnippet;
     if (snippet == null) return;
 
-    if (oldWidget.controller.selectedSnippet?.id != snippet.id ||
-        _nameController.text != snippet.name) {
+    print('🔍 [didUpdateWidget] Snippet ID: ${snippet.id}');
+    print('🔍 [didUpdateWidget] Last Snippet ID: $_lastSnippetId');
+
+    // Если сменился сниппет — пересоздаём контроллер кода
+    if (_lastSnippetId != snippet.id) {
+      // ← ИСПРАВЛЕНО: сравниваем с сохранённым ID
+      print('🔄 [didUpdateWidget] Recreating CodeController...');
+
+      _codeController.dispose();
+
+      final content = snippet.fragments.isNotEmpty
+          ? snippet.fragments.first.content
+          : '';
+      final language = snippet.fragments.isNotEmpty
+          ? snippet.fragments.first.language
+          : '';
+
+      print('📝 [didUpdateWidget] Content length: ${content.length}');
+      print('🌐 [didUpdateWidget] Language: $language');
+
+      final mappedLanguage = _mapLanguage(language);
+      print('🗺️ [didUpdateWidget] Mapped language: $mappedLanguage');
+
+      _codeController = CodeController(text: content, language: mappedLanguage);
+
+      print(
+        '✅ [didUpdateWidget] CodeController created. Text length: ${_codeController.text.length}',
+      );
+
+      _lastSnippetId = snippet.id; // ← НОВОЕ: обновляем сохранённый ID
+    }
+
+    if (_lastSnippetId != snippet.id || _nameController.text != snippet.name) {
       _nameController.text = snippet.name;
       _lastValidName = snippet.name;
       _nameIsEmpty = false;
@@ -56,6 +126,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
   @override
   void dispose() {
     _nameController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 
@@ -83,6 +154,75 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
     _lastValidName = value;
     controller.updateSnippetName(snippet.id, value);
+  }
+
+  dynamic _mapLanguage(String languageName) {
+    final normalized = languageName.toLowerCase().trim();
+    switch (normalized) {
+      case 'dart':
+        return dart;
+      case 'javascript':
+      case 'js':
+        return javascript;
+      case 'typescript':
+      case 'ts':
+        return typescript;
+      case 'python':
+      case 'py':
+        return python;
+      case 'java':
+        return java;
+      case 'go':
+      case 'golang':
+        return go;
+      case 'c#':
+      case 'csharp':
+      case 'cs':
+        return cs;
+      case 'c++':
+      case 'cpp':
+      case 'c':
+        return cpp;
+      case 'html':
+      case 'xml':
+        return xml;
+      case 'css':
+        return css;
+      case 'scss':
+        return scss;
+      case 'sql':
+        return sql;
+      case 'json':
+        return json;
+      case 'yaml':
+      case 'yml':
+        return yaml;
+      case 'markdown':
+      case 'md':
+        return markdown;
+      case 'bash':
+      case 'shell':
+      case 'sh':
+        return bash;
+      case 'rust':
+      case 'rs':
+        return rust;
+      case 'kotlin':
+      case 'kt':
+        return kotlin;
+      case 'swift':
+        return swift;
+      case 'php':
+        return php;
+      case 'ruby':
+      case 'rb':
+        return ruby;
+      case 'powershell':
+      case 'ps1':
+        return powershell;
+      default:
+        return null;
+    }
   }
 
   @override
@@ -192,7 +332,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                   tooltip: l10n.buttonCopy,
                   onPressed: () {
                     Clipboard.setData(
-                      ClipboardData(text: snippet.activeFragment.content),
+                      ClipboardData(text: _codeController.text),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -206,12 +346,14 @@ class _SnippetPreviewState extends State<SnippetPreview> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: HighlightView(
-                snippet.activeFragment.content,
-                language: snippet.activeFragment.language,
-                theme: atomOneDarkTheme,
-                padding: const EdgeInsets.all(12),
+            child: CodeTheme(
+              data: CodeThemeData(styles: atomOneDarkTheme),
+              child: CodeField(
+                controller: _codeController,
+                gutterStyle: const GutterStyle(
+                  showLineNumbers: true,
+                  width: 60,
+                ),
                 textStyle: const TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 14,

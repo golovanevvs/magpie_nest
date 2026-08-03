@@ -214,13 +214,17 @@ class AppController extends ChangeNotifier {
               .where((s) => !s.isDeleted && s.folderId == _selectedFolder!.id)
               .toList();
         }
+        break;
       case SidebarSection.inbox:
         final all = await snippetRepository.getAllSnippets();
         _snippets = all.where((s) => !s.isDeleted && s.isInbox).toList();
+        break;
       case SidebarSection.favorites:
         _snippets = (await snippetRepository.getFavoriteSnippets()).toList();
+        break;
       case SidebarSection.trash:
         _snippets = (await snippetRepository.getDeletedSnippets()).toList();
+        break;
     }
     notifyListeners();
   }
