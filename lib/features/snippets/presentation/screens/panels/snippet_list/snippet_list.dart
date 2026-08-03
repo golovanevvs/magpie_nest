@@ -86,49 +86,44 @@ class _SnippetListItem extends StatelessWidget {
     final folderName = _resolveFolderName(l10n);
     final formattedDate = DateFormat('dd.MM.yyyy').format(snippet.updatedAt);
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+    return ListTile(
+      dense: true,
+      selected: selected,
+      selectedTileColor: colorScheme.primaryContainer.withAlpha(51),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      visualDensity: VisualDensity.compact,
       onTap: onTap,
-      child: Container(
-        color: selected ? colorScheme.primaryContainer.withAlpha(51) : null,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              snippet.name,
+      title: Text(
+        snippet.name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: selected ? FontWeight.w500 : FontWeight.normal,
+          color: selected ? colorScheme.primary : colorScheme.onSurface,
+        ),
+      ),
+      subtitle: Row(
+        children: [
+          Icon(
+            snippet.isInbox ? Icons.inbox : Icons.folder,
+            size: 12,
+            color: subtitleColor,
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              folderName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: selected ? FontWeight.w500 : FontWeight.normal,
-                color: selected ? colorScheme.primary : colorScheme.onSurface,
-              ),
+              style: TextStyle(fontSize: 12, color: subtitleColor),
             ),
-            const SizedBox(height: 3),
-            Row(
-              children: [
-                Icon(
-                  snippet.isInbox ? Icons.inbox : Icons.folder,
-                  size: 12,
-                  color: subtitleColor,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  folderName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12, color: subtitleColor),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  formattedDate,
-                  style: TextStyle(fontSize: 12, color: subtitleColor),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+          Text(
+            formattedDate,
+            style: TextStyle(fontSize: 12, color: subtitleColor),
+          ),
+        ],
       ),
     );
   }
