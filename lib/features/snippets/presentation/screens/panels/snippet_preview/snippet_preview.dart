@@ -84,13 +84,9 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final snippet = widget.controller.selectedSnippet;
     if (snippet == null) return;
 
-    print('🔍 [didUpdateWidget] Snippet ID: ${snippet.id}');
-    print('🔍 [didUpdateWidget] Last Snippet ID: $_lastSnippetId');
-
     // Если сменился сниппет — пересоздаём контроллер кода
     if (_lastSnippetId != snippet.id) {
       // ← ИСПРАВЛЕНО: сравниваем с сохранённым ID
-      print('🔄 [didUpdateWidget] Recreating CodeController...');
 
       _codeController.dispose();
 
@@ -101,17 +97,9 @@ class _SnippetPreviewState extends State<SnippetPreview> {
           ? snippet.fragments.first.language
           : '';
 
-      print('📝 [didUpdateWidget] Content length: ${content.length}');
-      print('🌐 [didUpdateWidget] Language: $language');
-
       final mappedLanguage = _mapLanguage(language);
-      print('🗺️ [didUpdateWidget] Mapped language: $mappedLanguage');
 
       _codeController = CodeController(text: content, language: mappedLanguage);
-
-      print(
-        '✅ [didUpdateWidget] CodeController created. Text length: ${_codeController.text.length}',
-      );
 
       _lastSnippetId = snippet.id; // ← НОВОЕ: обновляем сохранённый ID
     }

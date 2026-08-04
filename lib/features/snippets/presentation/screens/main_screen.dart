@@ -4,18 +4,23 @@ import 'package:magpie_nest/features/snippets/presentation/screens/panels/activi
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/sidebar.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_list/snippet_list.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/snippet_preview.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/settings_screen.dart';
 
-/// Main screen with a four-panel layout.
-///
-/// Layout structure:
-/// 1. Activity Bar (leftmost) - Snippets and Settings buttons
-/// 2. Sidebar - shows folders (in Snippets mode) or section info
-/// 3. Snippet List - shows snippets in the selected folder/section
-/// 4. Snippet Preview (rightmost) - displays the selected snippet's content
 class MainScreen extends StatefulWidget {
   final AppController controller;
+  final ThemeMode themeMode;
+  final ValueChanged<ThemeMode> onThemeModeChanged;
+  final Locale currentLocale;
+  final ValueChanged<Locale> onLocaleChanged;
 
-  const MainScreen({super.key, required this.controller});
+  const MainScreen({
+    super.key,
+    required this.controller,
+    required this.themeMode,
+    required this.onThemeModeChanged,
+    required this.currentLocale,
+    required this.onLocaleChanged,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -56,50 +61,61 @@ class _MainScreenState extends State<MainScreen> {
               ),
               const VerticalDivider(width: 1),
 
-              // Panel 2: Sidebar
-              SizedBox(
-                width: _sidebarWidth,
-                child: Sidebar(
-                  selectedIndex: _selectedIndex,
-                  controller: widget.controller,
+              if (_selectedIndex == 0) ...[
+                // Panel 2: Sidebar
+                SizedBox(
+                  width: _sidebarWidth,
+                  child: Sidebar(
+                    selectedIndex: _selectedIndex,
+                    controller: widget.controller,
+                  ),
                 ),
-              ),
-              _buildResizableDivider(
-                onDrag: (delta) {
-                  setState(() {
-                    _sidebarWidth = _clamp(
-                      _sidebarWidth + delta,
-                      _minSidebarWidth,
-                      _maxSidebarWidth,
-                    );
-                  });
-                },
-              ),
-
-              // Panel 3: Snippet List
-              SizedBox(
-                width: _snippetListWidth,
-                child: SnippetList(controller: widget.controller),
-              ),
-              _buildResizableDivider(
-                onDrag: (delta) {
-                  setState(() {
-                    _snippetListWidth = _clamp(
-                      _snippetListWidth + delta,
-                      _minSnippetListWidth,
-                      _maxSnippetListWidth,
-                    );
-                  });
-                },
-              ),
-
-              // Panel 4: Snippet Preview
-              Expanded(
-                child: SnippetPreview(
-                  selectedIndex: _selectedIndex,
-                  controller: widget.controller,
+                _buildResizableDivider(
+                  onDrag: (delta) {
+                    setState(() {
+                      _sidebarWidth = _clamp(
+                        _sidebarWidth + delta,
+                        _minSidebarWidth,
+                        _maxSidebarWidth,
+                      );
+                    });
+                  },
                 ),
-              ),
+
+                // Panel 3: Snippet List
+                SizedBox(
+                  width: _snippetListWidth,
+                  child: SnippetList(controller: widget.controller),
+                ),
+                _buildResizableDivider(
+                  onDrag: (delta) {
+                    setState(() {
+                      _snippetListWidth = _clamp(
+                        _snippetListWidth + delta,
+                        _minSnippetListWidth,
+                        _maxSnippetListWidth,
+                      );
+                    });
+                  },
+                ),
+
+                // Panel 4: Snippet Preview
+                Expanded(
+                  child: SnippetPreview(
+                    selectedIndex: _selectedIndex,
+                    controller: widget.controller,
+                  ),
+                ),
+              ] else ...[
+                Expanded(
+                  child: SettingsScreen(
+                    currentLocale: widget.currentLocale,
+                    currentThemeMode: widget.themeMode,
+                    onLocaleChanged: widget.onLocaleChanged,
+                    onThemeModeChanged: widget.onThemeModeChanged,
+                  ),
+                ),
+              ],
             ],
           ),
         );

@@ -68,7 +68,7 @@
   "@listNoSnippets": {
     "description": "Placeholder text shown when the snippet list is empty"
   },
-    "dialogDeleteTitle": "Delete Snippet",
+  "dialogDeleteTitle": "Delete Snippet",
   "@dialogDeleteTitle": {
     "description": "Title of the confirmation dialog when deleting a snippet"
   },
@@ -84,11 +84,11 @@
   "@dialogDelete": {
     "description": "Label for the delete button in dialogs"
   },
-    "buttonRestore": "Restore",
+  "buttonRestore": "Restore",
   "@buttonRestore": {
     "description": "Label for the restore button in the snippet viewer"
   },
-    "buttonCopy": "Copy to clipboard",
+  "buttonCopy": "Copy to clipboard",
   "@buttonCopy": {
     "description": "Tooltip for the copy button in the code viewer"
   },
@@ -96,7 +96,7 @@
   "@snackbarCopied": {
     "description": "Message shown after copying code to clipboard"
   },
-    "dialogCreateSnippetTitle": "Create New Snippet",
+  "dialogCreateSnippetTitle": "Create New Snippet",
   "@dialogCreateSnippetTitle": {
     "description": "Title of the dialog for creating a new snippet"
   },
@@ -171,5 +171,29 @@
   "errorNameCannotBeEmpty": "Name cannot be empty",
   "@errorNameCannotBeEmpty": {
     "description": "Error shown when snippet or folder name is empty"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title of the settings screen"
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Section header for language selection"
+  },
+  "settingsTheme": "Theme",
+  "@settingsTheme": {
+    "description": "Section header for theme selection"
+  },
+  "settingsThemeLight": "Light",
+  "@settingsThemeLight": {
+    "description": "Light theme option"
+  },
+  "settingsThemeDark": "Dark",
+  "@settingsThemeDark": {
+    "description": "Dark theme option"
+  },
+  "settingsThemeSystem": "System",
+  "@settingsThemeSystem": {
+    "description": "System theme option (follows OS preference)"
   }
 }

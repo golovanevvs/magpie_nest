@@ -138,4 +138,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorNameCannotBeEmpty => 'Имя не может быть пустым';
+
+  @override
+  String get settingsTitle => 'Настройки';
+
+  @override
+  String get settingsLanguage => 'Язык';
+
+  @override
+  String get settingsTheme => 'Тема';
+
+  @override
+  String get settingsThemeLight => 'Светлая';
+
+  @override
+  String get settingsThemeDark => 'Тёмная';
+
+  @override
+  String get settingsThemeSystem => 'Системная';
 }

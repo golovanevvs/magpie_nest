@@ -171,5 +171,29 @@
   "errorNameCannotBeEmpty": "Имя не может быть пустым",
   "@errorNameCannotBeEmpty": {
     "description": "Ошибка при пустом имени сниппета или папки"
-  }
+  },
+  "settingsTitle": "Настройки",
+"@settingsTitle": {
+  "description": "Заголовок экрана настроек"
+},
+"settingsLanguage": "Язык",
+"@settingsLanguage": {
+  "description": "Заголовок секции выбора языка"
+},
+"settingsTheme": "Тема",
+"@settingsTheme": {
+  "description": "Заголовок секции выбора темы"
+},
+"settingsThemeLight": "Светлая",
+"@settingsThemeLight": {
+  "description": "Вариант светлой темы"
+},
+"settingsThemeDark": "Тёмная",
+"@settingsThemeDark": {
+  "description": "Вариант тёмной темы"
+},
+"settingsThemeSystem": "Системная",
+"@settingsThemeSystem": {
+  "description": "Системная тема (следует настройкам ОС)"
+}
 }
