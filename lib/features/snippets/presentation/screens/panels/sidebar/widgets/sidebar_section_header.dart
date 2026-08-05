@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Section header used inside the sidebar.
 class SidebarSectionHeader extends StatelessWidget {
   final String title;
 

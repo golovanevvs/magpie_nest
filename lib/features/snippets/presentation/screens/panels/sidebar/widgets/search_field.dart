@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 
-/// Search field for filtering folders in the sidebar.
 class SearchField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;

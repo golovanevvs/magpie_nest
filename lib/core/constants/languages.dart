@@ -1,9 +1,4 @@
-/// List of programming languages supported by the application.
-///
-/// This list is used in dropdown menus for language selection.
-/// Each language code corresponds to a highlight.js language identifier.
 class SupportedLanguages {
-  /// Returns a list of all supported language codes.
   static const List<String> all = [
     'dart',
     'javascript',
@@ -32,9 +27,6 @@ class SupportedLanguages {
     'plaintext',
   ];
 
-  /// Returns a list of all supported languages with display names.
-  ///
-  /// The display names are in English. For localization, use [getDisplayName].
   static List<Map<String, String>> get allWithNames {
     final list = all.map((code) {
       return {'code': code, 'name': _getDisplayNames()[code] ?? code};
@@ -44,9 +36,6 @@ class SupportedLanguages {
     return list;
   }
 
-  /// Returns the display name for a language code.
-  ///
-  /// Falls back to the language code itself if no display name is found.
   static String getDisplayName(String code) {
     return _getDisplayNames()[code] ?? code;
   }

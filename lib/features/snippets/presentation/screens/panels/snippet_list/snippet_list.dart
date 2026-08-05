@@ -5,10 +5,6 @@ import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 
-/// Snippet list panel (Panel 3).
-///
-/// Displays all snippets from the current selection (folder or section).
-/// Includes a button to create a new snippet.
 class SnippetList extends StatelessWidget {
   final AppController controller;
 
@@ -62,9 +58,6 @@ class SnippetList extends StatelessWidget {
   }
 }
 
-/// A two-line snippet card in the style of massCode:
-/// - first line: snippet name
-/// - second line: folder name + update date (smaller, muted color)
 class _SnippetListItem extends StatelessWidget {
   final Snippet snippet;
   final List<Folder> folders;

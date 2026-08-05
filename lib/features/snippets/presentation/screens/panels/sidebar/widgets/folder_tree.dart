@@ -5,7 +5,6 @@ import 'package:magpie_nest/features/snippets/presentation/controllers/app_contr
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/extensions/first_where_or_null.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/sidebar_item.dart';
 
-/// Folder tree with search, expand/collapse, rename, and context menu.
 class FolderTree extends StatefulWidget {
   final AppController controller;
   final String searchQuery;
@@ -243,7 +242,6 @@ class _FolderTreeState extends State<FolderTree> {
   }
 }
 
-/// Notification sent when the user should start editing a folder.
 class StartFolderEditNotification extends Notification {
   final String folderId;
   final String initialName;
@@ -251,7 +249,6 @@ class StartFolderEditNotification extends Notification {
   const StartFolderEditNotification(this.folderId, this.initialName);
 }
 
-/// Inline folder rename text field.
 class FolderEditField extends StatefulWidget {
   final Folder folder;
   final int depth;

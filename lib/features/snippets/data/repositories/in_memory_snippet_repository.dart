@@ -3,10 +3,6 @@ import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 import 'package:uuid/uuid.dart';
 
-/// In-memory implementation of [ISnippetRepository] for development and testing.
-///
-/// Stores snippets in a simple list. Data is lost when the app restarts.
-/// Useful for UI development before connecting to a real database.
 class InMemorySnippetRepository implements ISnippetRepository {
   final List<Snippet> _snippets = [
     Snippet(

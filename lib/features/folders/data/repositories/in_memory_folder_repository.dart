@@ -1,10 +1,6 @@
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/folders/domain/repositories/i_folder_repository.dart';
 
-/// In-memory implementation of [IFolderRepository] for development and testing.
-///
-/// Stores folders in a simple list. Data is lost when the app restarts.
-/// Useful for UI development before connecting to a real database.
 class InMemoryFolderRepository implements IFolderRepository {
   final List<Folder> _folders = [
     const Folder(id: 'folder-work', name: 'Work', sortOrder: 0),

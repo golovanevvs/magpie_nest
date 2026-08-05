@@ -3,7 +3,6 @@ import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/folder_tree.dart';
 
-/// Header for the Folders section with a button to add a new folder.
 class FoldersHeader extends StatelessWidget {
   final AppController controller;
 

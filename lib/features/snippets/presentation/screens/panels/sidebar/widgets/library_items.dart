@@ -3,7 +3,6 @@ import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/sidebar_item.dart';
 
-/// Library items section (Inbox, Favorites, All Snippets, Trash).
 class LibraryItems extends StatelessWidget {
   final AppController controller;
 

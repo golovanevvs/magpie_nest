@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Reusable sidebar list item with optional indentation and expand icon.
 class SidebarItem extends StatelessWidget {
   final IconData icon;
   final String label;

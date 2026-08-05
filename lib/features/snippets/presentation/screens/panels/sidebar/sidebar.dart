@@ -8,14 +8,6 @@ import 'package:magpie_nest/features/snippets/presentation/screens/panels/sideba
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/sidebar_section_header.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/tags_list.dart';
 
-/// Sidebar panel.
-///
-/// Contains:
-/// - A search field to filter folders.
-/// - Library items: Inbox, Favorites, All Snippets, Trash.
-/// - A "Folders" section with a button to add new folders.
-/// - The user folder tree with nested indentation and expand/collapse.
-/// - A "Tags" section with tags from the current snippets.
 class Sidebar extends StatefulWidget {
   final int selectedIndex;
   final AppController controller;

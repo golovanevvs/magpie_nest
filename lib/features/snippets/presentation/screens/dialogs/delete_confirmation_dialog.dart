@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 
-/// Confirmation dialog for deleting a snippet.
-///
-/// Returns `true` if the user confirms deletion, `false` otherwise.
 class DeleteConfirmationDialog extends StatelessWidget {
   const DeleteConfirmationDialog({super.key});
 

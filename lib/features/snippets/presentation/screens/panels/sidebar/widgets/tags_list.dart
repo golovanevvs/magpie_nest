@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/sidebar_item.dart';
 
-/// List of tags gathered from the current snippets.
 class TagsList extends StatelessWidget {
   final AppController controller;
 

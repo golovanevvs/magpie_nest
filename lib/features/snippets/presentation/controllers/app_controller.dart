@@ -5,16 +5,8 @@ import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 
-/// Available sidebar sections that filter the snippet list.
 enum SidebarSection { all, inbox, favorites, trash }
 
-/// Controller for managing the main screen state.
-///
-/// Holds the selected folder and snippet, and provides methods
-/// for loading data from repositories.
-///
-/// This controller acts as a bridge between the domain layer
-/// (repositories) and the presentation layer (UI widgets).
 class AppController extends ChangeNotifier {
   final IFolderRepository folderRepository;
   final ISnippetRepository snippetRepository;
@@ -32,16 +24,13 @@ class AppController extends ChangeNotifier {
     required this.snippetRepository,
   });
 
-  /// Returns all loaded folders.
   List<Folder> get folders => _folders;
 
-  /// Returns snippets filtered by the current selection and selected tag.
   List<Snippet> get snippets {
     if (_selectedTag == null || _selectedTag!.isEmpty) return _snippets;
     return _snippets.where((s) => s.tags.contains(_selectedTag)).toList();
   }
 
-  /// Returns all unique tags from the currently loaded snippets.
   Set<String> get tags {
     final result = <String>{};
     for (final snippet in _snippets) {
@@ -50,21 +39,14 @@ class AppController extends ChangeNotifier {
     return result;
   }
 
-  /// Returns the currently selected folder, or `null` if a virtual folder is active.
   Folder? get selectedFolder => _selectedFolder;
 
-  /// Returns the currently selected snippet for viewing.
   Snippet? get selectedSnippet => _selectedSnippet;
 
-  /// Returns the currently active sidebar section.
   SidebarSection get activeSection => _activeSection;
 
-  /// Returns the currently selected tag, or `null` if no tag is selected.
   String? get selectedTag => _selectedTag;
 
-  /// Initializes the controller by loading all folders and selecting "All Snippets" by default.
-  ///
-  /// This method should be called once when the main screen is first displayed.
   Future<void> initialize() async {
     _folders = (await folderRepository.getAllFolders()).toList();
     _selectedFolder = null;
@@ -73,9 +55,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Selects a folder and loads the corresponding snippets.
-  ///
-  /// Resets the active section, selected tag and the selected snippet.
   Future<void> selectFolder(Folder? folder) async {
     _selectedFolder = folder;
     _selectedSnippet = null;
@@ -85,9 +64,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Selects a sidebar section and loads the corresponding snippets.
-  ///
-  /// Resets the selected folder, tag and snippet.
   Future<void> selectSection(SidebarSection section) async {
     _activeSection = section;
     _selectedFolder = null;
@@ -97,24 +73,17 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Selects a tag and filters the snippet list.
-  ///
-  /// Keeps the current active section/folder, but clears the selected snippet.
   void selectTag(String? tag) {
     _selectedTag = tag;
     _selectedSnippet = null;
     notifyListeners();
   }
 
-  /// Selects a specific snippet for viewing in the right panel.
   void selectSnippet(Snippet snippet) {
     _selectedSnippet = snippet;
     notifyListeners();
   }
 
-  /// Toggles the favorite status of the snippet with the given [id].
-  ///
-  /// Updates the snippet in the repository and refreshes the local state.
   Future<void> toggleFavorite(String id) async {
     final snippet = await snippetRepository.getSnippetById(id);
     if (snippet == null) return;
@@ -142,10 +111,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Soft-deletes the snippet with the given [id] (moves it to the Trash).
-  ///
-  /// Updates the snippet in the repository and refreshes the local state.
-  /// The snippet can later be restored using [restoreSnippet].
   Future<void> deleteSnippet(String id) async {
     await snippetRepository.deleteSnippet(id);
 
@@ -170,9 +135,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Restores the snippet with the given [id] from the Trash.
-  ///
-  /// The snippet is always moved to the Inbox.
   Future<void> restoreSnippet(String id) async {
     var restored = await snippetRepository.getSnippetById(id);
     if (restored == null) return;
@@ -202,7 +164,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Loads snippets based on the active section and selected folder.
   Future<void> _loadSnippetsBySection() async {
     switch (_activeSection) {
       case SidebarSection.all:
@@ -229,10 +190,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Creates a new snippet with a generated unique name and adds it to the repository.
-  ///
-  /// The snippet is added to the current folder (or Inbox if no folder is selected).
-  /// Returns the created snippet so the UI can select it immediately.
   Future<Snippet> createDefaultSnippet(String defaultName) async {
     String newName = '$defaultName 1';
     int counter = 1;
@@ -273,9 +230,6 @@ class AppController extends ChangeNotifier {
     return snippet;
   }
 
-  /// Creates a new snippet and adds it to the repository.
-  ///
-  /// The snippet is added to the current folder (or Inbox if no folder is selected).
   Future<void> createSnippet(Snippet snippet) async {
     final newSnippet = snippet.copyWith(folderId: _selectedFolder?.id);
 
@@ -295,10 +249,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Updates the name of the snippet with the given [id].
-  ///
-  /// Empty names are ignored. The snippet is saved to the repository
-  /// and the local state is refreshed.
   Future<void> updateSnippetName(String id, String newName) async {
     final trimmedName = newName.trim();
     if (trimmedName.isEmpty) return;
@@ -325,10 +275,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Creates a new folder and returns it.
-  ///
-  /// Generates a unique name based on [initialName] (e.g., "New Folder 1").
-  /// If [parentId] is provided, the folder is created as a subfolder.
   Future<Folder> createFolder(String initialName, {String? parentId}) async {
     String newName = '$initialName 1';
     int counter = 1;
@@ -354,7 +300,6 @@ class AppController extends ChangeNotifier {
     return folder;
   }
 
-  /// Renames the folder with the given [id].
   Future<void> renameFolder(String id, String newName) async {
     final folder = await folderRepository.getFolderById(id);
     if (folder == null) return;
@@ -373,10 +318,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Deletes the folder and moves its snippets to the Trash.
-  ///
-  /// Snippets keep their folderId reference so restoration logic can decide
-  /// whether to return them to the original folder or to the Inbox.
   Future<void> deleteFolder(String id) async {
     final snippetsInFolder = await snippetRepository.getSnippetsByFolderId(id);
     for (final snippet in snippetsInFolder) {

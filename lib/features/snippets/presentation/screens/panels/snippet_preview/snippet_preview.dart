@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
-
-// Импортируем только переменные языков, класс Language нам не нужен
 import 'package:highlight/languages/bash.dart';
 import 'package:highlight/languages/cpp.dart';
 import 'package:highlight/languages/cs.dart';
@@ -32,10 +30,6 @@ import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delete_confirmation_dialog.dart';
 
-/// Snippet preview panel (Panel 4).
-///
-/// Displays the selected snippet's name, language, tags, and content
-/// with syntax highlighting and inline editing.
 class SnippetPreview extends StatefulWidget {
   final int selectedIndex;
   final AppController controller;
@@ -55,7 +49,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
   late CodeController _codeController;
   String _lastValidName = '';
   bool _nameIsEmpty = false;
-  String? _lastSnippetId; // ← НОВОЕ: храним предыдущий ID
+  String? _lastSnippetId;
 
   @override
   void initState() {
@@ -64,7 +58,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final name = snippet?.name ?? '';
     _nameController = TextEditingController(text: name);
     _lastValidName = name;
-    _lastSnippetId = snippet?.id; // ← НОВОЕ
+    _lastSnippetId = snippet?.id;
 
     _codeController = CodeController(
       text: snippet?.fragments.isNotEmpty == true
@@ -84,10 +78,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final snippet = widget.controller.selectedSnippet;
     if (snippet == null) return;
 
-    // Если сменился сниппет — пересоздаём контроллер кода
     if (_lastSnippetId != snippet.id) {
-      // ← ИСПРАВЛЕНО: сравниваем с сохранённым ID
-
       _codeController.dispose();
 
       final content = snippet.fragments.isNotEmpty
@@ -101,7 +92,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
       _codeController = CodeController(text: content, language: mappedLanguage);
 
-      _lastSnippetId = snippet.id; // ← НОВОЕ: обновляем сохранённый ID
+      _lastSnippetId = snippet.id;
     }
 
     if (_lastSnippetId != snippet.id || _nameController.text != snippet.name) {

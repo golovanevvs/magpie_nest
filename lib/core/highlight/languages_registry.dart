@@ -1,5 +1,4 @@
-import 'package:highlight/highlight.dart'
-    show highlight; // ← ВАЖНО: используем глобальный экземпляр
+import 'package:highlight/highlight.dart' show highlight;
 import 'package:highlight/languages/bash.dart';
 import 'package:highlight/languages/cpp.dart';
 import 'package:highlight/languages/cs.dart';
@@ -23,8 +22,6 @@ import 'package:highlight/languages/typescript.dart';
 import 'package:highlight/languages/xml.dart';
 import 'package:highlight/languages/yaml.dart';
 
-/// Registers all supported languages with the global highlight instance.
-/// Must be called once before the app starts (in main()).
 void registerLanguages() {
   highlight.registerLanguage('bash', bash);
   highlight.registerLanguage('cpp', cpp);

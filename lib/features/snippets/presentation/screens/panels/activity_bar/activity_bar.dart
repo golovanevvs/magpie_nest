@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 
-/// Activity bar (Panel 1).
-///
-/// Contains two controls:
-/// - A "Snippets" button at the top.
-/// - A "Settings" button at the bottom.
 class ActivityBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
@@ -72,8 +67,9 @@ class ActivityBar extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: Theme.of(context).textTheme.labelSmall
-                    ?.copyWith(color: color),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelSmall?.copyWith(color: color),
               ),
             ],
           ),
