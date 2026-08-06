@@ -391,6 +391,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System'**
   String get settingsThemeSystem;
+
+  /// Placeholder text for the snippet description field
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get fieldDescription;
+
+  /// Hint shown when the description is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Add a description...'**
+  String get fieldDescriptionHint;
+
+  /// Tooltip/label for the button that shows the description field
+  ///
+  /// In en, this message translates to:
+  /// **'Add description'**
+  String get buttonAddDescription;
 }
 
 class _AppLocalizationsDelegate

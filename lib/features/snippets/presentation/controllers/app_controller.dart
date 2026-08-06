@@ -275,6 +275,34 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateSnippetDescription(
+    String id,
+    String newDescription,
+  ) async {
+    final trimmedDescription = newDescription.trim();
+    final snippet = await snippetRepository.getSnippetById(id);
+    if (snippet == null) return;
+
+    final updated = snippet.copyWith(
+      description: trimmedDescription.isEmpty ? null : trimmedDescription,
+      clearDescription: trimmedDescription.isEmpty,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final index = _snippets.indexWhere((s) => s.id == id);
+    if (index >= 0) {
+      _snippets[index] = updated;
+    }
+
+    if (_selectedSnippet?.id == id) {
+      _selectedSnippet = updated;
+    }
+
+    notifyListeners();
+  }
+
   Future<Folder> createFolder(String initialName, {String? parentId}) async {
     String newName = '$initialName 1';
     int counter = 1;

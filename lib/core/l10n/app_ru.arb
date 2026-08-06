@@ -68,7 +68,7 @@
   "@listNoSnippets": {
     "description": "Текст-заполнитель, показываемый, когда список сниппетов пуст"
   },
-    "dialogDeleteTitle": "Удалить сниппет",
+  "dialogDeleteTitle": "Удалить сниппет",
   "@dialogDeleteTitle": {
     "description": "Заголовок диалога подтверждения при удалении сниппета"
   },
@@ -84,11 +84,11 @@
   "@dialogDelete": {
     "description": "Метка кнопки удаления в диалогах"
   },
-    "buttonRestore": "Восстановить",
+  "buttonRestore": "Восстановить",
   "@buttonRestore": {
     "description": "Метка кнопки восстановления в просмотрщике сниппетов"
   },
-    "buttonCopy": "Скопировать в буфер обмена",
+  "buttonCopy": "Скопировать в буфер обмена",
   "@buttonCopy": {
     "description": "Подсказка для кнопки копирования в просмотрщике кода"
   },
@@ -96,7 +96,7 @@
   "@snackbarCopied": {
     "description": "Сообщение, показываемое после копирования кода в буфер обмена"
   },
-    "dialogCreateSnippetTitle": "Создать новый сниппет",
+  "dialogCreateSnippetTitle": "Создать новый сниппет",
   "@dialogCreateSnippetTitle": {
     "description": "Заголовок диалога создания нового сниппета"
   },
@@ -173,27 +173,39 @@
     "description": "Ошибка при пустом имени сниппета или папки"
   },
   "settingsTitle": "Настройки",
-"@settingsTitle": {
-  "description": "Заголовок экрана настроек"
-},
-"settingsLanguage": "Язык",
-"@settingsLanguage": {
-  "description": "Заголовок секции выбора языка"
-},
-"settingsTheme": "Тема",
-"@settingsTheme": {
-  "description": "Заголовок секции выбора темы"
-},
-"settingsThemeLight": "Светлая",
-"@settingsThemeLight": {
-  "description": "Вариант светлой темы"
-},
-"settingsThemeDark": "Тёмная",
-"@settingsThemeDark": {
-  "description": "Вариант тёмной темы"
-},
-"settingsThemeSystem": "Системная",
-"@settingsThemeSystem": {
-  "description": "Системная тема (следует настройкам ОС)"
-}
+  "@settingsTitle": {
+    "description": "Заголовок экрана настроек"
+  },
+  "settingsLanguage": "Язык",
+  "@settingsLanguage": {
+    "description": "Заголовок секции выбора языка"
+  },
+  "settingsTheme": "Тема",
+  "@settingsTheme": {
+    "description": "Заголовок секции выбора темы"
+  },
+  "settingsThemeLight": "Светлая",
+  "@settingsThemeLight": {
+    "description": "Вариант светлой темы"
+  },
+  "settingsThemeDark": "Тёмная",
+  "@settingsThemeDark": {
+    "description": "Вариант тёмной темы"
+  },
+  "settingsThemeSystem": "Системная",
+  "@settingsThemeSystem": {
+    "description": "Системная тема (следует настройкам ОС)"
+  },
+  "fieldDescription": "Описание",
+  "@fieldDescription": {
+    "description": "Текст-подсказка для поля описания сниппета"
+  },
+  "fieldDescriptionHint": "Добавить описание...",
+  "@fieldDescriptionHint": {
+    "description": "Подсказка, показываемая при пустом описании"
+  },
+  "buttonAddDescription": "Добавить описание",
+  "@buttonAddDescription": {
+    "description": "Текст кнопки, показывающей поле описания"
+  }
 }

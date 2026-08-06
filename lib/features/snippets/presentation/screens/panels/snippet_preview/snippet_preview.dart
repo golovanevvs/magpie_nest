@@ -26,6 +26,7 @@ import 'package:highlight/languages/xml.dart';
 import 'package:highlight/languages/yaml.dart';
 
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/utils/debouncer.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delete_confirmation_dialog.dart';
@@ -46,72 +47,82 @@ class SnippetPreview extends StatefulWidget {
 
 class _SnippetPreviewState extends State<SnippetPreview> {
   late final TextEditingController _nameController;
+  late final TextEditingController _descriptionController;
+  late final Debouncer _descriptionDebouncer;
   late CodeController _codeController;
+
   String _lastValidName = '';
   bool _nameIsEmpty = false;
-  String? _lastSnippetId;
+  String? _syncedSnippetId;
+  bool _isAddingDescription = false;
 
   @override
   void initState() {
     super.initState();
+    _descriptionDebouncer = Debouncer();
+    _nameController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _codeController = CodeController(text: '');
+
+    widget.controller.addListener(_onControllerChanged);
+
     final snippet = widget.controller.selectedSnippet;
-    final name = snippet?.name ?? '';
-    _nameController = TextEditingController(text: name);
-    _lastValidName = name;
-    _lastSnippetId = snippet?.id;
-
-    _codeController = CodeController(
-      text: snippet?.fragments.isNotEmpty == true
-          ? snippet!.fragments.first.content
-          : '',
-      language: _mapLanguage(
-        snippet?.fragments.isNotEmpty == true
-            ? snippet!.fragments.first.language
-            : '',
-      ),
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant SnippetPreview oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    final snippet = widget.controller.selectedSnippet;
-    if (snippet == null) return;
-
-    if (_lastSnippetId != snippet.id) {
-      _codeController.dispose();
-
-      final content = snippet.fragments.isNotEmpty
-          ? snippet.fragments.first.content
-          : '';
-      final language = snippet.fragments.isNotEmpty
-          ? snippet.fragments.first.language
-          : '';
-
-      final mappedLanguage = _mapLanguage(language);
-
-      _codeController = CodeController(text: content, language: mappedLanguage);
-
-      _lastSnippetId = snippet.id;
-    }
-
-    if (_lastSnippetId != snippet.id || _nameController.text != snippet.name) {
-      _nameController.text = snippet.name;
-      _lastValidName = snippet.name;
-      _nameIsEmpty = false;
+    if (snippet != null) {
+      _syncSnippetState(snippet);
     }
   }
 
   @override
   void dispose() {
+    widget.controller.removeListener(_onControllerChanged);
     _nameController.dispose();
+    _descriptionController.dispose();
+    _descriptionDebouncer.dispose();
     _codeController.dispose();
     super.dispose();
   }
 
+  void _onControllerChanged() {
+    final snippet = widget.controller.selectedSnippet;
+
+    if (snippet == null) {
+      if (_syncedSnippetId != null) {
+        setState(() {
+          _syncedSnippetId = null;
+          _isAddingDescription = false;
+        });
+      }
+      return;
+    }
+
+    if (snippet.id != _syncedSnippetId) {
+      setState(() {
+        _syncSnippetState(snippet);
+      });
+    }
+  }
+
+  void _syncSnippetState(Snippet snippet) {
+    _nameController.text = snippet.name;
+    _lastValidName = snippet.name;
+    _nameIsEmpty = false;
+
+    _descriptionController.text = snippet.description ?? '';
+    _isAddingDescription = false;
+
+    _syncedSnippetId = snippet.id;
+
+    _codeController.dispose();
+    _codeController = CodeController(
+      text: snippet.fragments.isNotEmpty ? snippet.fragments.first.content : '',
+      language: _mapLanguage(
+        snippet.fragments.isNotEmpty ? snippet.fragments.first.language : '',
+      ),
+    );
+  }
+
   void _onNameChanged(String value, AppLocalizations l10n) {
-    final controller = widget.controller;
-    final snippet = controller.selectedSnippet;
+    final snippet = widget.controller.selectedSnippet;
     if (snippet == null) return;
 
     if (value.isEmpty) {
@@ -132,7 +143,22 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     }
 
     _lastValidName = value;
-    controller.updateSnippetName(snippet.id, value);
+    widget.controller.updateSnippetName(snippet.id, value);
+  }
+
+  void _onDescriptionChanged(String value) {
+    final snippet = widget.controller.selectedSnippet;
+    if (snippet == null) return;
+
+    _descriptionDebouncer(() async {
+      await widget.controller.updateSnippetDescription(snippet.id, value);
+
+      if (value.trim().isEmpty && mounted) {
+        setState(() {
+          _isAddingDescription = false;
+        });
+      }
+    });
   }
 
   dynamic _mapLanguage(String languageName) {
@@ -206,9 +232,8 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = widget.controller;
-    final snippet = controller.selectedSnippet;
     final l10n = AppLocalizations.of(context)!;
+    final snippet = widget.controller.selectedSnippet;
 
     if (snippet == null) {
       return Center(
@@ -222,6 +247,11 @@ class _SnippetPreviewState extends State<SnippetPreview> {
         ),
       );
     }
+
+    final hasDescription =
+        snippet.description != null && snippet.description!.isNotEmpty;
+    final showDescriptionField = _isAddingDescription || hasDescription;
+    final showAddDescriptionButton = !_isAddingDescription && !hasDescription;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -251,11 +281,21 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                 IconButton(
                   icon: const Icon(Icons.restore_from_trash),
                   tooltip: l10n.buttonRestore,
-                  onPressed: () => controller.restoreSnippet(snippet.id),
+                  onPressed: () => widget.controller.restoreSnippet(snippet.id),
+                ),
+              if (showAddDescriptionButton)
+                IconButton(
+                  icon: const Icon(Icons.notes),
+                  tooltip: l10n.buttonAddDescription,
+                  onPressed: () {
+                    setState(() {
+                      _isAddingDescription = true;
+                    });
+                  },
                 ),
               IconButton(
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
-                onPressed: () => controller.toggleFavorite(snippet.id),
+                onPressed: () => widget.controller.toggleFavorite(snippet.id),
               ),
               if (widget.selectedIndex != 3)
                 IconButton(
@@ -264,6 +304,26 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                 ),
             ],
           ),
+          if (showDescriptionField) ...[
+            const SizedBox(height: 8),
+            TextField(
+              controller: _descriptionController,
+              decoration: InputDecoration(
+                hintText: l10n.fieldDescriptionHint,
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+                isDense: true,
+              ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              onChanged: _onDescriptionChanged,
+            ),
+          ],
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,

@@ -156,4 +156,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsThemeSystem => 'System';
+
+  @override
+  String get fieldDescription => 'Description';
+
+  @override
+  String get fieldDescriptionHint => 'Add a description...';
+
+  @override
+  String get buttonAddDescription => 'Add description';
 }

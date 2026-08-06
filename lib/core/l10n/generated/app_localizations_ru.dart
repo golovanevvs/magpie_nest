@@ -156,4 +156,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsThemeSystem => 'Системная';
+
+  @override
+  String get fieldDescription => 'Описание';
+
+  @override
+  String get fieldDescriptionHint => 'Добавить описание...';
+
+  @override
+  String get buttonAddDescription => 'Добавить описание';
 }

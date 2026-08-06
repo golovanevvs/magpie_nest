@@ -195,5 +195,17 @@
   "settingsThemeSystem": "System",
   "@settingsThemeSystem": {
     "description": "System theme option (follows OS preference)"
+  },
+  "fieldDescription": "Description",
+  "@fieldDescription": {
+    "description": "Placeholder text for the snippet description field"
+  },
+  "fieldDescriptionHint": "Add a description...",
+  "@fieldDescriptionHint": {
+    "description": "Hint shown when the description is empty"
+  },
+  "buttonAddDescription": "Add description",
+  "@buttonAddDescription": {
+    "description": "Tooltip/label for the button that shows the description field"
   }
 }
