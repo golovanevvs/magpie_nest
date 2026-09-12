@@ -409,6 +409,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add description'**
   String get buttonAddDescription;
+
+  /// Tooltip for the button that adds a new fragment to a snippet
+  ///
+  /// In en, this message translates to:
+  /// **'Add fragment'**
+  String get buttonAddFragment;
+
+  /// Default name for a new fragment
+  ///
+  /// In en, this message translates to:
+  /// **'Fragment {number}'**
+  String defaultFragmentName(int number);
+
+  /// Placeholder when editing a fragment name
+  ///
+  /// In en, this message translates to:
+  /// **'Fragment name'**
+  String get fieldFragmentName;
+
+  /// Base name for fragments, number is appended by the controller
+  ///
+  /// In en, this message translates to:
+  /// **'Fragment'**
+  String get fragmentNameBase;
 }
 
 class _AppLocalizationsDelegate

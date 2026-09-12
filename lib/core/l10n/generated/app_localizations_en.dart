@@ -165,4 +165,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buttonAddDescription => 'Add description';
+
+  @override
+  String get buttonAddFragment => 'Add fragment';
+
+  @override
+  String defaultFragmentName(int number) {
+    return 'Fragment $number';
+  }
+
+  @override
+  String get fieldFragmentName => 'Fragment name';
+
+  @override
+  String get fragmentNameBase => 'Fragment';
 }

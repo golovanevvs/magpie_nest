@@ -190,7 +190,14 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Snippet> createDefaultSnippet(String defaultName) async {
+  /// Creates a new snippet with a generated unique name.
+  ///
+  /// [defaultName] is used to generate the snippet name (e.g., "New Snippet 1").
+  /// [defaultFragmentBaseName] is used for the first fragment name (e.g., "Fragment 1").
+  Future<Snippet> createDefaultSnippet(
+    String defaultName, {
+    required String defaultFragmentBaseName,
+  }) async {
     String newName = '$defaultName 1';
     int counter = 1;
 
@@ -204,8 +211,13 @@ class AppController extends ChangeNotifier {
     final snippet = Snippet(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: newName,
-      fragments: const [
-        Fragment(id: '1', name: 'fragment', language: 'plaintext', content: ''),
+      fragments: [
+        Fragment(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          name: '$defaultFragmentBaseName 1',
+          language: 'plaintext',
+          content: '',
+        ),
       ],
       folderId: _selectedFolder?.id,
       createdAt: DateTime.now(),
@@ -360,6 +372,187 @@ class AppController extends ChangeNotifier {
     if (_selectedFolder?.id == id) {
       _selectedFolder = null;
       await _loadSnippetsBySection();
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> addFragment(String snippetId, String baseName) async {
+    final snippet = await snippetRepository.getSnippetById(snippetId);
+    if (snippet == null) return;
+
+    final newNumber = snippet.fragments.length + 1;
+    final newFragment = Fragment(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: '$baseName $newNumber',
+      language: 'plaintext',
+      content: '',
+    );
+
+    final updated = snippet.copyWith(
+      fragments: [...snippet.fragments, newFragment],
+      activeFragmentId: newFragment.id,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final index = _snippets.indexWhere((s) => s.id == snippetId);
+    if (index >= 0) {
+      _snippets[index] = updated;
+    }
+
+    if (_selectedSnippet?.id == snippetId) {
+      _selectedSnippet = updated;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> setActiveFragment(String snippetId, String fragmentId) async {
+    final snippet = await snippetRepository.getSnippetById(snippetId);
+    if (snippet == null) {
+      return;
+    }
+
+    if (!snippet.fragments.any((f) => f.id == fragmentId)) {
+      return;
+    }
+
+    final updated = snippet.copyWith(
+      activeFragmentId: fragmentId,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+    final index = _snippets.indexWhere((s) => s.id == snippetId);
+    if (index >= 0) {
+      _snippets[index] = updated;
+    }
+    if (_selectedSnippet?.id == snippetId) {
+      _selectedSnippet = updated;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> updateFragment(
+    String snippetId,
+    String fragmentId,
+    String newName,
+  ) async {
+    final trimmedName = newName.trim();
+    if (trimmedName.isEmpty) return;
+
+    final snippet = await snippetRepository.getSnippetById(snippetId);
+    if (snippet == null) return;
+
+    final fragmentIndex = snippet.fragments.indexWhere(
+      (f) => f.id == fragmentId,
+    );
+
+    final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
+      name: trimmedName,
+    );
+
+    final updatedFragments = [...snippet.fragments];
+    updatedFragments[fragmentIndex] = updatedFragment;
+
+    final updated = snippet.copyWith(
+      fragments: updatedFragments,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final index = _snippets.indexWhere((s) => s.id == snippetId);
+    if (index >= 0) {
+      _snippets[index] = updated;
+    }
+
+    if (_selectedSnippet?.id == snippetId) {
+      _selectedSnippet = updated;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> updateFragmentContent(
+    String snippetId,
+    String fragmentId,
+    String newContent,
+  ) async {
+    final snippet = await snippetRepository.getSnippetById(snippetId);
+    if (snippet == null) return;
+
+    final fragmentIndex = snippet.fragments.indexWhere(
+      (f) => f.id == fragmentId,
+    );
+    if (fragmentIndex < 0) return;
+
+    final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
+      content: newContent,
+    );
+
+    final updatedFragments = [...snippet.fragments];
+    updatedFragments[fragmentIndex] = updatedFragment;
+
+    final updated = snippet.copyWith(
+      fragments: updatedFragments,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final index = _snippets.indexWhere((s) => s.id == snippetId);
+    if (index >= 0) {
+      _snippets[index] = updated;
+    }
+
+    if (_selectedSnippet?.id == snippetId) {
+      _selectedSnippet = updated;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> updateFragmentName(
+    String snippetId,
+    String fragmentId,
+    String newName,
+  ) async {
+    final trimmedName = newName.trim();
+    if (trimmedName.isEmpty) return;
+
+    final snippet = await snippetRepository.getSnippetById(snippetId);
+    if (snippet == null) return;
+
+    final fragmentIndex = snippet.fragments.indexWhere(
+      (f) => f.id == fragmentId,
+    );
+    if (fragmentIndex < 0) return;
+
+    final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
+      name: trimmedName,
+    );
+
+    final updatedFragments = [...snippet.fragments];
+    updatedFragments[fragmentIndex] = updatedFragment;
+
+    final updated = snippet.copyWith(
+      fragments: updatedFragments,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final index = _snippets.indexWhere((s) => s.id == snippetId);
+    if (index >= 0) {
+      _snippets[index] = updated;
+    }
+
+    if (_selectedSnippet?.id == snippetId) {
+      _selectedSnippet = updated;
     }
 
     notifyListeners();

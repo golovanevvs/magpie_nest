@@ -165,4 +165,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get buttonAddDescription => 'Добавить описание';
+
+  @override
+  String get buttonAddFragment => 'Добавить фрагмент';
+
+  @override
+  String defaultFragmentName(int number) {
+    return 'Фрагмент $number';
+  }
+
+  @override
+  String get fieldFragmentName => 'Имя фрагмента';
+
+  @override
+  String get fragmentNameBase => 'Фрагмент';
 }

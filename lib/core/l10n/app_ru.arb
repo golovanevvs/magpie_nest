@@ -207,5 +207,26 @@
   "buttonAddDescription": "Добавить описание",
   "@buttonAddDescription": {
     "description": "Текст кнопки, показывающей поле описания"
+  },
+  "buttonAddFragment": "Добавить фрагмент",
+  "@buttonAddFragment": {
+    "description": "Текст кнопки добавления нового фрагмента к сниппету"
+  },
+  "defaultFragmentName": "Фрагмент {number}",
+  "@defaultFragmentName": {
+    "description": "Имя по умолчанию для нового фрагмента",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldFragmentName": "Имя фрагмента",
+  "@fieldFragmentName": {
+    "description": "Подсказка при редактировании имени фрагмента"
+  },
+  "fragmentNameBase": "Фрагмент",
+  "@fragmentNameBase": {
+    "description": "Базовое имя для фрагментов, номер добавляется контроллером"
   }
 }

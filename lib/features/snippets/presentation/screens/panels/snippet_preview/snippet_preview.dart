@@ -27,6 +27,7 @@ import 'package:highlight/languages/yaml.dart';
 
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/utils/debouncer.dart';
+import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delete_confirmation_dialog.dart';
@@ -49,26 +50,34 @@ class _SnippetPreviewState extends State<SnippetPreview> {
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
   late final Debouncer _descriptionDebouncer;
+  late final Debouncer _contentDebouncer;
   late CodeController _codeController;
 
   String _lastValidName = '';
   bool _nameIsEmpty = false;
   String? _syncedSnippetId;
+  String? _syncedFragmentId;
   bool _isAddingDescription = false;
+  bool _isSyncingCode = false;
 
   @override
   void initState() {
     super.initState();
     _descriptionDebouncer = Debouncer();
+    _contentDebouncer = Debouncer();
     _nameController = TextEditingController();
     _descriptionController = TextEditingController();
-    _codeController = CodeController(text: '');
 
     widget.controller.addListener(_onControllerChanged);
 
     final snippet = widget.controller.selectedSnippet;
+
+    _codeController = CodeController(text: '');
+
     if (snippet != null) {
       _syncSnippetState(snippet);
+    } else {
+      _codeController.addListener(_onCodeChanged);
     }
   }
 
@@ -78,6 +87,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     _nameController.dispose();
     _descriptionController.dispose();
     _descriptionDebouncer.dispose();
+    _contentDebouncer.dispose();
     _codeController.dispose();
     super.dispose();
   }
@@ -89,17 +99,60 @@ class _SnippetPreviewState extends State<SnippetPreview> {
       if (_syncedSnippetId != null) {
         setState(() {
           _syncedSnippetId = null;
+          _syncedFragmentId = null;
           _isAddingDescription = false;
         });
       }
       return;
     }
 
-    if (snippet.id != _syncedSnippetId) {
+    final activeFragmentId = snippet.activeFragment.id;
+    final snippetChanged = snippet.id != _syncedSnippetId;
+    final fragmentChanged = activeFragmentId != _syncedFragmentId;
+
+    if (snippetChanged || fragmentChanged) {
       setState(() {
-        _syncSnippetState(snippet);
+        if (snippetChanged) {
+          _syncSnippetState(snippet);
+        } else if (fragmentChanged) {
+          // Сменился только активный фрагмент — пересоздаём контроллер кода
+          _syncCodeController(snippet);
+          _syncedFragmentId = activeFragmentId;
+        }
       });
     }
+  }
+
+  void _syncCodeController(Snippet snippet) {
+    final activeFragment = snippet.activeFragment;
+
+    _isSyncingCode = true;
+    _codeController.dispose();
+    _codeController = CodeController(
+      text: activeFragment.content,
+      language: _mapLanguage(activeFragment.language),
+    );
+    _codeController.addListener(_onCodeChanged);
+    _isSyncingCode = false;
+  }
+
+  void _onCodeChanged() {
+    // Игнорируем программные изменения (при синхронизации)
+    if (_isSyncingCode) return;
+
+    final snippet = widget.controller.selectedSnippet;
+    if (snippet == null) return;
+
+    final activeFragment = snippet.activeFragment;
+    final content = _codeController.text;
+
+    _contentDebouncer(() async {
+      await widget.controller.updateFragmentContent(
+        snippet.id,
+        activeFragment.id,
+        content,
+      );
+    });
   }
 
   void _syncSnippetState(Snippet snippet) {
@@ -111,14 +164,16 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     _isAddingDescription = false;
 
     _syncedSnippetId = snippet.id;
+    _syncedFragmentId = snippet.activeFragment.id;
 
+    _isSyncingCode = true;
     _codeController.dispose();
     _codeController = CodeController(
-      text: snippet.fragments.isNotEmpty ? snippet.fragments.first.content : '',
-      language: _mapLanguage(
-        snippet.fragments.isNotEmpty ? snippet.fragments.first.language : '',
-      ),
+      text: snippet.activeFragment.content,
+      language: _mapLanguage(snippet.activeFragment.language),
     );
+    _codeController.addListener(_onCodeChanged);
+    _isSyncingCode = false;
   }
 
   void _onNameChanged(String value, AppLocalizations l10n) {
@@ -283,6 +338,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                   tooltip: l10n.buttonRestore,
                   onPressed: () => widget.controller.restoreSnippet(snippet.id),
                 ),
+              // Add Description Button
               if (showAddDescriptionButton)
                 IconButton(
                   icon: const Icon(Icons.notes),
@@ -293,6 +349,18 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                     });
                   },
                 ),
+              // Add Fragment Button
+              IconButton(
+                icon: Icon(Icons.note_add_outlined),
+                tooltip: l10n.buttonAddFragment,
+                onPressed: () {
+                  widget.controller.addFragment(
+                    snippet.id,
+                    l10n.fragmentNameBase,
+                  );
+                },
+              ),
+              // Favorite Button
               IconButton(
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
                 onPressed: () => widget.controller.toggleFavorite(snippet.id),
@@ -333,6 +401,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
             ],
           ),
           const SizedBox(height: 16),
+          _buildFragmentTabs(context, snippet),
           Expanded(child: _buildCodeViewer(context, snippet)),
         ],
       ),
@@ -406,6 +475,34 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     );
   }
 
+  Widget _buildFragmentTabs(BuildContext context, Snippet snippet) {
+    if (snippet.fragments.length <= 1) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          ...snippet.fragments.map(
+            (fragment) => _FragmentTab(
+              snippet: snippet,
+              fragment: fragment,
+              isActive: snippet.activeFragment.id == fragment.id,
+              onTap: () =>
+                  widget.controller.setActiveFragment(snippet.id, fragment.id),
+              onRename: (newName) => widget.controller.updateFragmentName(
+                snippet.id,
+                fragment.id,
+                newName,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _confirmDeleteSnippet(
     BuildContext context,
     Snippet snippet,
@@ -418,5 +515,167 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     if (shouldDelete == true) {
       widget.controller.deleteSnippet(snippet.id);
     }
+  }
+}
+
+class _FragmentTab extends StatefulWidget {
+  final Snippet snippet;
+  final Fragment fragment;
+  final bool isActive;
+  final VoidCallback onTap;
+  final ValueChanged<String> onRename;
+
+  const _FragmentTab({
+    required this.snippet,
+    required this.fragment,
+    required this.isActive,
+    required this.onTap,
+    required this.onRename,
+  });
+
+  @override
+  State<_FragmentTab> createState() => _FragmentTabState();
+}
+
+class _FragmentTabState extends State<_FragmentTab> {
+  late final TextEditingController _nameController;
+  late final FocusNode _focusNode;
+  bool _isEditing = false;
+  String _originalName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.fragment.name);
+    _focusNode = FocusNode(
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.escape) {
+          _cancelRename();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+    );
+    _focusNode.addListener(_onFocusLost);
+  }
+
+  @override
+  void didUpdateWidget(covariant _FragmentTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.fragment.name != widget.fragment.name) {
+      _nameController.text = widget.fragment.name;
+      _originalName = widget.fragment.name;
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_onFocusLost);
+    _focusNode.dispose();
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  /// Вызывается при потере фокуса — сохраняем изменения.
+  void _onFocusLost() {
+    if (!_focusNode.hasFocus && _isEditing) {
+      _commitRename();
+    }
+  }
+
+  /// Включает режим редактирования.
+  void _startEditing() {
+    setState(() {
+      _isEditing = true;
+      _originalName = widget.fragment.name;
+    });
+    // Даём TextField время отрисоваться перед запросом фокуса.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _focusNode.requestFocus();
+        _nameController.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: _nameController.text.length,
+        );
+      }
+    });
+  }
+
+  /// Сохраняет новое имя и выходит из режима редактирования.
+  void _commitRename() {
+    final newName = _nameController.text.trim();
+    setState(() {
+      _isEditing = false;
+    });
+
+    if (newName.isEmpty || newName == widget.fragment.name) {
+      _nameController.text = widget.fragment.name;
+      return;
+    }
+
+    widget.onRename(newName);
+  }
+
+  /// Отменяет редактирование и восстанавливает исходное имя.
+  void _cancelRename() {
+    setState(() {
+      _isEditing = false;
+      _nameController.text = _originalName;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _isEditing ? null : widget.onTap,
+        onDoubleTap: _isEditing ? null : _startEditing,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: widget.isActive
+                ? theme.colorScheme.primaryContainer
+                : theme.colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: _isEditing
+              ? SizedBox(
+                  width: 120,
+                  child: TextField(
+                    controller: _nameController,
+                    focusNode: _focusNode,
+                    decoration: InputDecoration(
+                      hintText: l10n.fieldFragmentName,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 2,
+                      ),
+                      border: const OutlineInputBorder(),
+                    ),
+                    style: theme.textTheme.bodySmall,
+                    onSubmitted: (_) => _commitRename(),
+                  ),
+                )
+              : Text(
+                  widget.fragment.name,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: widget.isActive
+                        ? theme.colorScheme.onPrimaryContainer
+                        : theme.colorScheme.onSurfaceVariant,
+                    fontWeight: widget.isActive
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+        ),
+      ),
+    );
   }
 }

@@ -27,8 +27,10 @@ class SnippetList extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: () =>
-                  controller.createDefaultSnippet(l10n.defaultSnippetName),
+              onPressed: () => controller.createDefaultSnippet(
+                l10n.defaultSnippetName,
+                defaultFragmentBaseName: l10n.fragmentNameBase,
+              ),
               icon: const Icon(Icons.add),
               label: Text(l10n.buttonNewSnippet),
             ),

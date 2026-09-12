@@ -207,5 +207,26 @@
   "buttonAddDescription": "Add description",
   "@buttonAddDescription": {
     "description": "Tooltip/label for the button that shows the description field"
+  },
+  "buttonAddFragment": "Add fragment",
+  "@buttonAddFragment": {
+    "description": "Tooltip for the button that adds a new fragment to a snippet"
+  },
+  "defaultFragmentName": "Fragment {number}",
+  "@defaultFragmentName": {
+    "description": "Default name for a new fragment",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldFragmentName": "Fragment name",
+  "@fieldFragmentName": {
+    "description": "Placeholder when editing a fragment name"
+  },
+  "fragmentNameBase": "Fragment",
+  "@fragmentNameBase": {
+    "description": "Base name for fragments, number is appended by the controller"
   }
 }
