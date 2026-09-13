@@ -20,12 +20,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  late int _selectedMenuIndex;
   late Locale _currentLocale;
   late ThemeMode _currentThemeMode;
 
   @override
   void initState() {
     super.initState();
+    _selectedMenuIndex = 0;
     _currentLocale = widget.currentLocale;
     _currentThemeMode = widget.currentThemeMode;
   }
@@ -41,47 +43,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  void _handleLocaleChanged(Locale locale) {
+    setState(() => _currentLocale = locale);
+    widget.onLocaleChanged(locale);
+  }
+
+  void _handleThemeModeChanged(ThemeMode mode) {
+    setState(() => _currentThemeMode = mode);
+    widget.onThemeModeChanged(mode);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ListView(
-      padding: const EdgeInsets.all(24),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.settingsTitle,
-          style: Theme.of(context).textTheme.headlineMedium,
+        SizedBox(
+          width: 220,
+          child: ListView(
+            children: [
+              ListTile(
+                leading: Icon(Icons.language),
+                title: Text(l10n.settingsLanguage),
+                selected: _selectedMenuIndex == 0,
+                onTap: () => setState(() => _selectedMenuIndex = 0),
+              ),
+              ListTile(
+                leading: Icon(Icons.dark_mode),
+                title: Text(l10n.settingsTheme),
+                selected: _selectedMenuIndex == 1,
+                onTap: () => setState(() => _selectedMenuIndex = 1),
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: 32),
-
-        // Language section
-        _SectionHeader(title: l10n.settingsLanguage),
-        const SizedBox(height: 8),
-        _LanguageSelector(
-          currentLocale: _currentLocale,
-          onLocaleChanged: (Locale locale) {
-            setState(() {
-              _currentLocale = locale;
-            });
-            widget.onLocaleChanged(locale);
-          },
-        ),
-        const SizedBox(height: 32),
-
-        // Theme section
-        _SectionHeader(title: l10n.settingsTheme),
-        const SizedBox(height: 8),
-        _ThemeSelector(
-          currentThemeMode: _currentThemeMode,
-          onThemeModeChanged: (ThemeMode mode) {
-            setState(() {
-              _currentThemeMode = mode;
-            });
-            widget.onThemeModeChanged(mode);
-          },
+        const VerticalDivider(width: 1),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: _buildContent(),
+          ),
         ),
       ],
     );
+  }
+
+  Widget _buildContent() {
+    switch (_selectedMenuIndex) {
+      case 0:
+        return _LanguagePanel(
+          currentLocale: _currentLocale,
+          onLocaleChanged: _handleLocaleChanged,
+        );
+      case 1:
+        return _ThemePanel(
+          currentThemeMode: _currentThemeMode,
+          onThemeModeChanged: _handleThemeModeChanged,
+        );
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
 
@@ -172,6 +195,56 @@ class _ThemeSelector extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _LanguagePanel extends StatelessWidget {
+  final Locale currentLocale;
+  final ValueChanged<Locale> onLocaleChanged;
+
+  const _LanguagePanel({
+    required this.currentLocale,
+    required this.onLocaleChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(title: AppLocalizations.of(context)!.settingsLanguage),
+        const SizedBox(height: 8),
+        _LanguageSelector(
+          currentLocale: currentLocale,
+          onLocaleChanged: onLocaleChanged,
+        ),
+      ],
+    );
+  }
+}
+
+class _ThemePanel extends StatelessWidget {
+  final ThemeMode currentThemeMode;
+  final ValueChanged<ThemeMode> onThemeModeChanged;
+
+  const _ThemePanel({
+    required this.currentThemeMode,
+    required this.onThemeModeChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(title: AppLocalizations.of(context)!.settingsTheme),
+        const SizedBox(height: 8),
+        _ThemeSelector(
+          currentThemeMode: currentThemeMode,
+          onThemeModeChanged: onThemeModeChanged,
+        ),
+      ],
     );
   }
 }

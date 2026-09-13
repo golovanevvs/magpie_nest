@@ -577,20 +577,17 @@ class _FragmentTabState extends State<_FragmentTab> {
     super.dispose();
   }
 
-  /// Вызывается при потере фокуса — сохраняем изменения.
   void _onFocusLost() {
     if (!_focusNode.hasFocus && _isEditing) {
       _commitRename();
     }
   }
 
-  /// Включает режим редактирования.
   void _startEditing() {
     setState(() {
       _isEditing = true;
       _originalName = widget.fragment.name;
     });
-    // Даём TextField время отрисоваться перед запросом фокуса.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _focusNode.requestFocus();
@@ -602,7 +599,6 @@ class _FragmentTabState extends State<_FragmentTab> {
     });
   }
 
-  /// Сохраняет новое имя и выходит из режима редактирования.
   void _commitRename() {
     final newName = _nameController.text.trim();
     setState(() {
@@ -617,7 +613,6 @@ class _FragmentTabState extends State<_FragmentTab> {
     widget.onRename(newName);
   }
 
-  /// Отменяет редактирование и восстанавливает исходное имя.
   void _cancelRename() {
     setState(() {
       _isEditing = false;
