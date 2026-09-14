@@ -56,10 +56,6 @@
   "@sidebarFolders": {
     "description": "Заголовок раздела папок в боковой панели"
   },
-  "sidebarTags": "Теги",
-  "@sidebarTags": {
-    "description": "Заголовок раздела тегов в боковой панели"
-  },
   "viewerSelectSnippet": "Выберите сниппет для просмотра",
   "@viewerSelectSnippet": {
     "description": "Текст-заполнитель, показываемый, когда ни один сниппет не выбран"

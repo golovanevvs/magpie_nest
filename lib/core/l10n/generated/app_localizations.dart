@@ -182,12 +182,6 @@ abstract class AppLocalizations {
   /// **'Folders'**
   String get sidebarFolders;
 
-  /// Sidebar section title for tags list
-  ///
-  /// In en, this message translates to:
-  /// **'Tags'**
-  String get sidebarTags;
-
   /// Placeholder text shown when no snippet is selected
   ///
   /// In en, this message translates to:

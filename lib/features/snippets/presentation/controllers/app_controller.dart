@@ -16,7 +16,6 @@ class AppController extends ChangeNotifier {
 
   Folder? _selectedFolder;
   Snippet? _selectedSnippet;
-  String? _selectedTag;
   SidebarSection _activeSection = SidebarSection.all;
 
   AppController({
@@ -26,26 +25,13 @@ class AppController extends ChangeNotifier {
 
   List<Folder> get folders => _folders;
 
-  List<Snippet> get snippets {
-    if (_selectedTag == null || _selectedTag!.isEmpty) return _snippets;
-    return _snippets.where((s) => s.tags.contains(_selectedTag)).toList();
-  }
-
-  Set<String> get tags {
-    final result = <String>{};
-    for (final snippet in _snippets) {
-      result.addAll(snippet.tags);
-    }
-    return result;
-  }
+  List<Snippet> get snippets => _snippets;
 
   Folder? get selectedFolder => _selectedFolder;
 
   Snippet? get selectedSnippet => _selectedSnippet;
 
   SidebarSection get activeSection => _activeSection;
-
-  String? get selectedTag => _selectedTag;
 
   Future<void> initialize() async {
     _folders = (await folderRepository.getAllFolders()).toList();
@@ -58,7 +44,6 @@ class AppController extends ChangeNotifier {
   Future<void> selectFolder(Folder? folder) async {
     _selectedFolder = folder;
     _selectedSnippet = null;
-    _selectedTag = null;
     _activeSection = SidebarSection.all;
     await _loadSnippetsBySection();
     notifyListeners();
@@ -68,14 +53,7 @@ class AppController extends ChangeNotifier {
     _activeSection = section;
     _selectedFolder = null;
     _selectedSnippet = null;
-    _selectedTag = null;
     await _loadSnippetsBySection();
-    notifyListeners();
-  }
-
-  void selectTag(String? tag) {
-    _selectedTag = tag;
-    _selectedSnippet = null;
     notifyListeners();
   }
 

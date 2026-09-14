@@ -51,9 +51,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sidebarFolders => 'Папки';
 
   @override
-  String get sidebarTags => 'Теги';
-
-  @override
   String get viewerSelectSnippet => 'Выберите сниппет для просмотра';
 
   @override

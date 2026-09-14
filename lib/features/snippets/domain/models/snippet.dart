@@ -7,7 +7,6 @@ class Snippet {
   final List<Fragment> fragments;
   final String? activeFragmentId;
   final String? folderId;
-  final List<String> tags;
   final bool isFavorite;
   final bool isDeleted;
   final DateTime createdAt;
@@ -20,7 +19,6 @@ class Snippet {
     required this.fragments,
     this.activeFragmentId,
     this.folderId,
-    this.tags = const [],
     this.isFavorite = false,
     this.isDeleted = false,
     required this.createdAt,
@@ -54,8 +52,6 @@ class Snippet {
     bool clearActiveFragmentId = false,
     String? folderId,
     bool clearFolderId = false,
-    List<String>? tags,
-    bool clearTags = false,
     bool? isFavorite,
     bool? isDeleted,
     DateTime? createdAt,
@@ -70,7 +66,6 @@ class Snippet {
           ? null
           : (activeFragmentId ?? this.activeFragmentId),
       folderId: clearFolderId ? null : (folderId ?? this.folderId),
-      tags: clearTags ? const [] : (tags ?? this.tags),
       isFavorite: isFavorite ?? this.isFavorite,
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,

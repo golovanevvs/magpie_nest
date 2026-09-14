@@ -6,7 +6,6 @@ import 'package:magpie_nest/features/snippets/presentation/screens/panels/sideba
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/library_items.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/search_field.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/sidebar_section_header.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/tags_list.dart';
 
 class Sidebar extends StatefulWidget {
   final int selectedIndex;
@@ -23,14 +22,8 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  static const double _tagsPanelMinHeight = 80;
-  static const double _tagsPanelMaxHeight = 320;
-  static const double _tagsPanelDefaultHeight = 160;
-  static const double _tagsBottomOffset = 8;
-
   String _searchQuery = '';
   String? _editingFolderId;
-  double _tagsPanelHeight = _tagsPanelDefaultHeight;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -67,35 +60,7 @@ class _SidebarState extends State<Sidebar> {
               onFinishEditing: () => setState(() => _editingFolderId = null),
             ),
           ),
-          _buildResizeHandle(),
-          SidebarSectionHeader(title: l10n.sidebarTags),
-          Padding(
-            padding: const EdgeInsets.only(bottom: _tagsBottomOffset),
-            child: SizedBox(
-              width: double.infinity,
-              height: _tagsPanelHeight,
-              child: TagsList(controller: widget.controller),
-            ),
-          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildResizeHandle() {
-    return MouseRegion(
-      cursor: SystemMouseCursors.resizeRow,
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onVerticalDragUpdate: (details) {
-          setState(() {
-            _tagsPanelHeight = (_tagsPanelHeight - details.delta.dy).clamp(
-              _tagsPanelMinHeight,
-              _tagsPanelMaxHeight,
-            );
-          });
-        },
-        child: const Divider(height: 8, thickness: 1),
       ),
     );
   }

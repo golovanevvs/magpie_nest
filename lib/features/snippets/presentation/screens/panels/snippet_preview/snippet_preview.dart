@@ -393,13 +393,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
             ),
           ],
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              Chip(label: Text(snippet.activeFragment.language)),
-              ...snippet.tags.map((tag) => Chip(label: Text(tag))),
-            ],
-          ),
+          Chip(label: Text(snippet.activeFragment.language)),
           const SizedBox(height: 16),
           _buildFragmentTabs(context, snippet),
           Expanded(child: _buildCodeViewer(context, snippet)),
