@@ -56,27 +56,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final menuItems = [
+      (icon: Icons.language, title: l10n.settingsLanguage),
+      (icon: Icons.dark_mode, title: l10n.settingsTheme),
+    ];
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
           width: 220,
-          child: ListView(
-            children: [
-              ListTile(
-                leading: Icon(Icons.language),
-                title: Text(l10n.settingsLanguage),
-                selected: _selectedMenuIndex == 0,
-                onTap: () => setState(() => _selectedMenuIndex = 0),
-              ),
-              ListTile(
-                leading: Icon(Icons.dark_mode),
-                title: Text(l10n.settingsTheme),
-                selected: _selectedMenuIndex == 1,
-                onTap: () => setState(() => _selectedMenuIndex = 1),
-              ),
-            ],
+          child: ListView.builder(
+            itemCount: menuItems.length,
+            itemBuilder: (context, index) {
+              final item = menuItems[index];
+              return ListTile(
+                leading: Icon(item.icon),
+                title: Text(item.title),
+                selected: _selectedMenuIndex == index,
+                onTap: () => setState(() => _selectedMenuIndex = index),
+              );
+            },
           ),
         ),
         const VerticalDivider(width: 1),
@@ -210,10 +210,12 @@ class _LanguagePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(title: AppLocalizations.of(context)!.settingsLanguage),
+        _SectionHeader(title: l10n.settingsLanguage),
         const SizedBox(height: 8),
         _LanguageSelector(
           currentLocale: currentLocale,
@@ -235,10 +237,12 @@ class _ThemePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(title: AppLocalizations.of(context)!.settingsTheme),
+        _SectionHeader(title: l10n.settingsTheme),
         const SizedBox(height: 8),
         _ThemeSelector(
           currentThemeMode: currentThemeMode,
