@@ -475,6 +475,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                   fontSize: 14,
                   height: 1.5,
                 ),
+                expands: true,
               ),
             ),
           ),
