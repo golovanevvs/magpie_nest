@@ -49,11 +49,11 @@ class SnippetPreview extends StatefulWidget {
 class _SnippetPreviewState extends State<SnippetPreview> {
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
+  late final FocusNode _nameFocusNode;
   late final Debouncer _descriptionDebouncer;
   late final Debouncer _contentDebouncer;
   late CodeController _codeController;
 
-  String _lastValidName = '';
   bool _nameIsEmpty = false;
   String? _syncedSnippetId;
   String? _syncedFragmentId;
@@ -67,6 +67,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     _contentDebouncer = Debouncer();
     _nameController = TextEditingController();
     _descriptionController = TextEditingController();
+    _nameFocusNode = FocusNode()..addListener(_onNameFocusLost);
 
     widget.controller.addListener(_onControllerChanged);
 
@@ -84,6 +85,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
   @override
   void dispose() {
     widget.controller.removeListener(_onControllerChanged);
+    _nameFocusNode.dispose();
     _nameController.dispose();
     _descriptionController.dispose();
     _descriptionDebouncer.dispose();
@@ -157,7 +159,6 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
   void _syncSnippetState(Snippet snippet) {
     _nameController.text = snippet.name;
-    _lastValidName = snippet.name;
     _nameIsEmpty = false;
 
     _descriptionController.text = snippet.description ?? '';
@@ -176,29 +177,37 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     _isSyncingCode = false;
   }
 
-  void _onNameChanged(String value, AppLocalizations l10n) {
-    final snippet = widget.controller.selectedSnippet;
-    if (snippet == null) return;
+  void _onNameChanged(String value) {
+    setState(() {
+      _nameIsEmpty = value.trim().isEmpty;
+    });
+  }
 
-    if (value.isEmpty) {
+  void _onNameFocusLost() {
+    final snippet = widget.controller.selectedSnippet;
+    if (snippet != null && !_nameFocusNode.hasFocus) {
+      _commitSnippetName(snippet);
+    }
+  }
+
+  void _commitSnippetName(Snippet snippet) {
+    final newName = _nameController.text.trim();
+
+    if (newName.isEmpty) {
       setState(() {
         _nameIsEmpty = true;
+        _nameController.text = snippet.name;
       });
-      _nameController.text = _lastValidName;
-      _nameController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _lastValidName.length),
-      );
       return;
     }
 
-    if (_nameIsEmpty) {
-      setState(() {
-        _nameIsEmpty = false;
-      });
-    }
+    setState(() {
+      _nameIsEmpty = false;
+    });
 
-    _lastValidName = value;
-    widget.controller.updateSnippetName(snippet.id, value);
+    if (newName == snippet.name) return;
+
+    widget.controller.updateSnippetName(snippet.id, newName);
   }
 
   void _onDescriptionChanged(String value) {
@@ -318,6 +327,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
               Expanded(
                 child: TextField(
                   controller: _nameController,
+                  focusNode: _nameFocusNode,
                   decoration: InputDecoration(
                     hintText: l10n.fieldSnippetName,
                     errorText: _nameIsEmpty
@@ -329,7 +339,11 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                     contentPadding: EdgeInsets.zero,
                   ),
                   style: Theme.of(context).textTheme.headlineSmall,
-                  onChanged: (value) => _onNameChanged(value, l10n),
+                  onChanged: _onNameChanged,
+                  onSubmitted: (_) {
+                    final snippet = widget.controller.selectedSnippet;
+                    if (snippet != null) _commitSnippetName(snippet);
+                  },
                 ),
               ),
               if (widget.selectedIndex == 3)
