@@ -294,6 +294,15 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     }
   }
 
+  double _gutterWidthFor(int lineCount) {
+    const issueFoldingColumns = 32.0;
+    const margin = 10.0;
+    const digitWidth = 8.4;
+    const padding = 6.0;
+    final digits = lineCount.toString().length;
+    return issueFoldingColumns + margin + padding + digits * digitWidth;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -418,6 +427,8 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
   Widget _buildCodeViewer(BuildContext context, Snippet snippet) {
     final l10n = AppLocalizations.of(context)!;
+    final lineCount = _codeController.text.split('\n').length;
+    final gutterWidth = _gutterWidthFor(lineCount);
 
     return Container(
       decoration: BoxDecoration(
@@ -466,9 +477,9 @@ class _SnippetPreviewState extends State<SnippetPreview> {
               data: CodeThemeData(styles: atomOneDarkTheme),
               child: CodeField(
                 controller: _codeController,
-                gutterStyle: const GutterStyle(
+                gutterStyle: GutterStyle(
                   showLineNumbers: true,
-                  width: 60,
+                  width: gutterWidth,
                 ),
                 textStyle: const TextStyle(
                   fontFamily: 'monospace',
