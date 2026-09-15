@@ -168,10 +168,6 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Creates a new snippet with a generated unique name.
-  ///
-  /// [defaultName] is used to generate the snippet name (e.g., "New Snippet 1").
-  /// [defaultFragmentBaseName] is used for the first fragment name (e.g., "Fragment 1").
   Future<Snippet> createDefaultSnippet(
     String defaultName, {
     required String defaultFragmentBaseName,
@@ -532,6 +528,38 @@ class AppController extends ChangeNotifier {
     if (_selectedSnippet?.id == snippetId) {
       _selectedSnippet = updated;
     }
+
+    notifyListeners();
+  }
+
+  Future<void> updateFragmentLanguage(
+    String snippetId,
+    String fragmentId,
+    String newLanguage,
+  ) async {
+    final snippet = await snippetRepository.getSnippetById(snippetId);
+    if (snippet == null) return;
+
+    final fragmentIndex = snippet.fragments.indexWhere(
+      (f) => f.id == fragmentId,
+    );
+    if (fragmentIndex < 0) return;
+
+    final updatedFragments = [...snippet.fragments];
+    updatedFragments[fragmentIndex] = updatedFragments[fragmentIndex].copyWith(
+      language: newLanguage,
+    );
+
+    final updated = snippet.copyWith(
+      fragments: updatedFragments,
+      updatedAt: DateTime.now(),
+    );
+
+    await snippetRepository.saveSnippet(updated);
+
+    final index = _snippets.indexWhere((s) => s.id == snippetId);
+    if (index >= 0) _snippets[index] = updated;
+    if (_selectedSnippet?.id == snippetId) _selectedSnippet = updated;
 
     notifyListeners();
   }

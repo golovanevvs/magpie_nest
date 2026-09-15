@@ -24,6 +24,7 @@ import 'package:highlight/languages/swift.dart';
 import 'package:highlight/languages/typescript.dart';
 import 'package:highlight/languages/xml.dart';
 import 'package:highlight/languages/yaml.dart';
+import 'package:magpie_nest/core/constants/languages.dart';
 
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/utils/debouncer.dart';
@@ -57,6 +58,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
   bool _nameIsEmpty = false;
   String? _syncedSnippetId;
   String? _syncedFragmentId;
+  String? _syncedFragmentLanguage;
   bool _isAddingDescription = false;
   bool _isSyncingCode = false;
 
@@ -111,15 +113,17 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final activeFragmentId = snippet.activeFragment.id;
     final snippetChanged = snippet.id != _syncedSnippetId;
     final fragmentChanged = activeFragmentId != _syncedFragmentId;
+    final languageChanged =
+        snippet.activeFragment.language != _syncedFragmentLanguage;
 
-    if (snippetChanged || fragmentChanged) {
+    if (snippetChanged || fragmentChanged || languageChanged) {
       setState(() {
         if (snippetChanged) {
           _syncSnippetState(snippet);
-        } else if (fragmentChanged) {
-          // Сменился только активный фрагмент — пересоздаём контроллер кода
+        } else if (fragmentChanged || languageChanged) {
           _syncCodeController(snippet);
           _syncedFragmentId = activeFragmentId;
+          _syncedFragmentLanguage = snippet.activeFragment.language;
         }
       });
     }
@@ -129,6 +133,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final activeFragment = snippet.activeFragment;
 
     _isSyncingCode = true;
+    _syncedFragmentLanguage = snippet.activeFragment.language;
     _codeController.dispose();
     _codeController = CodeController(
       text: activeFragment.content,
@@ -166,6 +171,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
     _syncedSnippetId = snippet.id;
     _syncedFragmentId = snippet.activeFragment.id;
+    _syncedFragmentLanguage = snippet.activeFragment.language;
 
     _isSyncingCode = true;
     _codeController.dispose();
@@ -416,7 +422,26 @@ class _SnippetPreviewState extends State<SnippetPreview> {
             ),
           ],
           const SizedBox(height: 8),
-          Chip(label: Text(snippet.activeFragment.language)),
+          DropdownButton(
+            value: snippet.activeFragment.language,
+            isDense: true,
+            items: SupportedLanguages.allWithNames
+                .map(
+                  (lang) => DropdownMenuItem(
+                    value: lang['code'],
+                    child: Text(lang['name']!),
+                  ),
+                )
+                .toList(),
+            onChanged: (language) {
+              if (language == null) return;
+              widget.controller.updateFragmentLanguage(
+                snippet.id,
+                snippet.activeFragment.id,
+                language,
+              );
+            },
+          ),
           const SizedBox(height: 16),
           _buildFragmentTabs(context, snippet),
           Expanded(child: _buildCodeViewer(context, snippet)),
