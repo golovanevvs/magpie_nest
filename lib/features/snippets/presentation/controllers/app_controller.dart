@@ -1,338 +1,85 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/folders/domain/repositories/i_folder_repository.dart';
-import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
+import 'package:magpie_nest/features/snippets/presentation/controllers/folders_controller.dart';
+import 'package:magpie_nest/features/snippets/presentation/controllers/fragments_controller.dart';
+import 'package:magpie_nest/features/snippets/presentation/controllers/sidebar_section.dart';
+import 'package:magpie_nest/features/snippets/presentation/controllers/snippets_controller.dart';
 
-enum SidebarSection { all, inbox, favorites, trash }
+export 'package:magpie_nest/features/snippets/presentation/controllers/sidebar_section.dart';
 
+/// Координатор: композиционный корень приложения.
+///
+/// Владеет тремя доменными контроллерами и связывает их воедино:
+///  * [foldersController]   — папки;
+///  * [snippetsController]  — сниппеты;
+///  * [fragmentsController] — фрагменты.
+///
+/// Доменные контроллеры не знают друг о друге. Междоменные (cross-cutting)
+/// операции — смена раздела/папки, удаление папки с зачисткой сниппетов,
+/// загрузка при старте — выполняются здесь. Также координатор пробрасывает
+/// уведомления дочерних контроллеров наверх, чтобы существующие виджеты,
+/// слушающие единый источник ([ChangeNotifier]), продолжали перерисовываться.
+///
+/// Снаружи для совместимости с UI координатор отдаёт привычные геттеры и
+/// методы и переадресует их в нужный доменный контроллер.
 class AppController extends ChangeNotifier {
   final IFolderRepository folderRepository;
   final ISnippetRepository snippetRepository;
 
-  List<Folder> _folders = [];
-  List<Snippet> _snippets = [];
-
-  Folder? _selectedFolder;
-  Snippet? _selectedSnippet;
-  SidebarSection _activeSection = SidebarSection.all;
+  final FoldersController foldersController;
+  final SnippetsController snippetsController;
+  late final FragmentsController fragmentsController;
 
   AppController({
     required this.folderRepository,
     required this.snippetRepository,
-  });
+  })  : foldersController = FoldersController(folderRepository: folderRepository),
+        snippetsController = SnippetsController(snippetRepository: snippetRepository) {
+    fragmentsController = FragmentsController(
+      snippetRepository: snippetRepository,
+      snippetsController: snippetsController,
+    );
 
-  List<Folder> get folders => _folders;
+    // Пробрасываем уведомления дочерних контроллеров наверх,
+    // чтобы единый слушатель (например, в MainScreen) видел все изменения.
+    foldersController.addListener(notifyListeners);
+    snippetsController.addListener(notifyListeners);
+  }
 
-  List<Snippet> get snippets => _snippets;
+  // ---------- Чтение (делегирование в доменные контроллеры) ----------
 
-  Folder? get selectedFolder => _selectedFolder;
+  List<Snippet> get snippets => snippetsController.snippets;
+  Snippet? get selectedSnippet => snippetsController.selectedSnippet;
+  List<Folder> get folders => foldersController.folders;
+  Folder? get selectedFolder => foldersController.selectedFolder;
+  SidebarSection get activeSection => snippetsController.activeSection;
 
-  Snippet? get selectedSnippet => _selectedSnippet;
-
-  SidebarSection get activeSection => _activeSection;
+  // ---------- Композиция / междоменные операции ----------
 
   Future<void> initialize() async {
-    _folders = (await folderRepository.getAllFolders()).toList();
-    _selectedFolder = null;
-    _activeSection = SidebarSection.all;
-    await _loadSnippetsBySection();
-    notifyListeners();
+    await foldersController.loadFolders();
+    await snippetsController.initialize();
   }
 
   Future<void> selectFolder(Folder? folder) async {
-    _selectedFolder = folder;
-    _selectedSnippet = null;
-    _activeSection = SidebarSection.all;
-    await _loadSnippetsBySection();
-    notifyListeners();
+    foldersController.selectFolder(folder);
+    await snippetsController.loadSnippets(
+      section: SidebarSection.all,
+      folderId: folder?.id,
+    );
   }
 
   Future<void> selectSection(SidebarSection section) async {
-    _activeSection = section;
-    _selectedFolder = null;
-    _selectedSnippet = null;
-    await _loadSnippetsBySection();
-    notifyListeners();
+    foldersController.selectFolder(null);
+    await snippetsController.loadSnippets(section: section, folderId: null);
   }
 
-  void selectSnippet(Snippet snippet) {
-    _selectedSnippet = snippet;
-    notifyListeners();
-  }
-
-  Future<void> toggleFavorite(String id) async {
-    final snippet = await snippetRepository.getSnippetById(id);
-    if (snippet == null) return;
-
-    final updated = snippet.copyWith(
-      isFavorite: !snippet.isFavorite,
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(updated);
-
-    if (_activeSection == SidebarSection.favorites && !updated.isFavorite) {
-      _snippets.removeWhere((s) => s.id == id);
-    } else {
-      final snippetIndex = _snippets.indexWhere((s) => s.id == id);
-      if (snippetIndex >= 0) {
-        _snippets[snippetIndex] = updated;
-      }
-    }
-
-    if (_selectedSnippet?.id == id) {
-      _selectedSnippet = updated;
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> deleteSnippet(String id) async {
-    await snippetRepository.deleteSnippet(id);
-
-    if (_activeSection == SidebarSection.trash) {
-      final restored = await snippetRepository.getSnippetById(id);
-      if (restored != null) {
-        final index = _snippets.indexWhere((s) => s.id == id);
-        if (index >= 0) {
-          _snippets[index] = restored;
-        } else {
-          _snippets.add(restored);
-        }
-      }
-    } else {
-      _snippets.removeWhere((s) => s.id == id);
-    }
-
-    if (_selectedSnippet?.id == id) {
-      _selectedSnippet = null;
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> restoreSnippet(String id) async {
-    var restored = await snippetRepository.getSnippetById(id);
-    if (restored == null) return;
-
-    restored = restored.copyWith(
-      isDeleted: false,
-      clearFolderId: true,
-      updatedAt: DateTime.now(),
-    );
-    await snippetRepository.saveSnippet(restored);
-
-    if (_activeSection == SidebarSection.trash) {
-      _snippets.removeWhere((s) => s.id == id);
-    } else {
-      final index = _snippets.indexWhere((s) => s.id == id);
-      if (index >= 0) {
-        _snippets[index] = restored;
-      } else {
-        _snippets.add(restored);
-      }
-    }
-
-    if (_selectedSnippet?.id == id) {
-      _selectedSnippet = null;
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> _loadSnippetsBySection() async {
-    switch (_activeSection) {
-      case SidebarSection.all:
-        final all = await snippetRepository.getAllSnippets();
-        if (_selectedFolder == null) {
-          _snippets = all.where((s) => !s.isDeleted).toList();
-        } else {
-          _snippets = all
-              .where((s) => !s.isDeleted && s.folderId == _selectedFolder!.id)
-              .toList();
-        }
-        break;
-      case SidebarSection.inbox:
-        final all = await snippetRepository.getAllSnippets();
-        _snippets = all.where((s) => !s.isDeleted && s.isInbox).toList();
-        break;
-      case SidebarSection.favorites:
-        _snippets = (await snippetRepository.getFavoriteSnippets()).toList();
-        break;
-      case SidebarSection.trash:
-        _snippets = (await snippetRepository.getDeletedSnippets()).toList();
-        break;
-    }
-    notifyListeners();
-  }
-
-  Future<Snippet> createDefaultSnippet(
-    String defaultName, {
-    required String defaultFragmentBaseName,
-  }) async {
-    String newName = '$defaultName 1';
-    int counter = 1;
-
-    while (_snippets.any(
-      (s) => s.name.toLowerCase() == newName.toLowerCase(),
-    )) {
-      counter++;
-      newName = '$defaultName $counter';
-    }
-
-    final snippet = Snippet(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: newName,
-      fragments: [
-        Fragment(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          name: '$defaultFragmentBaseName 1',
-          language: 'plaintext',
-          content: '',
-        ),
-      ],
-      folderId: _selectedFolder?.id,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(snippet);
-
-    final shouldShow = switch (_activeSection) {
-      SidebarSection.all => snippet.folderId == _selectedFolder?.id,
-      SidebarSection.inbox => snippet.isInbox,
-      SidebarSection.favorites => snippet.isFavorite,
-      SidebarSection.trash => snippet.isDeleted,
-    };
-
-    if (shouldShow) {
-      _snippets.insert(0, snippet);
-    }
-
-    _selectedSnippet = snippet;
-    notifyListeners();
-    return snippet;
-  }
-
-  Future<void> createSnippet(Snippet snippet) async {
-    final newSnippet = snippet.copyWith(folderId: _selectedFolder?.id);
-
-    await snippetRepository.saveSnippet(newSnippet);
-
-    final shouldShow = switch (_activeSection) {
-      SidebarSection.all => newSnippet.folderId == _selectedFolder?.id,
-      SidebarSection.inbox => newSnippet.isInbox,
-      SidebarSection.favorites => newSnippet.isFavorite,
-      SidebarSection.trash => newSnippet.isDeleted,
-    };
-
-    if (shouldShow) {
-      _snippets.insert(0, newSnippet);
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> updateSnippetName(String id, String newName) async {
-    final trimmedName = newName.trim();
-    if (trimmedName.isEmpty) return;
-
-    final snippet = await snippetRepository.getSnippetById(id);
-    if (snippet == null) return;
-
-    final updated = snippet.copyWith(
-      name: trimmedName,
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(updated);
-
-    final index = _snippets.indexWhere((s) => s.id == id);
-    if (index >= 0) {
-      _snippets[index] = updated;
-    }
-
-    if (_selectedSnippet?.id == id) {
-      _selectedSnippet = updated;
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> updateSnippetDescription(
-    String id,
-    String newDescription,
-  ) async {
-    final trimmedDescription = newDescription.trim();
-    final snippet = await snippetRepository.getSnippetById(id);
-    if (snippet == null) return;
-
-    final updated = snippet.copyWith(
-      description: trimmedDescription.isEmpty ? null : trimmedDescription,
-      clearDescription: trimmedDescription.isEmpty,
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(updated);
-
-    final index = _snippets.indexWhere((s) => s.id == id);
-    if (index >= 0) {
-      _snippets[index] = updated;
-    }
-
-    if (_selectedSnippet?.id == id) {
-      _selectedSnippet = updated;
-    }
-
-    notifyListeners();
-  }
-
-  Future<Folder> createFolder(String initialName, {String? parentId}) async {
-    String newName = '$initialName 1';
-    int counter = 1;
-
-    while (_folders.any((f) => f.name.toLowerCase() == newName.toLowerCase())) {
-      counter++;
-      newName = '$initialName $counter';
-    }
-
-    final folder = Folder(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: newName,
-      parentId: parentId,
-      sortOrder: _folders.length,
-    );
-
-    await folderRepository.saveFolder(folder);
-    _folders.add(folder);
-
-    _selectedFolder = folder;
-
-    notifyListeners();
-    return folder;
-  }
-
-  Future<void> renameFolder(String id, String newName) async {
-    final folder = await folderRepository.getFolderById(id);
-    if (folder == null) return;
-
-    final trimmedName = newName.trim();
-    if (trimmedName.isEmpty || trimmedName == folder.name) return;
-
-    final updated = folder.copyWith(name: trimmedName);
-    await folderRepository.saveFolder(updated);
-
-    final index = _folders.indexWhere((f) => f.id == id);
-    if (index >= 0) {
-      _folders[index] = updated;
-    }
-
-    notifyListeners();
-  }
-
+  /// Удаляет папку и помечает её сниппеты как удалённые в репозитории.
   Future<void> deleteFolder(String id) async {
+    final wasSelected = foldersController.selectedFolder?.id == id;
     final snippetsInFolder = await snippetRepository.getSnippetsByFolderId(id);
     for (final snippet in snippetsInFolder) {
       await snippetRepository.saveSnippet(
@@ -340,227 +87,88 @@ class AppController extends ChangeNotifier {
       );
     }
 
-    await folderRepository.deleteFolder(id);
-    _folders.removeWhere((f) => f.id == id);
+    await foldersController.deleteFolder(id);
 
-    if (_selectedFolder?.id == id) {
-      _selectedFolder = null;
-      await _loadSnippetsBySection();
+    if (wasSelected) {
+      await snippetsController.loadSnippets(
+        section: SidebarSection.all,
+        folderId: null,
+      );
     }
-
-    notifyListeners();
   }
 
-  Future<void> addFragment(String snippetId, String baseName) async {
-    final snippet = await snippetRepository.getSnippetById(snippetId);
-    if (snippet == null) return;
+  // ---------- Делегирование: папки ----------
 
-    final newNumber = snippet.fragments.length + 1;
-    final newFragment = Fragment(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: '$baseName $newNumber',
-      language: 'plaintext',
-      content: '',
-    );
+  Future<Folder> createFolder(String initialName, {String? parentId}) =>
+      foldersController.createFolder(initialName, parentId: parentId);
 
-    final updated = snippet.copyWith(
-      fragments: [...snippet.fragments, newFragment],
-      activeFragmentId: newFragment.id,
-      updatedAt: DateTime.now(),
-    );
+  Future<void> renameFolder(String id, String newName) =>
+      foldersController.renameFolder(id, newName);
 
-    await snippetRepository.saveSnippet(updated);
+  // ---------- Делегирование: сниппеты ----------
 
-    final index = _snippets.indexWhere((s) => s.id == snippetId);
-    if (index >= 0) {
-      _snippets[index] = updated;
-    }
+  void selectSnippet(Snippet? snippet) => snippetsController.selectSnippet(snippet);
 
-    if (_selectedSnippet?.id == snippetId) {
-      _selectedSnippet = updated;
-    }
+  Future<void> toggleFavorite(String id) => snippetsController.toggleFavorite(id);
 
-    notifyListeners();
-  }
+  Future<void> deleteSnippet(String id) => snippetsController.deleteSnippet(id);
 
-  Future<void> setActiveFragment(String snippetId, String fragmentId) async {
-    final snippet = await snippetRepository.getSnippetById(snippetId);
-    if (snippet == null) {
-      return;
-    }
+  Future<void> restoreSnippet(String id) => snippetsController.restoreSnippet(id);
 
-    if (!snippet.fragments.any((f) => f.id == fragmentId)) {
-      return;
-    }
+  Future<Snippet> createDefaultSnippet(
+    String defaultName, {
+    required String defaultFragmentBaseName,
+  }) =>
+      snippetsController.createDefaultSnippet(
+        defaultName,
+        defaultFragmentBaseName: defaultFragmentBaseName,
+        folderId: selectedFolder?.id,
+      );
 
-    final updated = snippet.copyWith(
-      activeFragmentId: fragmentId,
-      updatedAt: DateTime.now(),
-    );
+  Future<void> createSnippet(Snippet snippet) => snippetsController.createSnippet(
+        snippet,
+        selectedFolder?.id,
+      );
 
-    await snippetRepository.saveSnippet(updated);
-    final index = _snippets.indexWhere((s) => s.id == snippetId);
-    if (index >= 0) {
-      _snippets[index] = updated;
-    }
-    if (_selectedSnippet?.id == snippetId) {
-      _selectedSnippet = updated;
-    }
+  Future<void> updateSnippetName(String id, String newName) =>
+      snippetsController.updateSnippetName(id, newName);
 
-    notifyListeners();
-  }
+  Future<void> updateSnippetDescription(String id, String newDescription) =>
+      snippetsController.updateSnippetDescription(id, newDescription);
+
+  // ---------- Делегирование: фрагменты ----------
+
+  Future<void> addFragment(String snippetId, String baseName) =>
+      fragmentsController.addFragment(snippetId, baseName);
+
+  Future<void> setActiveFragment(String snippetId, String fragmentId) =>
+      fragmentsController.setActiveFragment(snippetId, fragmentId);
 
   Future<void> updateFragment(
     String snippetId,
     String fragmentId,
     String newName,
-  ) async {
-    final trimmedName = newName.trim();
-    if (trimmedName.isEmpty) return;
-
-    final snippet = await snippetRepository.getSnippetById(snippetId);
-    if (snippet == null) return;
-
-    final fragmentIndex = snippet.fragments.indexWhere(
-      (f) => f.id == fragmentId,
-    );
-
-    final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
-      name: trimmedName,
-    );
-
-    final updatedFragments = [...snippet.fragments];
-    updatedFragments[fragmentIndex] = updatedFragment;
-
-    final updated = snippet.copyWith(
-      fragments: updatedFragments,
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(updated);
-
-    final index = _snippets.indexWhere((s) => s.id == snippetId);
-    if (index >= 0) {
-      _snippets[index] = updated;
-    }
-
-    if (_selectedSnippet?.id == snippetId) {
-      _selectedSnippet = updated;
-    }
-
-    notifyListeners();
-  }
+  ) =>
+      fragmentsController.updateFragment(snippetId, fragmentId, newName);
 
   Future<void> updateFragmentContent(
     String snippetId,
     String fragmentId,
     String newContent,
-  ) async {
-    final snippet = await snippetRepository.getSnippetById(snippetId);
-    if (snippet == null) return;
-
-    final fragmentIndex = snippet.fragments.indexWhere(
-      (f) => f.id == fragmentId,
-    );
-    if (fragmentIndex < 0) return;
-
-    final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
-      content: newContent,
-    );
-
-    final updatedFragments = [...snippet.fragments];
-    updatedFragments[fragmentIndex] = updatedFragment;
-
-    final updated = snippet.copyWith(
-      fragments: updatedFragments,
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(updated);
-
-    final index = _snippets.indexWhere((s) => s.id == snippetId);
-    if (index >= 0) {
-      _snippets[index] = updated;
-    }
-
-    if (_selectedSnippet?.id == snippetId) {
-      _selectedSnippet = updated;
-    }
-
-    notifyListeners();
-  }
+  ) =>
+      fragmentsController.updateFragmentContent(snippetId, fragmentId, newContent);
 
   Future<void> updateFragmentName(
     String snippetId,
     String fragmentId,
     String newName,
-  ) async {
-    final trimmedName = newName.trim();
-    if (trimmedName.isEmpty) return;
-
-    final snippet = await snippetRepository.getSnippetById(snippetId);
-    if (snippet == null) return;
-
-    final fragmentIndex = snippet.fragments.indexWhere(
-      (f) => f.id == fragmentId,
-    );
-    if (fragmentIndex < 0) return;
-
-    final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
-      name: trimmedName,
-    );
-
-    final updatedFragments = [...snippet.fragments];
-    updatedFragments[fragmentIndex] = updatedFragment;
-
-    final updated = snippet.copyWith(
-      fragments: updatedFragments,
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(updated);
-
-    final index = _snippets.indexWhere((s) => s.id == snippetId);
-    if (index >= 0) {
-      _snippets[index] = updated;
-    }
-
-    if (_selectedSnippet?.id == snippetId) {
-      _selectedSnippet = updated;
-    }
-
-    notifyListeners();
-  }
+  ) =>
+      fragmentsController.updateFragmentName(snippetId, fragmentId, newName);
 
   Future<void> updateFragmentLanguage(
     String snippetId,
     String fragmentId,
     String newLanguage,
-  ) async {
-    final snippet = await snippetRepository.getSnippetById(snippetId);
-    if (snippet == null) return;
-
-    final fragmentIndex = snippet.fragments.indexWhere(
-      (f) => f.id == fragmentId,
-    );
-    if (fragmentIndex < 0) return;
-
-    final updatedFragments = [...snippet.fragments];
-    updatedFragments[fragmentIndex] = updatedFragments[fragmentIndex].copyWith(
-      language: newLanguage,
-    );
-
-    final updated = snippet.copyWith(
-      fragments: updatedFragments,
-      updatedAt: DateTime.now(),
-    );
-
-    await snippetRepository.saveSnippet(updated);
-
-    final index = _snippets.indexWhere((s) => s.id == snippetId);
-    if (index >= 0) _snippets[index] = updated;
-    if (_selectedSnippet?.id == snippetId) _selectedSnippet = updated;
-
-    notifyListeners();
-  }
+  ) =>
+      fragmentsController.updateFragmentLanguage(snippetId, fragmentId, newLanguage);
 }
