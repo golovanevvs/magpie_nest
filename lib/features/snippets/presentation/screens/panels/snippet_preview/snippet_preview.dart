@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
+import 'package:flutter_highlight/themes/atom-one-light.dart';
 import 'package:highlight/languages/bash.dart';
 import 'package:highlight/languages/cpp.dart';
 import 'package:highlight/languages/cs.dart';
@@ -454,11 +455,20 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     final l10n = AppLocalizations.of(context)!;
     final lineCount = _codeController.text.split('\n').length;
     final gutterWidth = _gutterWidthFor(lineCount);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final styles = isDark ? atomOneDarkTheme : atomOneLightTheme;
+    final editorBackground = isDark
+        ? const Color(0xFF282C34)
+        : const Color(0xFFFAFAFA);
+    final headerBackground = isDark
+        ? const Color(0xFF21252B)
+        : const Color(0xFFEDEDED);
+    final headerForeground = isDark ? Colors.white70 : Colors.black54;
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: const Color(0xFF282C34),
+        color: editorBackground,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -466,7 +476,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF21252B),
+              color: headerBackground,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
@@ -476,11 +486,11 @@ class _SnippetPreviewState extends State<SnippetPreview> {
               children: [
                 Text(
                   snippet.activeFragment.language,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(color: headerForeground, fontSize: 12),
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.copy, color: Colors.white70, size: 18),
+                  icon: Icon(Icons.copy, color: headerForeground, size: 18),
                   tooltip: l10n.buttonCopy,
                   onPressed: () {
                     Clipboard.setData(
@@ -499,7 +509,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
           ),
           Expanded(
             child: CodeTheme(
-              data: CodeThemeData(styles: atomOneDarkTheme),
+              data: CodeThemeData(styles: styles),
               child: CodeField(
                 controller: _codeController,
                 gutterStyle: GutterStyle(
