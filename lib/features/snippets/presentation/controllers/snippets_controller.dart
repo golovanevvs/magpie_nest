@@ -4,8 +4,6 @@ import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/sidebar_section.dart';
 
-/// Контроллер домена «сниппеты»: список, выбор активного сниппета,
-/// активный раздел (все/входящие/избранное/корзина) и CRUD сниппетов.
 class SnippetsController extends ChangeNotifier {
   final ISnippetRepository snippetRepository;
 
@@ -26,8 +24,6 @@ class SnippetsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Загрузить список сниппетов под заданный раздел и папку.
-  /// Сбрасывает выбор (пришла новая коллекция).
   Future<void> loadSnippets({
     required SidebarSection section,
     String? folderId,
@@ -43,9 +39,6 @@ class SnippetsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Обновить сниппет в локальном хранилище. Используется как другими
-  /// методами сниппетов, так и [FragmentsController] для распространения
-  /// изменений фрагментов в UI через единую точку нотификации.
   void applySnippetUpdate(Snippet updated) {
     final index = _snippets.indexWhere((s) => s.id == updated.id);
     if (index >= 0) {

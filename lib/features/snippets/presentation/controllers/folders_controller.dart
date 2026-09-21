@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/folders/domain/repositories/i_folder_repository.dart';
 
-/// Контроллер домена «папки»: список папок, выбор активной папки
-/// и CRUD-операции над папками.
 class FoldersController extends ChangeNotifier {
   final IFolderRepository folderRepository;
 
@@ -21,8 +19,6 @@ class FoldersController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Сменить активную папку. Очищает выбор — загрузку списка сниппетов
-  /// под новую папку делает координатор ([AppController]).
   void selectFolder(Folder? folder) {
     _selectedFolder = folder;
     notifyListeners();
@@ -71,8 +67,6 @@ class FoldersController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Удаление папки из хранилища и из локального списка.
-  /// (Сцепленную с папкой зачистку сниппетов выполняет координатор.)
   Future<void> deleteFolder(String id) async {
     await folderRepository.deleteFolder(id);
     _folders.removeWhere((f) => f.id == id);

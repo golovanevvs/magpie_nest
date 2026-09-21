@@ -2,11 +2,6 @@ import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/snippets_controller.dart';
 
-/// Контроллер домена «фрагменты»: операции над фрагментами сниппета.
-///
-/// Не хранит собственного состояния — изменяет сниппет в репозитории и
-/// распространяет результат через [SnippetsController.applySnippetUpdate],
-/// чтобы в UI шла одна нотификация на изменение выбранного сниппета.
 class FragmentsController {
   final ISnippetRepository snippetRepository;
   final SnippetsController snippetsController;
