@@ -1,20 +1,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:magpie_nest/core/database/app_database.dart';
 import 'package:magpie_nest/core/highlight/languages_registry.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/theme/app_theme.dart';
-import 'package:magpie_nest/features/folders/data/repositories/in_memory_folder_repository.dart';
-import 'package:magpie_nest/features/snippets/data/repositories/in_memory_snippet_repository.dart';
+import 'package:magpie_nest/features/folders/data/repositories/drift_folder_repository.dart';
+import 'package:magpie_nest/features/snippets/data/repositories/drift_snippet_repository.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/main_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   registerLanguages();
 
-  final folderRepository = InMemoryFolderRepository();
-  final snippetRepository = InMemorySnippetRepository();
+  // Dev-only: wipe the database when the MAGPIE_NEST_RESET_DB flag is set
+  await AppDatabase.resetForDevelopment();
+
+  final database = AppDatabase();
+
+  final folderRepository = DriftFolderRepository(database);
+  final snippetRepository = DriftSnippetRepository(database);
 
   final appController = AppController(
     folderRepository: folderRepository,

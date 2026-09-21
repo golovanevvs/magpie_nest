@@ -15,10 +15,6 @@ class SnippetList extends StatelessWidget {
     final snippets = controller.snippets;
     final l10n = AppLocalizations.of(context)!;
 
-    if (snippets.isEmpty) {
-      return Center(child: Text(l10n.listNoSnippets));
-    }
-
     return Column(
       children: [
         // Header with "New Snippet" button

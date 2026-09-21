@@ -1,29 +1,9 @@
+import 'package:magpie_nest/core/database/sample_data.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/folders/domain/repositories/i_folder_repository.dart';
 
 class InMemoryFolderRepository implements IFolderRepository {
-  final List<Folder> _folders = [
-    const Folder(id: 'folder-work', name: 'Work', sortOrder: 0),
-    const Folder(id: 'folder-personal', name: 'Personal', sortOrder: 1),
-    const Folder(
-      id: 'folder-react',
-      name: 'React Components',
-      parentId: 'folder-work',
-      sortOrder: 0,
-    ),
-    const Folder(
-      id: 'folder-api',
-      name: 'API Calls',
-      parentId: 'folder-work',
-      sortOrder: 1,
-    ),
-    const Folder(
-      id: 'folder-scripts',
-      name: 'Scripts',
-      parentId: 'folder-personal',
-      sortOrder: 0,
-    ),
-  ];
+  final List<Folder> _folders = sampleFolders();
 
   @override
   Future<List<Folder>> getAllFolders() async {
