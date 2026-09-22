@@ -228,5 +228,29 @@
   "fragmentNameBase": "Fragment",
   "@fragmentNameBase": {
     "description": "Base name for fragments, number is appended by the controller"
+  },
+  "buttonDeleteForever": "Delete forever",
+  "@buttonDeleteForever": {
+    "description": "Tooltip for the button that permanently deletes a snippet from the Trash"
+  },
+  "dialogDeleteForeverTitle": "Delete forever",
+  "@dialogDeleteForeverTitle": {
+    "description": "Title of the confirmation dialog for permanently deleting a snippet"
+  },
+  "dialogDeleteForeverMessage": "This snippet will be permanently deleted. This action cannot be undone.",
+  "@dialogDeleteForeverMessage": {
+    "description": "Message shown in the confirmation dialog for permanently deleting a snippet"
+  },
+  "buttonEmptyTrash": "Empty Trash",
+  "@buttonEmptyTrash": {
+    "description": "Tooltip for the button that empties the entire Trash"
+  },
+  "dialogEmptyTrashTitle": "Empty Trash",
+  "@dialogEmptyTrashTitle": {
+    "description": "Title of the confirmation dialog for emptying the Trash"
+  },
+  "dialogEmptyTrashMessage": "All snippets in the Trash will be permanently deleted. This action cannot be undone.",
+  "@dialogEmptyTrashMessage": {
+    "description": "Message shown in the confirmation dialog for emptying the Trash"
   }
 }

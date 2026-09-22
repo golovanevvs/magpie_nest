@@ -228,5 +228,29 @@
   "fragmentNameBase": "Фрагмент",
   "@fragmentNameBase": {
     "description": "Базовое имя для фрагментов, номер добавляется контроллером"
+  },
+  "buttonDeleteForever": "Удалить навсегда",
+  "@buttonDeleteForever": {
+    "description": "Подсказка для кнопки безвозвратного удаления сниппета из корзины"
+  },
+  "dialogDeleteForeverTitle": "Удалить навсегда",
+  "@dialogDeleteForeverTitle": {
+    "description": "Заголовок диалога подтверждения безвозвратного удаления сниппета"
+  },
+  "dialogDeleteForeverMessage": "Сниппет будет удалён безвозвратно. Это действие нельзя отменить.",
+  "@dialogDeleteForeverMessage": {
+    "description": "Текст сообщения в диалоге подтверждения безвозвратного удаления сниппета"
+  },
+  "buttonEmptyTrash": "Очистить корзину",
+  "@buttonEmptyTrash": {
+    "description": "Подсказка для кнопки полной очистки корзины"
+  },
+  "dialogEmptyTrashTitle": "Очистить корзину",
+  "@dialogEmptyTrashTitle": {
+    "description": "Заголовок диалога подтверждения очистки корзины"
+  },
+  "dialogEmptyTrashMessage": "Все сниппеты из корзины будут удалены безвозвратно. Это действие нельзя отменить.",
+  "@dialogEmptyTrashMessage": {
+    "description": "Текст сообщения в диалоге подтверждения очистки корзины"
   }
 }

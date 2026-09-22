@@ -10,4 +10,5 @@ abstract class ISnippetRepository {
   Future<void> deleteSnippet(String id);
   Future<void> restoreSnippet(String id);
   Future<void> permanentlyDeleteSnippet(String id);
+  Future<void> permanentlyDeleteDeletedSnippets();
 }

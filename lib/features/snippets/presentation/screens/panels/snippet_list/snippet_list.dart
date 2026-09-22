@@ -4,6 +4,7 @@ import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/confirmation_dialog.dart';
 
 class SnippetList extends StatelessWidget {
   final AppController controller;
@@ -20,16 +21,27 @@ class SnippetList extends StatelessWidget {
         // Header with "New Snippet" button
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: () => controller.createDefaultSnippet(
-                l10n.defaultSnippetName,
-                defaultFragmentBaseName: l10n.fragmentNameBase,
+          child: Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: () => controller.createDefaultSnippet(
+                    l10n.defaultSnippetName,
+                    defaultFragmentBaseName: l10n.fragmentNameBase,
+                  ),
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.buttonNewSnippet),
+                ),
               ),
-              icon: const Icon(Icons.add),
-              label: Text(l10n.buttonNewSnippet),
-            ),
+              if (controller.activeSection == SidebarSection.trash) ...[
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.delete_sweep_outlined),
+                  tooltip: l10n.buttonEmptyTrash,
+                  onPressed: () => _confirmEmptyTrash(context, controller),
+                ),
+              ],
+            ],
           ),
         ),
         // Snippet list
@@ -53,6 +65,24 @@ class SnippetList extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+Future<void> _confirmEmptyTrash(
+  BuildContext context,
+  AppController controller,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  final shouldEmpty = await showDialog<bool>(
+    context: context,
+    builder: (context) => ConfirmationDialog(
+      title: l10n.dialogEmptyTrashTitle,
+      message: l10n.dialogEmptyTrashMessage,
+      confirmLabel: l10n.buttonEmptyTrash,
+    ),
+  );
+  if (shouldEmpty == true) {
+    await controller.emptyTrash();
   }
 }
 

@@ -132,6 +132,24 @@ class SnippetsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> permanentlyDeleteSnippet(String id) async {
+    await snippetRepository.permanentlyDeleteSnippet(id);
+    _snippets.removeWhere((s) => s.id == id);
+    if (_selectedSnippet?.id == id) {
+      _selectedSnippet = null;
+    }
+    notifyListeners();
+  }
+
+  Future<void> emptyTrash() async {
+    await snippetRepository.permanentlyDeleteDeletedSnippets();
+    _snippets.removeWhere((s) => s.isDeleted);
+    if (_selectedSnippet?.isDeleted == true) {
+      _selectedSnippet = null;
+    }
+    notifyListeners();
+  }
+
   Future<Snippet> createDefaultSnippet(
     String defaultName, {
     required String defaultFragmentBaseName,

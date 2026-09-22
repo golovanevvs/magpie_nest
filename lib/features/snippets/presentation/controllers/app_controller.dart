@@ -96,6 +96,11 @@ class AppController extends ChangeNotifier {
   Future<void> restoreSnippet(String id) =>
       snippetsController.restoreSnippet(id);
 
+  Future<void> permanentlyDeleteSnippet(String id) =>
+      snippetsController.permanentlyDeleteSnippet(id);
+
+  Future<void> emptyTrash() => snippetsController.emptyTrash();
+
   Future<Snippet> createDefaultSnippet(
     String defaultName, {
     required String defaultFragmentBaseName,

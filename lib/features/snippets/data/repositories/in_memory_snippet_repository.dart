@@ -70,4 +70,9 @@ class InMemorySnippetRepository implements ISnippetRepository {
   Future<void> permanentlyDeleteSnippet(String id) async {
     _snippets.removeWhere((snippet) => snippet.id == id);
   }
+
+  @override
+  Future<void> permanentlyDeleteDeletedSnippets() async {
+    _snippets.removeWhere((snippet) => snippet.isDeleted);
+  }
 }

@@ -179,4 +179,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get fragmentNameBase => 'Фрагмент';
+
+  @override
+  String get buttonDeleteForever => 'Удалить навсегда';
+
+  @override
+  String get dialogDeleteForeverTitle => 'Удалить навсегда';
+
+  @override
+  String get dialogDeleteForeverMessage =>
+      'Сниппет будет удалён безвозвратно. Это действие нельзя отменить.';
+
+  @override
+  String get buttonEmptyTrash => 'Очистить корзину';
+
+  @override
+  String get dialogEmptyTrashTitle => 'Очистить корзину';
+
+  @override
+  String get dialogEmptyTrashMessage =>
+      'Все сниппеты из корзины будут удалены безвозвратно. Это действие нельзя отменить.';
 }

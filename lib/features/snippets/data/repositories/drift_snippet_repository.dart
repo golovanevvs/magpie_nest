@@ -99,6 +99,13 @@ class DriftSnippetRepository implements ISnippetRepository {
     await (db.delete(db.snippets)..where((table) => table.id.equals(id))).go();
   }
 
+  @override
+  Future<void> permanentlyDeleteDeletedSnippets() async {
+    await (db.delete(
+      db.snippets,
+    )..where((table) => table.isDeleted.equals(true))).go();
+  }
+
   // helpers
 
   Future<List<Snippet>> _withFragments(List<SnippetRow> snippetRows) async {

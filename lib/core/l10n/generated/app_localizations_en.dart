@@ -179,4 +179,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fragmentNameBase => 'Fragment';
+
+  @override
+  String get buttonDeleteForever => 'Delete forever';
+
+  @override
+  String get dialogDeleteForeverTitle => 'Delete forever';
+
+  @override
+  String get dialogDeleteForeverMessage =>
+      'This snippet will be permanently deleted. This action cannot be undone.';
+
+  @override
+  String get buttonEmptyTrash => 'Empty Trash';
+
+  @override
+  String get dialogEmptyTrashTitle => 'Empty Trash';
+
+  @override
+  String get dialogEmptyTrashMessage =>
+      'All snippets in the Trash will be permanently deleted. This action cannot be undone.';
 }

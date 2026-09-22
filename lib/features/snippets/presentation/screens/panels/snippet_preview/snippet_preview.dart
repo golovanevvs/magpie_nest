@@ -32,6 +32,7 @@ import 'package:magpie_nest/core/utils/debouncer.dart';
 import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/confirmation_dialog.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delete_confirmation_dialog.dart';
 
 class SnippetPreview extends StatefulWidget {
@@ -363,6 +364,13 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                   tooltip: l10n.buttonRestore,
                   onPressed: () => widget.controller.restoreSnippet(snippet.id),
                 ),
+              // Empty Trash Button
+              if (widget.controller.activeSection == SidebarSection.trash)
+                IconButton(
+                  icon: const Icon(Icons.delete_forever_outlined),
+                  tooltip: l10n.buttonDeleteForever,
+                  onPressed: () => _confirmDeleteForever(context, snippet),
+                ),
               // Add Description Button
               if (showAddDescriptionButton)
                 IconButton(
@@ -567,6 +575,24 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
     if (shouldDelete == true) {
       widget.controller.deleteSnippet(snippet.id);
+    }
+  }
+
+  Future<void> _confirmDeleteForever(
+    BuildContext context,
+    Snippet snippet,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => ConfirmationDialog(
+        title: l10n.dialogDeleteForeverTitle,
+        message: l10n.dialogDeleteForeverMessage,
+        confirmLabel: l10n.buttonDeleteForever,
+      ),
+    );
+    if (shouldDelete == true) {
+      await widget.controller.permanentlyDeleteSnippet(snippet.id);
     }
   }
 }

@@ -433,6 +433,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fragment'**
   String get fragmentNameBase;
+
+  /// Tooltip for the button that permanently deletes a snippet from the Trash
+  ///
+  /// In en, this message translates to:
+  /// **'Delete forever'**
+  String get buttonDeleteForever;
+
+  /// Title of the confirmation dialog for permanently deleting a snippet
+  ///
+  /// In en, this message translates to:
+  /// **'Delete forever'**
+  String get dialogDeleteForeverTitle;
+
+  /// Message shown in the confirmation dialog for permanently deleting a snippet
+  ///
+  /// In en, this message translates to:
+  /// **'This snippet will be permanently deleted. This action cannot be undone.'**
+  String get dialogDeleteForeverMessage;
+
+  /// Tooltip for the button that empties the entire Trash
+  ///
+  /// In en, this message translates to:
+  /// **'Empty Trash'**
+  String get buttonEmptyTrash;
+
+  /// Title of the confirmation dialog for emptying the Trash
+  ///
+  /// In en, this message translates to:
+  /// **'Empty Trash'**
+  String get dialogEmptyTrashTitle;
+
+  /// Message shown in the confirmation dialog for emptying the Trash
+  ///
+  /// In en, this message translates to:
+  /// **'All snippets in the Trash will be permanently deleted. This action cannot be undone.'**
+  String get dialogEmptyTrashMessage;
 }
 
 class _AppLocalizationsDelegate
