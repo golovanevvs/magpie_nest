@@ -35,14 +35,9 @@ import 'package:magpie_nest/features/snippets/presentation/controllers/app_contr
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delete_confirmation_dialog.dart';
 
 class SnippetPreview extends StatefulWidget {
-  final int selectedIndex;
   final AppController controller;
 
-  const SnippetPreview({
-    super.key,
-    required this.selectedIndex,
-    required this.controller,
-  });
+  const SnippetPreview({super.key, required this.controller});
 
   @override
   State<SnippetPreview> createState() => _SnippetPreviewState();
@@ -362,7 +357,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                   },
                 ),
               ),
-              if (widget.selectedIndex == 3)
+              if (widget.controller.activeSection == SidebarSection.trash)
                 IconButton(
                   icon: const Icon(Icons.restore_from_trash),
                   tooltip: l10n.buttonRestore,
@@ -395,7 +390,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
                 onPressed: () => widget.controller.toggleFavorite(snippet.id),
               ),
-              if (widget.selectedIndex != 3)
+              if (widget.controller.activeSection != SidebarSection.trash)
                 IconButton(
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () => _confirmDeleteSnippet(context, snippet),

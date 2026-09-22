@@ -100,12 +100,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
 
                 // Panel 4: Snippet Preview
-                Expanded(
-                  child: SnippetPreview(
-                    selectedIndex: _selectedIndex,
-                    controller: widget.controller,
-                  ),
-                ),
+                Expanded(child: SnippetPreview(controller: widget.controller)),
               ] else ...[
                 Expanded(
                   child: SettingsScreen(
