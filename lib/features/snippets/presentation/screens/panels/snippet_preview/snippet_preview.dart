@@ -388,11 +388,14 @@ class _SnippetPreviewState extends State<SnippetPreview> {
               // Favorite Button
               IconButton(
                 icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
+                tooltip: l10n.buttonFavorite,
                 onPressed: () => widget.controller.toggleFavorite(snippet.id),
               ),
+              // Delete Button
               if (widget.controller.activeSection != SidebarSection.trash)
                 IconButton(
                   icon: const Icon(Icons.delete_outline),
+                  tooltip: l10n.buttonDelete,
                   onPressed: () => _confirmDeleteSnippet(context, snippet),
                 ),
             ],

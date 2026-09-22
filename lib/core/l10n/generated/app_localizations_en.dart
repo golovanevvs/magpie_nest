@@ -76,6 +76,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buttonCopy => 'Copy to clipboard';
 
   @override
+  String get buttonFavorite => 'Toggle favorite';
+
+  @override
   String get snackbarCopied => 'Copied to clipboard';
 
   @override

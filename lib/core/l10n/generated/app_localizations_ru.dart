@@ -76,6 +76,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get buttonCopy => 'Скопировать в буфер обмена';
 
   @override
+  String get buttonFavorite => 'В избранное';
+
+  @override
   String get snackbarCopied => 'Скопировано в буфер обмена';
 
   @override

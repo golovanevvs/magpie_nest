@@ -230,6 +230,12 @@ abstract class AppLocalizations {
   /// **'Copy to clipboard'**
   String get buttonCopy;
 
+  /// Tooltip for the favorite button in the snippet viewer
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle favorite'**
+  String get buttonFavorite;
+
   /// Message shown after copying code to clipboard
   ///
   /// In en, this message translates to:

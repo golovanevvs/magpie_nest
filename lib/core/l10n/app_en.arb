@@ -88,6 +88,10 @@
   "@buttonCopy": {
     "description": "Tooltip for the copy button in the code viewer"
   },
+  "buttonFavorite": "Toggle favorite",
+  "@buttonFavorite": {
+    "description": "Tooltip for the favorite button in the snippet viewer"
+  },
   "snackbarCopied": "Copied to clipboard",
   "@snackbarCopied": {
     "description": "Message shown after copying code to clipboard"
