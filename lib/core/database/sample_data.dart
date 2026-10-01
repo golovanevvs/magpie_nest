@@ -10,26 +10,45 @@ const folderApi = 'folder-api';
 const folderScripts = 'folder-scripts';
 
 List<Folder> sampleFolders() {
-  return const [
-    Folder(id: folderWork, name: 'work', sortOrder: 0),
-    Folder(id: folderPersonal, name: 'Personal', sortOrder: 1),
+  final now = DateTime.now();
+  return [
+    Folder(
+      id: folderWork,
+      name: 'work',
+      sortOrder: 0,
+      createdAt: now,
+      updatedAt: now,
+    ),
+    Folder(
+      id: folderPersonal,
+      name: 'Personal',
+      sortOrder: 1,
+      createdAt: now,
+      updatedAt: now,
+    ),
     Folder(
       id: folderReact,
       name: 'React Components',
       parentId: folderWork,
       sortOrder: 0,
+      createdAt: now,
+      updatedAt: now,
     ),
     Folder(
       id: folderApi,
       name: 'API Calls',
       parentId: folderWork,
       sortOrder: 1,
+      createdAt: now,
+      updatedAt: now,
     ),
     Folder(
       id: folderScripts,
       name: 'Scripts',
       parentId: folderPersonal,
       sortOrder: 0,
+      createdAt: now,
+      updatedAt: now,
     ),
   ];
 }
@@ -49,9 +68,10 @@ List<Snippet> sampleSnippets() {
     Snippet(
       id: snippetIds['dart']!,
       name: 'Hello World in Dart',
-      fragments: const [
+      fragments: [
         Fragment(
           id: 'frag-dart-main',
+          updatedAt: now,
           name: 'main.dart',
           language: 'dart',
           content: 'void main() {\n  print(\'Hello, World!\');\n}',
@@ -65,9 +85,10 @@ List<Snippet> sampleSnippets() {
     Snippet(
       id: snippetIds['go']!,
       name: 'HTTP Server in Go',
-      fragments: const [
+      fragments: [
         Fragment(
           id: 'frag-go-main',
+          updatedAt: now,
           name: 'main.go',
           language: 'go',
           content:
@@ -81,9 +102,10 @@ List<Snippet> sampleSnippets() {
     Snippet(
       id: snippetIds['react']!,
       name: 'React Button Component',
-      fragments: const [
+      fragments: [
         Fragment(
           id: 'frag-react-button',
+          updatedAt: now,
           name: 'Button.tsx',
           language: 'typescript',
           content:
@@ -98,9 +120,10 @@ List<Snippet> sampleSnippets() {
     Snippet(
       id: snippetIds['bash']!,
       name: 'Bash Backup Script',
-      fragments: const [
+      fragments: [
         Fragment(
           id: 'frag-bash-backup',
+          updatedAt: now,
           name: 'backup.sh',
           language: 'bash',
           content:
@@ -114,9 +137,10 @@ List<Snippet> sampleSnippets() {
     Snippet(
       id: snippetIds['note']!,
       name: 'Quick Note',
-      fragments: const [
+      fragments: [
         Fragment(
           id: 'frag-note-txt',
+          updatedAt: now,
           name: 'note.txt',
           language: 'plaintext',
           content: '// TODO: Implement this feature later',
@@ -128,9 +152,10 @@ List<Snippet> sampleSnippets() {
     Snippet(
       id: snippetIds['old']!,
       name: 'Old Experiment',
-      fragments: const [
+      fragments: [
         Fragment(
           id: 'frag-old-experiment',
+          updatedAt: now,
           name: 'experiment.js',
           language: 'javascript',
           content: '// This was an old experiment\n// No longer needed',

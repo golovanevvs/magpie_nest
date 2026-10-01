@@ -16,6 +16,10 @@ class Folders extends Table {
   TextColumn get parentId =>
       text().nullable().references(Folders, #id, onDelete: KeyAction.setNull)();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -46,6 +50,7 @@ class Fragments extends Table {
   TextColumn get name => text()();
   TextColumn get language => text()();
   TextColumn get content => text()();
+  DateTimeColumn get updatedAt => dateTime()();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
 
   @override
@@ -113,6 +118,10 @@ class AppDatabase extends _$AppDatabase {
           name: folder.name,
           parentId: folder.parentId,
           sortOrder: folder.sortOrder,
+          createdAt: folder.createdAt,
+          updatedAt: folder.updatedAt,
+          isDeleted: folder.isDeleted,
+          deletedAt: folder.deletedAt,
         ),
       );
     }
@@ -140,6 +149,7 @@ class AppDatabase extends _$AppDatabase {
             name: fragment.name,
             language: fragment.language,
             content: fragment.content,
+            updatedAt: fragment.updatedAt,
             sortOrder: snippet.fragments.indexOf(fragment),
           ),
         );

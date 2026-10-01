@@ -1,10 +1,12 @@
 import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/snippets_controller.dart';
+import 'package:uuid/uuid.dart';
 
 class FragmentsController {
   final ISnippetRepository snippetRepository;
   final SnippetsController snippetsController;
+  final Uuid _uuid = Uuid();
 
   FragmentsController({
     required this.snippetRepository,
@@ -17,10 +19,11 @@ class FragmentsController {
 
     final newNumber = snippet.fragments.length + 1;
     final newFragment = Fragment(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _uuid.v4(),
       name: '$baseName $newNumber',
       language: 'plaintext',
       content: '',
+      updatedAt: DateTime.now(),
     );
 
     final updated = snippet.copyWith(
@@ -66,6 +69,7 @@ class FragmentsController {
 
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       name: trimmedName,
+      updatedAt: DateTime.now(),
     );
 
     final updatedFragments = [...snippet.fragments];
@@ -95,6 +99,7 @@ class FragmentsController {
 
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       content: newContent,
+      updatedAt: DateTime.now(),
     );
 
     final updatedFragments = [...snippet.fragments];
@@ -127,6 +132,7 @@ class FragmentsController {
 
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       name: trimmedName,
+      updatedAt: DateTime.now(),
     );
 
     final updatedFragments = [...snippet.fragments];
@@ -156,6 +162,7 @@ class FragmentsController {
 
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       language: newLanguage,
+      updatedAt: DateTime.now(),
     );
 
     final updatedFragments = [...snippet.fragments];

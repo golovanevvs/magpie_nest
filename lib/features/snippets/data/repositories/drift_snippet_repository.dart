@@ -149,6 +149,7 @@ class DriftSnippetRepository implements ISnippetRepository {
       name: row.name,
       language: row.language,
       content: row.content,
+      updatedAt: row.updatedAt,
     );
   }
 
@@ -173,6 +174,7 @@ class DriftSnippetRepository implements ISnippetRepository {
       name: fragment.name,
       language: fragment.language,
       content: fragment.content,
+      updatedAt: fragment.updatedAt,
       sortOrder: index,
     );
   }

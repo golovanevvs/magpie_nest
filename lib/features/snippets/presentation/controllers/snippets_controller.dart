@@ -3,9 +3,11 @@ import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/domain/repositories/i_snippet_repository.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/sidebar_section.dart';
+import 'package:uuid/uuid.dart';
 
 class SnippetsController extends ChangeNotifier {
   final ISnippetRepository snippetRepository;
+  final Uuid _uuid = Uuid();
 
   List<Snippet> _snippets = [];
   Snippet? _selectedSnippet;
@@ -165,20 +167,22 @@ class SnippetsController extends ChangeNotifier {
       newName = '$defaultName $counter';
     }
 
+    final now = DateTime.now();
     final snippet = Snippet(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _uuid.v4(),
       name: newName,
       fragments: [
         Fragment(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          id: _uuid.v4(),
           name: '$defaultFragmentBaseName 1',
           language: 'plaintext',
           content: '',
+          updatedAt: now,
         ),
       ],
       folderId: folderId,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      createdAt: now,
+      updatedAt: now,
     );
 
     await snippetRepository.saveSnippet(snippet);

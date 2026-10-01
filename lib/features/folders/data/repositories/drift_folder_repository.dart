@@ -42,6 +42,10 @@ class DriftFolderRepository implements IFolderRepository {
       name: row.name,
       parentId: row.parentId,
       sortOrder: row.sortOrder,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      isDeleted: row.isDeleted,
+      deletedAt: row.deletedAt,
     );
   }
 
@@ -51,6 +55,10 @@ class DriftFolderRepository implements IFolderRepository {
       name: folder.name,
       parentId: folder.parentId,
       sortOrder: folder.sortOrder,
+      createdAt: folder.createdAt,
+      updatedAt: folder.updatedAt,
+      isDeleted: folder.isDeleted,
+      deletedAt: folder.deletedAt,
     );
   }
 }

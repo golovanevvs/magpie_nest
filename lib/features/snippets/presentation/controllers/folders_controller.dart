@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/folders/domain/repositories/i_folder_repository.dart';
+import 'package:uuid/uuid.dart';
 
 class FoldersController extends ChangeNotifier {
   final IFolderRepository folderRepository;
+  final Uuid _uuid = Uuid();
 
   List<Folder> _folders = [];
   Folder? _selectedFolder;
@@ -33,11 +35,14 @@ class FoldersController extends ChangeNotifier {
       newName = '$initialName $counter';
     }
 
+    final now = DateTime.now();
     final folder = Folder(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _uuid.v4(),
       name: newName,
       parentId: parentId,
       sortOrder: _folders.length,
+      createdAt: now,
+      updatedAt: now,
     );
 
     await folderRepository.saveFolder(folder);
@@ -56,7 +61,10 @@ class FoldersController extends ChangeNotifier {
     final trimmedName = newName.trim();
     if (trimmedName.isEmpty || trimmedName == folder.name) return;
 
-    final updated = folder.copyWith(name: trimmedName);
+    final updated = folder.copyWith(
+      name: trimmedName,
+      updatedAt: DateTime.now(),
+    );
     await folderRepository.saveFolder(updated);
 
     final index = _folders.indexWhere((f) => f.id == id);
