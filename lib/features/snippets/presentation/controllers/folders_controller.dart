@@ -76,10 +76,11 @@ class FoldersController extends ChangeNotifier {
   }
 
   Future<void> deleteFolder(String id) async {
+    final subtreeIds = {id, ...await folderRepository.getDescendantIds(id)};
     await folderRepository.deleteFolder(id);
-    _folders.removeWhere((f) => f.id == id);
+    _folders.removeWhere((f) => subtreeIds.contains(f.id));
 
-    if (_selectedFolder?.id == id) {
+    if (_selectedFolder != null && subtreeIds.contains(_selectedFolder!.id)) {
       _selectedFolder = null;
     }
 

@@ -7,7 +7,7 @@ class InMemoryFolderRepository implements IFolderRepository {
 
   @override
   Future<List<Folder>> getAllFolders() async {
-    return List.unmodifiable(_folders);
+    return List.unmodifiable(_folders.where((f) => !f.isDeleted));
   }
 
   @override
@@ -30,7 +30,34 @@ class InMemoryFolderRepository implements IFolderRepository {
   }
 
   @override
+  Future<List<String>> getDescendantIds(String id) async {
+    final descendants = <String>[];
+    final stack = [id];
+    while (stack.isNotEmpty) {
+      final current = stack.removeLast();
+      for (final folder in _folders) {
+        if (folder.parentId == current) {
+          descendants.add(folder.id);
+          stack.add(folder.id);
+        }
+      }
+    }
+    return descendants;
+  }
+
+  @override
   Future<void> deleteFolder(String id) async {
-    _folders.removeWhere((folder) => folder.id == id || folder.parentId == id);
+    final now = DateTime.now();
+    final subtreeIds = {id, ...await getDescendantIds(id)};
+
+    for (var i = 0; i < _folders.length; i++) {
+      if (subtreeIds.contains(_folders[i].id)) {
+        _folders[i] = _folders[i].copyWith(
+          isDeleted: true,
+          deletedAt: now,
+          updatedAt: now,
+        );
+      }
+    }
   }
 }

@@ -61,12 +61,21 @@ class AppController extends ChangeNotifier {
   }
 
   Future<void> deleteFolder(String id) async {
-    final wasSelected = foldersController.selectedFolder?.id == id;
-    final snippetsInFolder = await snippetRepository.getSnippetsByFolderId(id);
-    for (final snippet in snippetsInFolder) {
-      await snippetRepository.saveSnippet(
-        snippet.copyWith(isDeleted: true, updatedAt: DateTime.now()),
+    final descendantIds = await folderRepository.getDescendantIds(id);
+    final allFolderIds = [id, ...descendantIds];
+    final wasSelected = allFolderIds.contains(
+      foldersController.selectedFolder?.id,
+    );
+
+    for (final folderId in allFolderIds) {
+      final snippetsInFolder = await snippetRepository.getSnippetsByFolderId(
+        folderId,
       );
+      for (final snippet in snippetsInFolder) {
+        await snippetRepository.saveSnippet(
+          snippet.copyWith(isDeleted: true, updatedAt: DateTime.now()),
+        );
+      }
     }
 
     await foldersController.deleteFolder(id);
