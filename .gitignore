@@ -29,10 +29,3 @@ doc/api/
 .flutter-plugins-dependencies
 
 .vscode/
-
-# sverklo per-project state (memory journal, etc.)
-.sverklo/
-.mcp.json
-CLAUDE.md
-.claude/
-.github/
