@@ -64,6 +64,7 @@ class FoldersController extends ChangeNotifier {
     final updated = folder.copyWith(
       name: trimmedName,
       updatedAt: DateTime.now(),
+      revision: folder.revision + 1,
     );
     await folderRepository.saveFolder(updated);
 

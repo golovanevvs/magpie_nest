@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:magpie_nest/core/database/sample_data.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 part 'app_database.g.dart';
 
@@ -20,6 +21,7 @@ class Folders extends Table {
   DateTimeColumn get updatedAt => dateTime()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+  IntColumn get revision => integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -37,6 +39,8 @@ class Snippets extends Table {
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
+  IntColumn get revision => integer().withDefault(const Constant(0))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -52,12 +56,24 @@ class Fragments extends Table {
   TextColumn get content => text()();
   DateTimeColumn get updatedAt => dateTime()();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get revision => integer().withDefault(const Constant(0))();
+  BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Folders, Snippets, Fragments])
+@DataClassName('SyncMetaRow')
+class SyncMeta extends Table {
+  TextColumn get key => text()();
+  TextColumn get value => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
+@DriftDatabase(tables: [Folders, Snippets, Fragments, SyncMeta])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
@@ -106,7 +122,27 @@ class AppDatabase extends _$AppDatabase {
         if (details.wasCreated) {
           await _seedSampleData();
         }
+        await _ensureDeviceId();
       },
+    );
+  }
+
+  Future<String> getDeviceId() async {
+    await _ensureDeviceId();
+    final row = await (select(
+      syncMeta,
+    )..where((r) => r.key.equals('deviceId'))).getSingle();
+    return row.value!;
+  }
+
+  Future<void> _ensureDeviceId() async {
+    final existing = await (select(
+      syncMeta,
+    )..where((row) => row.key.equals('deviceId'))).getSingleOrNull();
+    if (existing != null) return;
+    await into(syncMeta).insert(
+      SyncMetaRow(key: 'deviceId', value: const Uuid().v4()),
+      mode: InsertMode.insertOrIgnore,
     );
   }
 
@@ -122,6 +158,7 @@ class AppDatabase extends _$AppDatabase {
           updatedAt: folder.updatedAt,
           isDeleted: folder.isDeleted,
           deletedAt: folder.deletedAt,
+          revision: folder.revision,
         ),
       );
     }
@@ -138,6 +175,8 @@ class AppDatabase extends _$AppDatabase {
           isDeleted: snippet.isDeleted,
           createdAt: snippet.createdAt,
           updatedAt: snippet.updatedAt,
+          deletedAt: snippet.deletedAt,
+          revision: snippet.revision,
         ),
       );
 
@@ -150,7 +189,10 @@ class AppDatabase extends _$AppDatabase {
             language: fragment.language,
             content: fragment.content,
             updatedAt: fragment.updatedAt,
+            isDeleted: fragment.isDeleted,
+            deletedAt: fragment.deletedAt,
             sortOrder: snippet.fragments.indexOf(fragment),
+            revision: fragment.revision,
           ),
         );
       }

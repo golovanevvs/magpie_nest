@@ -67,13 +67,19 @@ class AppController extends ChangeNotifier {
       foldersController.selectedFolder?.id,
     );
 
+    final now = DateTime.now();
     for (final folderId in allFolderIds) {
       final snippetsInFolder = await snippetRepository.getSnippetsByFolderId(
         folderId,
       );
       for (final snippet in snippetsInFolder) {
         await snippetRepository.saveSnippet(
-          snippet.copyWith(isDeleted: true, updatedAt: DateTime.now()),
+          snippet.copyWith(
+            isDeleted: true,
+            deletedAt: now,
+            updatedAt: now,
+            revision: snippet.revision + 1,
+          ),
         );
       }
     }

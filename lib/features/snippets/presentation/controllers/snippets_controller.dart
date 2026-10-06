@@ -61,6 +61,7 @@ class SnippetsController extends ChangeNotifier {
     final updated = snippet.copyWith(
       isFavorite: !snippet.isFavorite,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
@@ -112,7 +113,9 @@ class SnippetsController extends ChangeNotifier {
     restored = restored.copyWith(
       isDeleted: false,
       clearFolderId: true,
+      clearDeletedAt: true,
       updatedAt: DateTime.now(),
+      revision: restored.revision + 1,
     );
     await snippetRepository.saveSnippet(restored);
 
@@ -232,6 +235,7 @@ class SnippetsController extends ChangeNotifier {
     final updated = snippet.copyWith(
       name: trimmedName,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
@@ -260,6 +264,7 @@ class SnippetsController extends ChangeNotifier {
       description: trimmedDescription.isEmpty ? null : trimmedDescription,
       clearDescription: trimmedDescription.isEmpty,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);

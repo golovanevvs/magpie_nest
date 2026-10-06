@@ -100,6 +100,18 @@ class $FoldersTable extends Folders with TableInfo<$FoldersTable, FolderRow> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -110,6 +122,7 @@ class $FoldersTable extends Folders with TableInfo<$FoldersTable, FolderRow> {
     updatedAt,
     isDeleted,
     deletedAt,
+    revision,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -176,6 +189,12 @@ class $FoldersTable extends Folders with TableInfo<$FoldersTable, FolderRow> {
         deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
       );
     }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
     return context;
   }
 
@@ -217,6 +236,10 @@ class $FoldersTable extends Folders with TableInfo<$FoldersTable, FolderRow> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}deleted_at'],
       ),
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
     );
   }
 
@@ -235,6 +258,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
   final DateTime updatedAt;
   final bool isDeleted;
   final DateTime? deletedAt;
+  final int revision;
   const FolderRow({
     required this.id,
     required this.name,
@@ -244,6 +268,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
     required this.updatedAt,
     required this.isDeleted,
     this.deletedAt,
+    required this.revision,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -260,6 +285,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<DateTime>(deletedAt);
     }
+    map['revision'] = Variable<int>(revision);
     return map;
   }
 
@@ -277,6 +303,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedAt),
+      revision: Value(revision),
     );
   }
 
@@ -294,6 +321,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      revision: serializer.fromJson<int>(json['revision']),
     );
   }
   @override
@@ -308,6 +336,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'isDeleted': serializer.toJson<bool>(isDeleted),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'revision': serializer.toJson<int>(revision),
     };
   }
 
@@ -320,6 +349,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
     DateTime? updatedAt,
     bool? isDeleted,
     Value<DateTime?> deletedAt = const Value.absent(),
+    int? revision,
   }) => FolderRow(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -329,6 +359,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
     updatedAt: updatedAt ?? this.updatedAt,
     isDeleted: isDeleted ?? this.isDeleted,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    revision: revision ?? this.revision,
   );
   FolderRow copyWithCompanion(FoldersCompanion data) {
     return FolderRow(
@@ -340,6 +371,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      revision: data.revision.present ? data.revision.value : this.revision,
     );
   }
 
@@ -353,7 +385,8 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted, ')
-          ..write('deletedAt: $deletedAt')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('revision: $revision')
           ..write(')'))
         .toString();
   }
@@ -368,6 +401,7 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
     updatedAt,
     isDeleted,
     deletedAt,
+    revision,
   );
   @override
   bool operator ==(Object other) =>
@@ -380,7 +414,8 @@ class FolderRow extends DataClass implements Insertable<FolderRow> {
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.isDeleted == this.isDeleted &&
-          other.deletedAt == this.deletedAt);
+          other.deletedAt == this.deletedAt &&
+          other.revision == this.revision);
 }
 
 class FoldersCompanion extends UpdateCompanion<FolderRow> {
@@ -392,6 +427,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
   final Value<DateTime> updatedAt;
   final Value<bool> isDeleted;
   final Value<DateTime?> deletedAt;
+  final Value<int> revision;
   final Value<int> rowid;
   const FoldersCompanion({
     this.id = const Value.absent(),
@@ -402,6 +438,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
     this.updatedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
     this.deletedAt = const Value.absent(),
+    this.revision = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FoldersCompanion.insert({
@@ -413,6 +450,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
     required DateTime updatedAt,
     this.isDeleted = const Value.absent(),
     this.deletedAt = const Value.absent(),
+    this.revision = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -427,6 +465,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
     Expression<DateTime>? updatedAt,
     Expression<bool>? isDeleted,
     Expression<DateTime>? deletedAt,
+    Expression<int>? revision,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -438,6 +477,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
       if (updatedAt != null) 'updated_at': updatedAt,
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (deletedAt != null) 'deleted_at': deletedAt,
+      if (revision != null) 'revision': revision,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -451,6 +491,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
     Value<DateTime>? updatedAt,
     Value<bool>? isDeleted,
     Value<DateTime?>? deletedAt,
+    Value<int>? revision,
     Value<int>? rowid,
   }) {
     return FoldersCompanion(
@@ -462,6 +503,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
       updatedAt: updatedAt ?? this.updatedAt,
       isDeleted: isDeleted ?? this.isDeleted,
       deletedAt: deletedAt ?? this.deletedAt,
+      revision: revision ?? this.revision,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -493,6 +535,9 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
     if (deletedAt.present) {
       map['deleted_at'] = Variable<DateTime>(deletedAt.value);
     }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -510,6 +555,7 @@ class FoldersCompanion extends UpdateCompanion<FolderRow> {
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('deletedAt: $deletedAt, ')
+          ..write('revision: $revision, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -628,6 +674,29 @@ class $SnippetsTable extends Snippets
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -639,6 +708,8 @@ class $SnippetsTable extends Snippets
     isDeleted,
     createdAt,
     updatedAt,
+    revision,
+    deletedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -717,6 +788,18 @@ class $SnippetsTable extends Snippets
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -762,6 +845,14 @@ class $SnippetsTable extends Snippets
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
     );
   }
 
@@ -781,6 +872,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int revision;
+  final DateTime? deletedAt;
   const SnippetRow({
     required this.id,
     required this.name,
@@ -791,6 +884,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
     required this.isDeleted,
     required this.createdAt,
     required this.updatedAt,
+    required this.revision,
+    this.deletedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -810,6 +905,10 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
     map['is_deleted'] = Variable<bool>(isDeleted);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['revision'] = Variable<int>(revision);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
     return map;
   }
 
@@ -830,6 +929,10 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
       isDeleted: Value(isDeleted),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      revision: Value(revision),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
     );
   }
 
@@ -848,6 +951,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      revision: serializer.fromJson<int>(json['revision']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
   }
   @override
@@ -863,6 +968,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
       'isDeleted': serializer.toJson<bool>(isDeleted),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'revision': serializer.toJson<int>(revision),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
   }
 
@@ -876,6 +983,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    int? revision,
+    Value<DateTime?> deletedAt = const Value.absent(),
   }) => SnippetRow(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -888,6 +997,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
     isDeleted: isDeleted ?? this.isDeleted,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    revision: revision ?? this.revision,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
   SnippetRow copyWithCompanion(SnippetsCompanion data) {
     return SnippetRow(
@@ -906,6 +1017,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
     );
   }
 
@@ -920,7 +1033,9 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
           ..write('isFavorite: $isFavorite, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('revision: $revision, ')
+          ..write('deletedAt: $deletedAt')
           ..write(')'))
         .toString();
   }
@@ -936,6 +1051,8 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
     isDeleted,
     createdAt,
     updatedAt,
+    revision,
+    deletedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -949,7 +1066,9 @@ class SnippetRow extends DataClass implements Insertable<SnippetRow> {
           other.isFavorite == this.isFavorite &&
           other.isDeleted == this.isDeleted &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.revision == this.revision &&
+          other.deletedAt == this.deletedAt);
 }
 
 class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
@@ -962,6 +1081,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
   final Value<bool> isDeleted;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<int> revision;
+  final Value<DateTime?> deletedAt;
   final Value<int> rowid;
   const SnippetsCompanion({
     this.id = const Value.absent(),
@@ -973,6 +1094,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
     this.isDeleted = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SnippetsCompanion.insert({
@@ -985,6 +1108,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
     this.isDeleted = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.revision = const Value.absent(),
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -1000,6 +1125,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
     Expression<bool>? isDeleted,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<int>? revision,
+    Expression<DateTime>? deletedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1012,6 +1139,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (revision != null) 'revision': revision,
+      if (deletedAt != null) 'deleted_at': deletedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1026,6 +1155,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
     Value<bool>? isDeleted,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<int>? revision,
+    Value<DateTime?>? deletedAt,
     Value<int>? rowid,
   }) {
     return SnippetsCompanion(
@@ -1038,6 +1169,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      revision: revision ?? this.revision,
+      deletedAt: deletedAt ?? this.deletedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1072,6 +1205,12 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1090,6 +1229,8 @@ class SnippetsCompanion extends UpdateCompanion<SnippetRow> {
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('revision: $revision, ')
+          ..write('deletedAt: $deletedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1179,6 +1320,44 @@ class $FragmentsTable extends Fragments
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1188,6 +1367,9 @@ class $FragmentsTable extends Fragments
     content,
     updatedAt,
     sortOrder,
+    revision,
+    isDeleted,
+    deletedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1252,6 +1434,24 @@ class $FragmentsTable extends Fragments
         sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
       );
     }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -1289,6 +1489,18 @@ class $FragmentsTable extends Fragments
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
     );
   }
 
@@ -1306,6 +1518,9 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
   final String content;
   final DateTime updatedAt;
   final int sortOrder;
+  final int revision;
+  final bool isDeleted;
+  final DateTime? deletedAt;
   const FragmentRow({
     required this.id,
     required this.snippetId,
@@ -1314,6 +1529,9 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
     required this.content,
     required this.updatedAt,
     required this.sortOrder,
+    required this.revision,
+    required this.isDeleted,
+    this.deletedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1325,6 +1543,11 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
     map['content'] = Variable<String>(content);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     map['sort_order'] = Variable<int>(sortOrder);
+    map['revision'] = Variable<int>(revision);
+    map['is_deleted'] = Variable<bool>(isDeleted);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
     return map;
   }
 
@@ -1337,6 +1560,11 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
       content: Value(content),
       updatedAt: Value(updatedAt),
       sortOrder: Value(sortOrder),
+      revision: Value(revision),
+      isDeleted: Value(isDeleted),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
     );
   }
 
@@ -1353,6 +1581,9 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
       content: serializer.fromJson<String>(json['content']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      revision: serializer.fromJson<int>(json['revision']),
+      isDeleted: serializer.fromJson<bool>(json['isDeleted']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
   }
   @override
@@ -1366,6 +1597,9 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
       'content': serializer.toJson<String>(content),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'revision': serializer.toJson<int>(revision),
+      'isDeleted': serializer.toJson<bool>(isDeleted),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
   }
 
@@ -1377,6 +1611,9 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
     String? content,
     DateTime? updatedAt,
     int? sortOrder,
+    int? revision,
+    bool? isDeleted,
+    Value<DateTime?> deletedAt = const Value.absent(),
   }) => FragmentRow(
     id: id ?? this.id,
     snippetId: snippetId ?? this.snippetId,
@@ -1385,6 +1622,9 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
     content: content ?? this.content,
     updatedAt: updatedAt ?? this.updatedAt,
     sortOrder: sortOrder ?? this.sortOrder,
+    revision: revision ?? this.revision,
+    isDeleted: isDeleted ?? this.isDeleted,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
   FragmentRow copyWithCompanion(FragmentsCompanion data) {
     return FragmentRow(
@@ -1395,6 +1635,9 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
       content: data.content.present ? data.content.value : this.content,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
     );
   }
 
@@ -1407,14 +1650,27 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
           ..write('language: $language, ')
           ..write('content: $content, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('sortOrder: $sortOrder')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('revision: $revision, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('deletedAt: $deletedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, snippetId, name, language, content, updatedAt, sortOrder);
+  int get hashCode => Object.hash(
+    id,
+    snippetId,
+    name,
+    language,
+    content,
+    updatedAt,
+    sortOrder,
+    revision,
+    isDeleted,
+    deletedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1425,7 +1681,10 @@ class FragmentRow extends DataClass implements Insertable<FragmentRow> {
           other.language == this.language &&
           other.content == this.content &&
           other.updatedAt == this.updatedAt &&
-          other.sortOrder == this.sortOrder);
+          other.sortOrder == this.sortOrder &&
+          other.revision == this.revision &&
+          other.isDeleted == this.isDeleted &&
+          other.deletedAt == this.deletedAt);
 }
 
 class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
@@ -1436,6 +1695,9 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
   final Value<String> content;
   final Value<DateTime> updatedAt;
   final Value<int> sortOrder;
+  final Value<int> revision;
+  final Value<bool> isDeleted;
+  final Value<DateTime?> deletedAt;
   final Value<int> rowid;
   const FragmentsCompanion({
     this.id = const Value.absent(),
@@ -1445,6 +1707,9 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
     this.content = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FragmentsCompanion.insert({
@@ -1455,6 +1720,9 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
     required String content,
     required DateTime updatedAt,
     this.sortOrder = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        snippetId = Value(snippetId),
@@ -1470,6 +1738,9 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
     Expression<String>? content,
     Expression<DateTime>? updatedAt,
     Expression<int>? sortOrder,
+    Expression<int>? revision,
+    Expression<bool>? isDeleted,
+    Expression<DateTime>? deletedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1480,6 +1751,9 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
       if (content != null) 'content': content,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (revision != null) 'revision': revision,
+      if (isDeleted != null) 'is_deleted': isDeleted,
+      if (deletedAt != null) 'deleted_at': deletedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1492,6 +1766,9 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
     Value<String>? content,
     Value<DateTime>? updatedAt,
     Value<int>? sortOrder,
+    Value<int>? revision,
+    Value<bool>? isDeleted,
+    Value<DateTime?>? deletedAt,
     Value<int>? rowid,
   }) {
     return FragmentsCompanion(
@@ -1502,6 +1779,9 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
       content: content ?? this.content,
       updatedAt: updatedAt ?? this.updatedAt,
       sortOrder: sortOrder ?? this.sortOrder,
+      revision: revision ?? this.revision,
+      isDeleted: isDeleted ?? this.isDeleted,
+      deletedAt: deletedAt ?? this.deletedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1530,6 +1810,15 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1546,6 +1835,226 @@ class FragmentsCompanion extends UpdateCompanion<FragmentRow> {
           ..write('content: $content, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('revision: $revision, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncMetaTable extends SyncMeta
+    with TableInfo<$SyncMetaTable, SyncMetaRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncMetaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [key, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_meta';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SyncMetaRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  SyncMetaRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncMetaRow(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      ),
+    );
+  }
+
+  @override
+  $SyncMetaTable createAlias(String alias) {
+    return $SyncMetaTable(attachedDatabase, alias);
+  }
+}
+
+class SyncMetaRow extends DataClass implements Insertable<SyncMetaRow> {
+  final String key;
+  final String? value;
+  const SyncMetaRow({required this.key, this.value});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    if (!nullToAbsent || value != null) {
+      map['value'] = Variable<String>(value);
+    }
+    return map;
+  }
+
+  SyncMetaCompanion toCompanion(bool nullToAbsent) {
+    return SyncMetaCompanion(
+      key: Value(key),
+      value: value == null && nullToAbsent
+          ? const Value.absent()
+          : Value(value),
+    );
+  }
+
+  factory SyncMetaRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SyncMetaRow(
+      key: serializer.fromJson<String>(json['key']),
+      value: serializer.fromJson<String?>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'value': serializer.toJson<String?>(value),
+    };
+  }
+
+  SyncMetaRow copyWith({
+    String? key,
+    Value<String?> value = const Value.absent(),
+  }) => SyncMetaRow(
+    key: key ?? this.key,
+    value: value.present ? value.value : this.value,
+  );
+  SyncMetaRow copyWithCompanion(SyncMetaCompanion data) {
+    return SyncMetaRow(
+      key: data.key.present ? data.key.value : this.key,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncMetaRow(')
+          ..write('key: $key, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(key, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SyncMetaRow &&
+          other.key == this.key &&
+          other.value == this.value);
+}
+
+class SyncMetaCompanion extends UpdateCompanion<SyncMetaRow> {
+  final Value<String> key;
+  final Value<String?> value;
+  final Value<int> rowid;
+  const SyncMetaCompanion({
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncMetaCompanion.insert({
+    required String key,
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : key = Value(key);
+  static Insertable<SyncMetaRow> custom({
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncMetaCompanion copyWith({
+    Value<String>? key,
+    Value<String?>? value,
+    Value<int>? rowid,
+  }) {
+    return SyncMetaCompanion(
+      key: key ?? this.key,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncMetaCompanion(')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1558,6 +2067,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FoldersTable folders = $FoldersTable(this);
   late final $SnippetsTable snippets = $SnippetsTable(this);
   late final $FragmentsTable fragments = $FragmentsTable(this);
+  late final $SyncMetaTable syncMeta = $SyncMetaTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1566,6 +2076,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     folders,
     snippets,
     fragments,
+    syncMeta,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -1603,6 +2114,7 @@ typedef $$FoldersTableCreateCompanionBuilder =
       required DateTime updatedAt,
       Value<bool> isDeleted,
       Value<DateTime?> deletedAt,
+      Value<int> revision,
       Value<int> rowid,
     });
 typedef $$FoldersTableUpdateCompanionBuilder =
@@ -1615,6 +2127,7 @@ typedef $$FoldersTableUpdateCompanionBuilder =
       Value<DateTime> updatedAt,
       Value<bool> isDeleted,
       Value<DateTime?> deletedAt,
+      Value<int> revision,
       Value<int> rowid,
     });
 
@@ -1699,6 +2212,11 @@ class $$FoldersTableFilterComposer
 
   ColumnFilters<DateTime> get deletedAt => $composableBuilder(
     column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1795,6 +2313,11 @@ class $$FoldersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$FoldersTableOrderingComposer get parentId {
     final $$FoldersTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -1848,6 +2371,9 @@ class $$FoldersTableAnnotationComposer
 
   GeneratedColumn<DateTime> get deletedAt =>
       $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
 
   $$FoldersTableAnnotationComposer get parentId {
     final $$FoldersTableAnnotationComposer composer = $composerBuilder(
@@ -1934,6 +2460,7 @@ class $$FoldersTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> revision = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FoldersCompanion(
                 id: id,
@@ -1944,6 +2471,7 @@ class $$FoldersTableTableManager
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
                 deletedAt: deletedAt,
+                revision: revision,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -1956,6 +2484,7 @@ class $$FoldersTableTableManager
                 required DateTime updatedAt,
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> revision = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FoldersCompanion.insert(
                 id: id,
@@ -1966,6 +2495,7 @@ class $$FoldersTableTableManager
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
                 deletedAt: deletedAt,
+                revision: revision,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -2062,6 +2592,8 @@ typedef $$SnippetsTableCreateCompanionBuilder =
       Value<bool> isDeleted,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<int> revision,
+      Value<DateTime?> deletedAt,
       Value<int> rowid,
     });
 typedef $$SnippetsTableUpdateCompanionBuilder =
@@ -2075,6 +2607,8 @@ typedef $$SnippetsTableUpdateCompanionBuilder =
       Value<bool> isDeleted,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<int> revision,
+      Value<DateTime?> deletedAt,
       Value<int> rowid,
     });
 
@@ -2164,6 +2698,16 @@ class $$SnippetsTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2265,6 +2809,16 @@ class $$SnippetsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$FoldersTableOrderingComposer get folderId {
     final $$FoldersTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -2327,6 +2881,12 @@ class $$SnippetsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
 
   $$FoldersTableAnnotationComposer get folderId {
     final $$FoldersTableAnnotationComposer composer = $composerBuilder(
@@ -2414,6 +2974,8 @@ class $$SnippetsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SnippetsCompanion(
                 id: id,
@@ -2425,6 +2987,8 @@ class $$SnippetsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                revision: revision,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2438,6 +3002,8 @@ class $$SnippetsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<int> revision = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SnippetsCompanion.insert(
                 id: id,
@@ -2449,6 +3015,8 @@ class $$SnippetsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                revision: revision,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -2546,6 +3114,9 @@ typedef $$FragmentsTableCreateCompanionBuilder =
       required String content,
       required DateTime updatedAt,
       Value<int> sortOrder,
+      Value<int> revision,
+      Value<bool> isDeleted,
+      Value<DateTime?> deletedAt,
       Value<int> rowid,
     });
 typedef $$FragmentsTableUpdateCompanionBuilder =
@@ -2557,6 +3128,9 @@ typedef $$FragmentsTableUpdateCompanionBuilder =
       Value<String> content,
       Value<DateTime> updatedAt,
       Value<int> sortOrder,
+      Value<int> revision,
+      Value<bool> isDeleted,
+      Value<DateTime?> deletedAt,
       Value<int> rowid,
     });
 
@@ -2618,6 +3192,21 @@ class $$FragmentsTableFilterComposer
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2684,6 +3273,21 @@ class $$FragmentsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$SnippetsTableOrderingComposer get snippetId {
     final $$SnippetsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -2734,6 +3338,15 @@ class $$FragmentsTableAnnotationComposer
 
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
 
   $$SnippetsTableAnnotationComposer get snippetId {
     final $$SnippetsTableAnnotationComposer composer = $composerBuilder(
@@ -2794,6 +3407,9 @@ class $$FragmentsTableTableManager
                 Value<String> content = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FragmentsCompanion(
                 id: id,
@@ -2803,6 +3419,9 @@ class $$FragmentsTableTableManager
                 content: content,
                 updatedAt: updatedAt,
                 sortOrder: sortOrder,
+                revision: revision,
+                isDeleted: isDeleted,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2814,6 +3433,9 @@ class $$FragmentsTableTableManager
                 required String content,
                 required DateTime updatedAt,
                 Value<int> sortOrder = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FragmentsCompanion.insert(
                 id: id,
@@ -2823,6 +3445,9 @@ class $$FragmentsTableTableManager
                 content: content,
                 updatedAt: updatedAt,
                 sortOrder: sortOrder,
+                revision: revision,
+                isDeleted: isDeleted,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -2892,6 +3517,151 @@ typedef $$FragmentsTableProcessedTableManager =
       FragmentRow,
       PrefetchHooks Function({bool snippetId})
     >;
+typedef $$SyncMetaTableCreateCompanionBuilder =
+    SyncMetaCompanion Function({
+      required String key,
+      Value<String?> value,
+      Value<int> rowid,
+    });
+typedef $$SyncMetaTableUpdateCompanionBuilder =
+    SyncMetaCompanion Function({
+      Value<String> key,
+      Value<String?> value,
+      Value<int> rowid,
+    });
+
+class $$SyncMetaTableFilterComposer
+    extends Composer<_$AppDatabase, $SyncMetaTable> {
+  $$SyncMetaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncMetaTableOrderingComposer
+    extends Composer<_$AppDatabase, $SyncMetaTable> {
+  $$SyncMetaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncMetaTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SyncMetaTable> {
+  $$SyncMetaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$SyncMetaTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SyncMetaTable,
+          SyncMetaRow,
+          $$SyncMetaTableFilterComposer,
+          $$SyncMetaTableOrderingComposer,
+          $$SyncMetaTableAnnotationComposer,
+          $$SyncMetaTableCreateCompanionBuilder,
+          $$SyncMetaTableUpdateCompanionBuilder,
+          (
+            SyncMetaRow,
+            BaseReferences<_$AppDatabase, $SyncMetaTable, SyncMetaRow>,
+          ),
+          SyncMetaRow,
+          PrefetchHooks Function()
+        > {
+  $$SyncMetaTableTableManager(_$AppDatabase db, $SyncMetaTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncMetaTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncMetaTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncMetaTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String?> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncMetaCompanion(key: key, value: value, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required String key,
+                Value<String?> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncMetaCompanion.insert(
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncMetaTable, SyncMetaRow>(table),
+                  BaseReferences<_$AppDatabase, $SyncMetaTable, SyncMetaRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncMetaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SyncMetaTable,
+      SyncMetaRow,
+      $$SyncMetaTableFilterComposer,
+      $$SyncMetaTableOrderingComposer,
+      $$SyncMetaTableAnnotationComposer,
+      $$SyncMetaTableCreateCompanionBuilder,
+      $$SyncMetaTableUpdateCompanionBuilder,
+      (SyncMetaRow, BaseReferences<_$AppDatabase, $SyncMetaTable, SyncMetaRow>),
+      SyncMetaRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2902,4 +3672,6 @@ class $AppDatabaseManager {
       $$SnippetsTableTableManager(_db, _db.snippets);
   $$FragmentsTableTableManager get fragments =>
       $$FragmentsTableTableManager(_db, _db.fragments);
+  $$SyncMetaTableTableManager get syncMeta =>
+      $$SyncMetaTableTableManager(_db, _db.syncMeta);
 }

@@ -62,14 +62,24 @@ class DriftFolderRepository implements IFolderRepository {
   Future<void> deleteFolder(String id) async {
     final now = DateTime.now();
     final subtreeIds = [id, ...await getDescendantIds(id)];
+    final rows = await (db.select(
+      db.folders,
+    )..where((t) => t.id.isIn(subtreeIds))).get();
 
-    await (db.update(db.folders)..where((t) => t.id.isIn(subtreeIds))).write(
-      FoldersCompanion(
-        isDeleted: const Value(true),
-        deletedAt: Value(now),
-        updatedAt: Value(now),
-      ),
-    );
+    await db.transaction(() async {
+      for (final row in rows) {
+        await (db.update(
+          db.folders,
+        )..where((t) => t.id.equals(row.id))).write(
+          FoldersCompanion(
+            isDeleted: const Value(true),
+            deletedAt: Value(now),
+            updatedAt: Value(now),
+            revision: Value(row.revision + 1),
+          ),
+        );
+      }
+    });
   }
 
   Folder _toDomain(FolderRow row) {
@@ -82,6 +92,7 @@ class DriftFolderRepository implements IFolderRepository {
       updatedAt: row.updatedAt,
       isDeleted: row.isDeleted,
       deletedAt: row.deletedAt,
+      revision: row.revision,
     );
   }
 
@@ -95,6 +106,7 @@ class DriftFolderRepository implements IFolderRepository {
       updatedAt: folder.updatedAt,
       isDeleted: folder.isDeleted,
       deletedAt: folder.deletedAt,
+      revision: folder.revision,
     );
   }
 }

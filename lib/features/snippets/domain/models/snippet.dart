@@ -11,6 +11,8 @@ class Snippet {
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int revision;
 
   Snippet({
     required this.id,
@@ -23,6 +25,8 @@ class Snippet {
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
+    this.deletedAt,
+    this.revision = 0,
   }) : assert(
          fragments.isNotEmpty,
          'A snippet must have at least one fragment.',
@@ -56,6 +60,9 @@ class Snippet {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    DateTime? deletedAt,
+    bool clearDeletedAt = false,
+    int? revision,
   }) {
     return Snippet(
       id: id ?? this.id,
@@ -70,6 +77,8 @@ class Snippet {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
+      revision: revision ?? this.revision,
     );
   }
 

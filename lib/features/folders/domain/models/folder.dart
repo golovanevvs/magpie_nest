@@ -7,6 +7,7 @@ class Folder {
   final DateTime updatedAt;
   final bool isDeleted;
   final DateTime? deletedAt;
+  final int revision;
 
   const Folder({
     required this.id,
@@ -17,6 +18,7 @@ class Folder {
     this.sortOrder = 0,
     this.isDeleted = false,
     this.deletedAt,
+    this.revision = 0,
   });
 
   bool get isRoot => parentId == null;
@@ -32,6 +34,7 @@ class Folder {
     bool? isDeleted,
     DateTime? deletedAt,
     bool clearDeletedAt = false,
+    int? revision,
   }) {
     return Folder(
       id: id ?? this.id,
@@ -42,6 +45,7 @@ class Folder {
       updatedAt: updatedAt ?? this.updatedAt,
       isDeleted: isDeleted ?? this.isDeleted,
       deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
+      revision: revision ?? this.revision,
     );
   }
 

@@ -4,6 +4,9 @@ class Fragment {
   final String language;
   final String content;
   final DateTime updatedAt;
+  final bool isDeleted;
+  final DateTime? deletedAt;
+  final int revision;
 
   const Fragment({
     required this.id,
@@ -11,6 +14,9 @@ class Fragment {
     required this.language,
     required this.content,
     required this.updatedAt,
+    this.isDeleted = false,
+    this.deletedAt,
+    this.revision = 0,
   });
 
   @override
@@ -27,6 +33,10 @@ class Fragment {
     String? language,
     String? content,
     DateTime? updatedAt,
+    bool? isDeleted,
+    DateTime? deletedAt,
+    bool clearDeletedAt = false,
+    int? revision,
   }) {
     return Fragment(
       id: id ?? this.id,
@@ -34,6 +44,9 @@ class Fragment {
       language: language ?? this.language,
       content: content ?? this.content,
       updatedAt: updatedAt ?? this.updatedAt,
+      isDeleted: isDeleted ?? this.isDeleted,
+      deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
+      revision: revision ?? this.revision,
     );
   }
 }

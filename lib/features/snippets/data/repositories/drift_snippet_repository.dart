@@ -82,15 +82,37 @@ class DriftSnippetRepository implements ISnippetRepository {
 
   @override
   Future<void> deleteSnippet(String id) async {
+    final row = await (db.select(
+      db.snippets,
+    )..where((table) => table.id.equals(id))).getSingleOrNull();
+    if (row == null) return;
+
+    final now = DateTime.now();
     await (db.update(db.snippets)..where((table) => table.id.equals(id))).write(
-      SnippetsCompanion(isDeleted: const Value(true)),
+      SnippetsCompanion(
+        isDeleted: const Value(true),
+        deletedAt: Value(now),
+        updatedAt: Value(now),
+        revision: Value(row.revision + 1),
+      ),
     );
   }
 
   @override
   Future<void> restoreSnippet(String id) async {
+    final row = await (db.select(
+      db.snippets,
+    )..where((table) => table.id.equals(id))).getSingleOrNull();
+    if (row == null) return;
+
+    final now = DateTime.now();
     await (db.update(db.snippets)..where((table) => table.id.equals(id))).write(
-      SnippetsCompanion(isDeleted: const Value(false)),
+      SnippetsCompanion(
+        isDeleted: const Value(false),
+        deletedAt: const Value(null),
+        updatedAt: Value(now),
+        revision: Value(row.revision + 1),
+      ),
     );
   }
 
@@ -140,6 +162,8 @@ class DriftSnippetRepository implements ISnippetRepository {
       isDeleted: row.isDeleted,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      deletedAt: row.deletedAt,
+      revision: row.revision,
     );
   }
 
@@ -150,6 +174,9 @@ class DriftSnippetRepository implements ISnippetRepository {
       language: row.language,
       content: row.content,
       updatedAt: row.updatedAt,
+      isDeleted: row.isDeleted,
+      deletedAt: row.deletedAt,
+      revision: row.revision,
     );
   }
 
@@ -164,6 +191,8 @@ class DriftSnippetRepository implements ISnippetRepository {
       isDeleted: snippet.isDeleted,
       createdAt: snippet.createdAt,
       updatedAt: snippet.updatedAt,
+      deletedAt: snippet.deletedAt,
+      revision: snippet.revision,
     );
   }
 
@@ -175,7 +204,10 @@ class DriftSnippetRepository implements ISnippetRepository {
       language: fragment.language,
       content: fragment.content,
       updatedAt: fragment.updatedAt,
+      isDeleted: fragment.isDeleted,
+      deletedAt: fragment.deletedAt,
       sortOrder: index,
+      revision: fragment.revision,
     );
   }
 }

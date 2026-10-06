@@ -30,6 +30,7 @@ class FragmentsController {
       fragments: [...snippet.fragments, newFragment],
       activeFragmentId: newFragment.id,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
@@ -45,6 +46,7 @@ class FragmentsController {
     final updated = snippet.copyWith(
       activeFragmentId: fragmentId,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
@@ -70,6 +72,7 @@ class FragmentsController {
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       name: trimmedName,
       updatedAt: DateTime.now(),
+      revision: snippet.fragments[fragmentIndex].revision + 1,
     );
 
     final updatedFragments = [...snippet.fragments];
@@ -78,6 +81,7 @@ class FragmentsController {
     final updated = snippet.copyWith(
       fragments: updatedFragments,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
@@ -100,6 +104,7 @@ class FragmentsController {
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       content: newContent,
       updatedAt: DateTime.now(),
+      revision: snippet.fragments[fragmentIndex].revision + 1,
     );
 
     final updatedFragments = [...snippet.fragments];
@@ -108,6 +113,7 @@ class FragmentsController {
     final updated = snippet.copyWith(
       fragments: updatedFragments,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
@@ -133,6 +139,7 @@ class FragmentsController {
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       name: trimmedName,
       updatedAt: DateTime.now(),
+      revision: snippet.fragments[fragmentIndex].revision + 1,
     );
 
     final updatedFragments = [...snippet.fragments];
@@ -141,6 +148,7 @@ class FragmentsController {
     final updated = snippet.copyWith(
       fragments: updatedFragments,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
@@ -163,6 +171,7 @@ class FragmentsController {
     final updatedFragment = snippet.fragments[fragmentIndex].copyWith(
       language: newLanguage,
       updatedAt: DateTime.now(),
+      revision: snippet.fragments[fragmentIndex].revision + 1,
     );
 
     final updatedFragments = [...snippet.fragments];
@@ -171,6 +180,7 @@ class FragmentsController {
     final updated = snippet.copyWith(
       fragments: updatedFragments,
       updatedAt: DateTime.now(),
+      revision: snippet.revision + 1,
     );
 
     await snippetRepository.saveSnippet(updated);
