@@ -28,7 +28,14 @@ class DriftFolderRepository implements IFolderRepository {
 
   @override
   Future<void> saveFolder(Folder folder) async {
-    await db.into(db.folders).insertOnConflictUpdate(_toRow(folder));
+    await db.transaction(() async {
+      await db.into(db.folders).insertOnConflictUpdate(_toRow(folder));
+      await db.recordOutbox(
+        Outbox.entityTypeFolder,
+        folder.id,
+        Outbox.opUpsert,
+      );
+    });
   }
 
   @override
@@ -68,9 +75,7 @@ class DriftFolderRepository implements IFolderRepository {
 
     await db.transaction(() async {
       for (final row in rows) {
-        await (db.update(
-          db.folders,
-        )..where((t) => t.id.equals(row.id))).write(
+        await (db.update(db.folders)..where((t) => t.id.equals(row.id))).write(
           FoldersCompanion(
             isDeleted: const Value(true),
             deletedAt: Value(now),
@@ -78,6 +83,7 @@ class DriftFolderRepository implements IFolderRepository {
             revision: Value(row.revision + 1),
           ),
         );
+        await db.recordOutbox(Outbox.entityTypeFolder, row.id, Outbox.opUpsert);
       }
     });
   }

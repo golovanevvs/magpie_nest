@@ -57,6 +57,11 @@ class DriftSnippetRepository implements ISnippetRepository {
   Future<void> saveSnippet(Snippet snippet) async {
     await db.transaction(() async {
       await db.into(db.snippets).insertOnConflictUpdate(_snippetToRow(snippet));
+      await db.recordOutbox(
+        Outbox.entityTypeSnippet,
+        snippet.id,
+        Outbox.opUpsert,
+      );
 
       final existing = await (db.select(
         db.fragments,
@@ -68,6 +73,11 @@ class DriftSnippetRepository implements ISnippetRepository {
           await (db.delete(
             db.fragments,
           )..where((table) => table.id.equals(fragmentRow.id))).go();
+          await db.recordOutbox(
+            Outbox.entityTypeFragment,
+            fragmentRow.id,
+            Outbox.opDelete,
+          );
         }
       }
 
@@ -76,6 +86,11 @@ class DriftSnippetRepository implements ISnippetRepository {
         await db
             .into(db.fragments)
             .insertOnConflictUpdate(_fragmentToRow(snippet.id, fragment, i));
+        await db.recordOutbox(
+          Outbox.entityTypeFragment,
+          fragment.id,
+          Outbox.opUpsert,
+        );
       }
     });
   }
@@ -88,14 +103,19 @@ class DriftSnippetRepository implements ISnippetRepository {
     if (row == null) return;
 
     final now = DateTime.now();
-    await (db.update(db.snippets)..where((table) => table.id.equals(id))).write(
-      SnippetsCompanion(
-        isDeleted: const Value(true),
-        deletedAt: Value(now),
-        updatedAt: Value(now),
-        revision: Value(row.revision + 1),
-      ),
-    );
+    await db.transaction(() async {
+      await (db.update(
+        db.snippets,
+      )..where((table) => table.id.equals(id))).write(
+        SnippetsCompanion(
+          isDeleted: const Value(true),
+          deletedAt: Value(now),
+          updatedAt: Value(now),
+          revision: Value(row.revision + 1),
+        ),
+      );
+      await db.recordOutbox(Outbox.entityTypeSnippet, id, Outbox.opUpsert);
+    });
   }
 
   @override
@@ -106,26 +126,72 @@ class DriftSnippetRepository implements ISnippetRepository {
     if (row == null) return;
 
     final now = DateTime.now();
-    await (db.update(db.snippets)..where((table) => table.id.equals(id))).write(
-      SnippetsCompanion(
-        isDeleted: const Value(false),
-        deletedAt: const Value(null),
-        updatedAt: Value(now),
-        revision: Value(row.revision + 1),
-      ),
-    );
+    await db.transaction(() async {
+      await (db.update(
+        db.snippets,
+      )..where((table) => table.id.equals(id))).write(
+        SnippetsCompanion(
+          isDeleted: const Value(false),
+          deletedAt: const Value(null),
+          updatedAt: Value(now),
+          revision: Value(row.revision + 1),
+        ),
+      );
+      await db.recordOutbox(Outbox.entityTypeSnippet, id, Outbox.opUpsert);
+    });
   }
 
   @override
   Future<void> permanentlyDeleteSnippet(String id) async {
-    await (db.delete(db.snippets)..where((table) => table.id.equals(id))).go();
+    await db.transaction(() async {
+      // Record deletes first — after the physical delete there is nothing to read.
+      final fragmentRows = await (db.select(
+        db.fragments,
+      )..where((table) => table.snippetId.equals(id))).get();
+      for (final fragmentRow in fragmentRows) {
+        await db.recordOutbox(
+          Outbox.entityTypeFragment,
+          fragmentRow.id,
+          Outbox.opDelete,
+        );
+      }
+      await db.recordOutbox(Outbox.entityTypeSnippet, id, Outbox.opDelete);
+
+      await (db.delete(
+        db.snippets,
+      )..where((table) => table.id.equals(id))).go();
+    });
   }
 
   @override
   Future<void> permanentlyDeleteDeletedSnippets() async {
-    await (db.delete(
-      db.snippets,
-    )..where((table) => table.isDeleted.equals(true))).go();
+    await db.transaction(() async {
+      final rows = await (db.select(
+        db.snippets,
+      )..where((table) => table.isDeleted.equals(true))).get();
+
+      for (final row in rows) {
+        final fragmentRows = await (db.select(
+          db.fragments,
+        )..where((table) => table.snippetId.equals(row.id))).get();
+        for (final fragmentRow in fragmentRows) {
+          await db.recordOutbox(
+            Outbox.entityTypeFragment,
+            fragmentRow.id,
+            Outbox.opDelete,
+          );
+        }
+        await db.recordOutbox(
+          Outbox.entityTypeSnippet,
+          row.id,
+          Outbox.opDelete,
+        );
+      }
+
+      await (db.delete(
+        db.snippets,
+      )..where((table) => table.isDeleted.equals(true))).go();
+    });
   }
 
   // helpers

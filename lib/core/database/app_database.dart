@@ -73,7 +73,26 @@ class SyncMeta extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-@DriftDatabase(tables: [Folders, Snippets, Fragments, SyncMeta])
+/// Local change journal: one row per pending local mutation.
+/// Consumed by the sync engine (drained in batches), removed after ack.
+@DataClassName('OutboxEntryRow')
+class OutboxEntries extends Table {
+  IntColumn get seq => integer().autoIncrement()();
+  TextColumn get entityType => text()(); // 'folder' | 'snippet' | 'fragment'
+  TextColumn get entityId => text()();
+  TextColumn get operation => text()(); // 'upsert' | 'delete'
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+abstract final class Outbox {
+  static const entityTypeFolder = 'folder';
+  static const entityTypeSnippet = 'snippet';
+  static const entityTypeFragment = 'fragment';
+  static const opUpsert = 'upsert';
+  static const opDelete = 'delete';
+}
+
+@DriftDatabase(tables: [Folders, Snippets, Fragments, SyncMeta, OutboxEntries])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
@@ -197,5 +216,37 @@ class AppDatabase extends _$AppDatabase {
         );
       }
     }
+  }
+
+  Future<void> recordOutbox(
+    String entityType,
+    String entityId,
+    String operation,
+  ) {
+    return into(outboxEntries).insert(
+      OutboxEntriesCompanion.insert(
+        entityType: entityType,
+        entityId: entityId,
+        operation: operation,
+        createdAt: DateTime.now(),
+      ),
+    );
+  }
+
+  Future<List<OutboxEntryRow>> getPendingOutboxEntries({int limit = 100}) {
+    return (select(outboxEntries)
+          ..orderBy([(e) => OrderingTerm.asc(e.seq)])
+          ..limit(limit))
+        .get();
+  }
+
+  Future<void> markOutboxEntriesSynced(List<int> seqs) {
+    return (delete(outboxEntries)..where((e) => e.seq.isIn(seqs))).go();
+  }
+
+  Future<int> pendingOutboxCount() async {
+    final countExpr = outboxEntries.seq.count();
+    final query = selectOnly(outboxEntries)..addColumns([countExpr]);
+    return await query.getSingle().then((row) => row.read(countExpr) ?? 0);
   }
 }
