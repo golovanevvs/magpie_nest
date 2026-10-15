@@ -249,4 +249,17 @@ class AppDatabase extends _$AppDatabase {
     final query = selectOnly(outboxEntries)..addColumns([countExpr]);
     return await query.getSingle().then((row) => row.read(countExpr) ?? 0);
   }
+
+  Future<String?> getSyncMeta(String key) async {
+    final row = await (select(
+      syncMeta,
+    )..where((r) => r.key.equals(key))).getSingleOrNull();
+    return row?.value;
+  }
+
+  Future<void> setSyncMeta(String key, String value) {
+    return into(
+      syncMeta,
+    ).insertOnConflictUpdate(SyncMetaRow(key: key, value: value));
+  }
 }
