@@ -20,7 +20,9 @@ class SyncEngine {
       if (change != null) changes.add(change);
     }
 
-    if (changes.isEmpty) {
+    final coalesced = _coalesceChanges(changes);
+
+    if (coalesced.isEmpty) {
       await _db.markOutboxEntriesSynced(entries.map((e) => e.seq).toList());
       return;
     }
@@ -30,7 +32,7 @@ class SyncEngine {
       deviceId: await _db.getDeviceId(),
       cloudSeq: 0,
       createdAt: DateTime.now(),
-      changes: changes,
+      changes: coalesced,
     );
 
     await _syncRepository.pushBatch(batch);
@@ -62,6 +64,22 @@ class SyncEngine {
   Future<void> syncNow() async {
     await pushPending();
     await pullRemote();
+  }
+
+  List<SyncChange> _coalesceChanges(List<SyncChange> changes) {
+    final coalesced = <SyncChange>[];
+    final position = <String, int>{};
+    for (final change in changes) {
+      final key = '${change.entityType}/${change.entityId}/${change.operation}';
+      final existing = position[key];
+      if (existing != null) {
+        coalesced[existing] = change;
+      } else {
+        position[key] = coalesced.length;
+        coalesced.add(change);
+      }
+    }
+    return coalesced;
   }
 
   Future<SyncChange?> _toChange(OutboxEntryRow entry) async {
@@ -202,31 +220,16 @@ class SyncEngine {
   Future<void> _applyRemoteDelete(String entityType, String entityId) async {
     switch (entityType) {
       case Outbox.entityTypeFolder:
-        final row = await (_db.select(
-          _db.folders,
-        )..where((t) => t.id.equals(entityId))).getSingleOrNull();
-        if (row == null) return;
-        if (!row.isDeleted) return;
         await (_db.delete(
           _db.folders,
         )..where((t) => t.id.equals(entityId))).go();
 
       case Outbox.entityTypeSnippet:
-        final row = await (_db.select(
-          _db.snippets,
-        )..where((t) => t.id.equals(entityId))).getSingleOrNull();
-        if (row == null) return;
-        if (!row.isDeleted) return;
         await (_db.delete(
           _db.snippets,
         )..where((t) => t.id.equals(entityId))).go();
 
       case Outbox.entityTypeFragment:
-        final row = await (_db.select(
-          _db.fragments,
-        )..where((t) => t.id.equals(entityId))).getSingleOrNull();
-        if (row == null) return;
-        if (!row.isDeleted) return;
         await (_db.delete(
           _db.fragments,
         )..where((t) => t.id.equals(entityId))).go();
