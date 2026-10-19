@@ -22,7 +22,6 @@ void main() {
     final batch = SyncBatch(
       batchId: 'batch-1',
       deviceId: 'device-a',
-      cloudSeq: 0,
       createdAt: DateTime.utc(2026, 10, 17, 14),
       changes: [
         SyncChange.upsert(
@@ -43,7 +42,6 @@ void main() {
 
     expect(restored.batchId, 'batch-1');
     expect(restored.deviceId, 'device-a');
-    expect(restored.cloudSeq, 0);
     expect(restored.createdAt.isUtc, isTrue);
     expect(restored.createdAt, batch.createdAt);
 

@@ -2,40 +2,28 @@ import 'package:magpie_nest/core/sync/i_sync_repository.dart';
 import 'package:magpie_nest/core/sync/sync_batch.dart';
 
 class InMemorySyncRepository implements ISyncRepository {
-  final List<_StoredBatch> _journal = [];
-  int _nextCloudSeq = 1;
+  final List<JournalEntry> _journal = [];
+  int _nextFile = 1;
 
   @override
   Future<void> pushBatch(SyncBatch batch) async {
-    _journal.add(_StoredBatch(cloudSeq: _nextCloudSeq++, batch: batch));
+    _journal.add(JournalEntry(file: _fileNameFor(batch), batch: batch));
+    _journal.sort((a, b) => a.file.compareTo(b.file));
   }
 
   @override
-  Future<List<SyncBatch>> fetchBatchesSince(int cloudSeq) async {
+  Future<List<JournalEntry>> fetchAfter(String? cursor) async {
     return [
-      for (final stored in _journal)
-        if (stored.cloudSeq > cloudSeq)
-          _withCloudSeq(stored.batch, stored.cloudSeq),
+      for (final entry in _journal)
+        if (cursor == null || entry.file.compareTo(cursor) > 0) entry,
     ];
   }
 
-  Iterable<SyncBatch> get pushed =>
-      _journal.map((s) => _withCloudSeq(s.batch, s.cloudSeq));
+  Iterable<JournalEntry> get pushed => _journal;
 
-  SyncBatch _withCloudSeq(SyncBatch batch, int cloudSeq) {
-    return SyncBatch(
-      batchId: batch.batchId,
-      deviceId: batch.deviceId,
-      cloudSeq: cloudSeq,
-      createdAt: batch.createdAt,
-      changes: batch.changes,
-    );
+  String _fileNameFor(SyncBatch batch) {
+    final counter = _nextFile.toString().padLeft(12, '0');
+    _nextFile++;
+    return 'journal/$counter-${batch.batchId}.json';
   }
-}
-
-class _StoredBatch {
-  final int cloudSeq;
-  final SyncBatch batch;
-
-  const _StoredBatch({required this.cloudSeq, required this.batch});
 }

@@ -34,17 +34,20 @@ void main() {
     await dbB.close();
   });
 
-  test('assigns monotonic cloudSeq and returns batches after cursor', () async {
-    final cloud = InMemorySyncRepository();
-    await cloud.pushBatch(_batchWithDevice('a'));
-    await cloud.pushBatch(_batchWithDevice('b'));
+  test(
+    'assigns monotonic journal files and returns batches after cursor',
+    () async {
+      final cloud = InMemorySyncRepository();
+      await cloud.pushBatch(_batchWithDevice('a'));
+      await cloud.pushBatch(_batchWithDevice('b'));
 
-    final all = await cloud.fetchBatchesSince(0);
-    expect(all.map((b) => b.cloudSeq), [1, 2]);
+      final all = await cloud.fetchAfter(null);
+      expect(all.map((e) => e.batch.deviceId).toList(), ['a', 'b']);
 
-    final tail = await cloud.fetchBatchesSince(1);
-    expect(tail.single.deviceId, 'b');
-  });
+      final tail = await cloud.fetchAfter(all.first.file);
+      expect(tail.single.batch.deviceId, 'b');
+    },
+  );
 
   test(
     'snippet created on A reaches B with identical payload fields',
@@ -108,7 +111,7 @@ void main() {
 
       await engineA.syncNow();
 
-      final batch = cloud.pushed.single;
+      final batch = cloud.pushed.single.batch;
       final snippetChanges = batch.changes
           .where((c) => c.entityType == Outbox.entityTypeSnippet)
           .toList();
@@ -180,7 +183,7 @@ void main() {
     await engineA.syncNow();
 
     final ownBatches = cloud.pushed
-        .where((b) => b.deviceId == 'device-A')
+        .where((e) => e.batch.deviceId == 'device-A')
         .toList();
     expect(ownBatches, hasLength(1));
 
@@ -245,7 +248,6 @@ SyncBatch _batchWithDevice(String deviceId) {
   return SyncBatch(
     batchId: 'batch-$deviceId',
     deviceId: deviceId,
-    cloudSeq: 0,
     createdAt: DateTime.utc(2026, 1, 1),
     changes: const [],
   );

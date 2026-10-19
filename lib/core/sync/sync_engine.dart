@@ -30,7 +30,6 @@ class SyncEngine {
     final batch = SyncBatch(
       batchId: const Uuid().v4(),
       deviceId: await _db.getDeviceId(),
-      cloudSeq: 0,
       createdAt: DateTime.now(),
       changes: coalesced,
     );
@@ -40,24 +39,23 @@ class SyncEngine {
   }
 
   Future<void> pullRemote() async {
-    final lastSeq = int.parse(
-      await _db.getSyncMeta('lastPulledBatchSeq') ?? '0',
-    );
     final myDeviceId = await _db.getDeviceId();
+    final cursor = await _db.getSyncMeta('lastPulledJournalFile');
 
-    final batches = await _syncRepository.fetchBatchesSince(lastSeq);
+    final entries = await _syncRepository.fetchAfter(cursor);
 
-    for (final batch in batches) {
-      if (batch.deviceId == myDeviceId) {
-        await _db.setSyncMeta('lastPulledBatchSeq', '${batch.cloudSeq}');
-        continue;
+    String? lastFile;
+    for (final entry in entries) {
+      lastFile = entry.file;
+      if (entry.batch.deviceId == myDeviceId) continue;
+
+      for (final change in entry.batch.changes) {
+        await _applyRemoteChange(change, originDeviceId: entry.batch.deviceId);
       }
+    }
 
-      for (final change in batch.changes) {
-        await _applyRemoteChange(change, originDeviceId: batch.deviceId);
-      }
-
-      await _db.setSyncMeta('lastPulledBatchSeq', '${batch.cloudSeq}');
+    if (lastFile != null) {
+      await _db.setSyncMeta('lastPulledJournalFile', lastFile);
     }
   }
 

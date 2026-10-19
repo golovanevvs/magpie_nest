@@ -5,7 +5,6 @@ Map<String, Object?> syncBatchToJson(SyncBatch batch) {
   return {
     'batchId': batch.batchId,
     'deviceId': batch.deviceId,
-    'cloudSeq': batch.cloudSeq,
     'createdAt': batch.createdAt.toUtc().toIso8601String(),
     'changes': [for (final change in batch.changes) _changeToJson(change)],
   };
@@ -50,7 +49,6 @@ SyncBatch syncBatchFromJson(Map<String, Object?> json) {
   return SyncBatch(
     batchId: json['batchId']! as String,
     deviceId: json['deviceId']! as String,
-    cloudSeq: json['cloudSeq']! as int,
     createdAt: DateTime.parse(json['createdAt']! as String),
     changes: changes,
   );
