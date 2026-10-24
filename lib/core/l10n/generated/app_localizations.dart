@@ -116,13 +116,7 @@ abstract class AppLocalizations {
   /// **'All Snippets'**
   String get navAllSnippets;
 
-  /// Navigation rail label for the Snippets section
-  ///
-  /// In en, this message translates to:
-  /// **'Snippets'**
-  String get navSnippets;
-
-  /// Navigation rail label for the Settings section
+  /// Label for the settings entry point
   ///
   /// In en, this message translates to:
   /// **'Settings'**
@@ -673,6 +667,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get cloudRetry;
+
+  /// Status bar label shown when no cloud account is configured
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud not connected'**
+  String get statusCloudNotConfigured;
+
+  /// Status bar label shown when the cloud is connected but has never synced
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get statusCloudConnected;
+
+  /// Status bar label showing the time of the last successful sync
+  ///
+  /// In en, this message translates to:
+  /// **'Synced at {time}'**
+  String statusCloudSynced(String time);
+
+  /// Status bar label shown when the last sync failed
+  ///
+  /// In en, this message translates to:
+  /// **'Sync error'**
+  String get statusCloudSyncError;
 }
 
 class _AppLocalizationsDelegate

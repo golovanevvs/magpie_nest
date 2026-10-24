@@ -12,13 +12,9 @@
   "@navAllSnippets": {
     "description": "Метка навигационной панели для раздела Все сниппеты"
   },
-  "navSnippets": "Сниппеты",
-  "@navSnippets": {
-    "description": "Метка навигационной панели для раздела Сниппеты"
-  },
   "navSettings": "Настройки",
   "@navSettings": {
-    "description": "Метка навигационной панели для раздела Настройки"
+    "description": "Подпись точки входа в настройки"
   },
   "navFavorites": "Избранное",
   "@navFavorites": {
@@ -408,5 +404,26 @@
   "cloudRetry": "Повторить",
   "@cloudRetry": {
     "description": "Кнопка повторного запроса списка папок после ошибки"
+  },
+  "statusCloudNotConfigured": "Облако не подключено",
+  "@statusCloudNotConfigured": {
+    "description": "Надпись статус-бара, когда облачный аккаунт не настроен"
+  },
+  "statusCloudConnected": "Подключено",
+  "@statusCloudConnected": {
+    "description": "Надпись статус-бара, когда облако подключено, но синхронизаций ещё не было"
+  },
+  "statusCloudSynced": "Синхронизировано в {time}",
+  "@statusCloudSynced": {
+    "description": "Надпись статус-бара со временем последней успешной синхронизации",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "statusCloudSyncError": "Ошибка синхронизации",
+  "@statusCloudSyncError": {
+    "description": "Надпись статус-бара, когда последняя синхронизация завершилась ошибкой"
   }
 }

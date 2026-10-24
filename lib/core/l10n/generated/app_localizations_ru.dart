@@ -18,9 +18,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navAllSnippets => 'Все сниппеты';
 
   @override
-  String get navSnippets => 'Сниппеты';
-
-  @override
   String get navSettings => 'Настройки';
 
   @override
@@ -313,4 +310,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cloudRetry => 'Повторить';
+
+  @override
+  String get statusCloudNotConfigured => 'Облако не подключено';
+
+  @override
+  String get statusCloudConnected => 'Подключено';
+
+  @override
+  String statusCloudSynced(String time) {
+    return 'Синхронизировано в $time';
+  }
+
+  @override
+  String get statusCloudSyncError => 'Ошибка синхронизации';
 }

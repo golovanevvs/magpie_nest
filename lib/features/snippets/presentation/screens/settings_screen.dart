@@ -8,6 +8,8 @@ import 'package:magpie_nest/core/sync/webdav_credentials.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/cloud_folder_picker_dialog.dart';
 
+enum SettingsSection { language, theme, cloud }
+
 class SettingsScreen extends StatefulWidget {
   final CloudConnectionController cloud;
   final SyncController sync;
@@ -15,6 +17,7 @@ class SettingsScreen extends StatefulWidget {
   final ThemeMode currentThemeMode;
   final ValueChanged<Locale> onLocaleChanged;
   final ValueChanged<ThemeMode> onThemeModeChanged;
+  final SettingsSection initialSection;
 
   const SettingsScreen({
     super.key,
@@ -24,6 +27,7 @@ class SettingsScreen extends StatefulWidget {
     required this.currentThemeMode,
     required this.onLocaleChanged,
     required this.onThemeModeChanged,
+    this.initialSection = SettingsSection.language,
   });
 
   @override
@@ -38,7 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedMenuIndex = 0;
+    _selectedMenuIndex = widget.initialSection.index;
     _currentLocale = widget.currentLocale;
     _currentThemeMode = widget.currentThemeMode;
   }
@@ -93,9 +97,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         const VerticalDivider(width: 1),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: _buildContent(),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: _buildContent(),
+            ),
           ),
         ),
       ],

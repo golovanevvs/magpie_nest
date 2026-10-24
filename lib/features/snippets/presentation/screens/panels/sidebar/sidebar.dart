@@ -8,12 +8,10 @@ import 'package:magpie_nest/features/snippets/presentation/screens/panels/sideba
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/widgets/sidebar_section_header.dart';
 
 class Sidebar extends StatefulWidget {
-  final int selectedIndex;
   final AppController controller;
 
   const Sidebar({
     super.key,
-    required this.selectedIndex,
     required this.controller,
   });
 

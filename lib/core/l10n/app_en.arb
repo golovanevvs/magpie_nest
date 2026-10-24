@@ -12,13 +12,9 @@
   "@navAllSnippets": {
     "description": "Navigation rail label for the All Snippets section"
   },
-  "navSnippets": "Snippets",
-  "@navSnippets": {
-    "description": "Navigation rail label for the Snippets section"
-  },
   "navSettings": "Settings",
   "@navSettings": {
-    "description": "Navigation rail label for the Settings section"
+    "description": "Label for the settings entry point"
   },
   "navFavorites": "Favorites",
   "@navFavorites": {
@@ -408,5 +404,26 @@
   "cloudRetry": "Retry",
   "@cloudRetry": {
     "description": "Button retrying a failed folder listing"
+  },
+  "statusCloudNotConfigured": "Cloud not connected",
+  "@statusCloudNotConfigured": {
+    "description": "Status bar label shown when no cloud account is configured"
+  },
+  "statusCloudConnected": "Connected",
+  "@statusCloudConnected": {
+    "description": "Status bar label shown when the cloud is connected but has never synced"
+  },
+  "statusCloudSynced": "Synced at {time}",
+  "@statusCloudSynced": {
+    "description": "Status bar label showing the time of the last successful sync",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "statusCloudSyncError": "Sync error",
+  "@statusCloudSyncError": {
+    "description": "Status bar label shown when the last sync failed"
   }
 }

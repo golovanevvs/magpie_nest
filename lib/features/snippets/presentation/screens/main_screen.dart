@@ -2,10 +2,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/panels/activity_bar/activity_bar.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/settings_dialog.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/sidebar.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_list/snippet_list.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/snippet_preview.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/panels/status_bar/status_bar.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -33,8 +34,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0; // 0=Snippets, 1=Settings
-
   double _sidebarWidth = 200;
   double _snippetListWidth = 300;
 
@@ -55,70 +54,51 @@ class _MainScreenState extends State<MainScreen> {
       listenable: widget.controller,
       builder: (context, child) {
         return Scaffold(
-          body: Row(
+          body: Column(
             children: [
-              // Panel 1: Activity Bar
-              SizedBox(
-                height: double.infinity,
-                child: ActivityBar(
-                  selectedIndex: _selectedIndex,
-                  onDestinationSelected: _handleNavigationChange,
+              Expanded(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: _sidebarWidth,
+                      child: Sidebar(controller: widget.controller),
+                    ),
+                    _buildResizableDivider(
+                      onDrag: (delta) {
+                        setState(() {
+                          _sidebarWidth = _clamp(
+                            _sidebarWidth + delta,
+                            _minSidebarWidth,
+                            _maxSidebarWidth,
+                          );
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      width: _snippetListWidth,
+                      child: SnippetList(controller: widget.controller),
+                    ),
+                    _buildResizableDivider(
+                      onDrag: (delta) {
+                        setState(() {
+                          _snippetListWidth = _clamp(
+                            _snippetListWidth + delta,
+                            _minSnippetListWidth,
+                            _maxSnippetListWidth,
+                          );
+                        });
+                      },
+                    ),
+                    Expanded(child: SnippetPreview(controller: widget.controller)),
+                  ],
                 ),
               ),
-              const VerticalDivider(width: 1),
-
-              if (_selectedIndex == 0) ...[
-                // Panel 2: Sidebar
-                SizedBox(
-                  width: _sidebarWidth,
-                  child: Sidebar(
-                    selectedIndex: _selectedIndex,
-                    controller: widget.controller,
-                  ),
-                ),
-                _buildResizableDivider(
-                  onDrag: (delta) {
-                    setState(() {
-                      _sidebarWidth = _clamp(
-                        _sidebarWidth + delta,
-                        _minSidebarWidth,
-                        _maxSidebarWidth,
-                      );
-                    });
-                  },
-                ),
-
-                // Panel 3: Snippet List
-                SizedBox(
-                  width: _snippetListWidth,
-                  child: SnippetList(controller: widget.controller),
-                ),
-                _buildResizableDivider(
-                  onDrag: (delta) {
-                    setState(() {
-                      _snippetListWidth = _clamp(
-                        _snippetListWidth + delta,
-                        _minSnippetListWidth,
-                        _maxSnippetListWidth,
-                      );
-                    });
-                  },
-                ),
-
-                // Panel 4: Snippet Preview
-                Expanded(child: SnippetPreview(controller: widget.controller)),
-              ] else ...[
-                Expanded(
-                  child: SettingsScreen(
-                    cloud: widget.cloud,
-                    sync: widget.sync,
-                    currentLocale: widget.currentLocale,
-                    currentThemeMode: widget.themeMode,
-                    onLocaleChanged: widget.onLocaleChanged,
-                    onThemeModeChanged: widget.onThemeModeChanged,
-                  ),
-                ),
-              ],
+              StatusBar(
+                cloud: widget.cloud,
+                sync: widget.sync,
+                onCloudStatusTap: () => _openSettings(SettingsSection.cloud),
+                onSettingsTap: () => _openSettings(SettingsSection.language),
+              ),
             ],
           ),
         );
@@ -148,17 +128,16 @@ class _MainScreenState extends State<MainScreen> {
     return value;
   }
 
-  void _handleNavigationChange(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0: // Snippets
-        widget.controller.selectFolder(null);
-        break;
-      case 1: // Settings
-        break;
-    }
+  void _openSettings(SettingsSection section) {
+    showSettingsDialog(
+      context,
+      cloud: widget.cloud,
+      sync: widget.sync,
+      currentLocale: widget.currentLocale,
+      currentThemeMode: widget.themeMode,
+      onLocaleChanged: widget.onLocaleChanged,
+      onThemeModeChanged: widget.onThemeModeChanged,
+      initialSection: section,
+    );
   }
 }
