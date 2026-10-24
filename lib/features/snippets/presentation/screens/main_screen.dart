@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
+import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/activity_bar/activity_bar.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/sidebar.dart';
@@ -8,6 +10,8 @@ import 'package:magpie_nest/features/snippets/presentation/screens/settings_scre
 
 class MainScreen extends StatefulWidget {
   final AppController controller;
+  final CloudConnectionController cloud;
+  final SyncController sync;
   final ThemeMode themeMode;
   final ValueChanged<ThemeMode> onThemeModeChanged;
   final Locale currentLocale;
@@ -16,6 +20,8 @@ class MainScreen extends StatefulWidget {
   const MainScreen({
     super.key,
     required this.controller,
+    required this.cloud,
+    required this.sync,
     required this.themeMode,
     required this.onThemeModeChanged,
     required this.currentLocale,
@@ -104,6 +110,8 @@ class _MainScreenState extends State<MainScreen> {
               ] else ...[
                 Expanded(
                   child: SettingsScreen(
+                    cloud: widget.cloud,
+                    sync: widget.sync,
                     currentLocale: widget.currentLocale,
                     currentThemeMode: widget.themeMode,
                     onLocaleChanged: widget.onLocaleChanged,
@@ -150,7 +158,6 @@ class _MainScreenState extends State<MainScreen> {
         widget.controller.selectFolder(null);
         break;
       case 1: // Settings
-        // TODO: open settings panel
         break;
     }
   }

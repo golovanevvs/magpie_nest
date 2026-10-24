@@ -469,6 +469,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All snippets in the Trash will be permanently deleted. This action cannot be undone.'**
   String get dialogEmptyTrashMessage;
+
+  /// Settings menu item for cloud sync configuration
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud'**
+  String get settingsCloud;
+
+  /// Status text shown when no WebDAV account is connected
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync is not configured.'**
+  String get cloudStatusNotConfigured;
+
+  /// Status text shown when a WebDAV account is connected
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to {url}.'**
+  String cloudStatusConnected(String url);
+
+  /// Label for the WebDAV server URL input field
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL'**
+  String get cloudUrlLabel;
+
+  /// Label for the WebDAV username input field
+  ///
+  /// In en, this message translates to:
+  /// **'Username (optional)'**
+  String get cloudUsernameLabel;
+
+  /// Label for the WebDAV password input field
+  ///
+  /// In en, this message translates to:
+  /// **'Password (optional)'**
+  String get cloudPasswordLabel;
+
+  /// Hint explaining that empty credentials mean no authentication
+  ///
+  /// In en, this message translates to:
+  /// **'Leave username and password empty to connect without authentication.'**
+  String get cloudNoAuthHint;
+
+  /// Button that checks the WebDAV connection without saving credentials
+  ///
+  /// In en, this message translates to:
+  /// **'Test connection'**
+  String get cloudTestConnection;
+
+  /// Button that tests the connection and saves the credentials
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get cloudConnect;
+
+  /// Button that clears the stored WebDAV credentials
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get cloudDisconnect;
+
+  /// Message shown when the connection test passes
+  ///
+  /// In en, this message translates to:
+  /// **'Connection successful.'**
+  String get cloudConnectionOk;
+
+  /// Message shown when the connection test fails
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed: {error}'**
+  String cloudConnectionFailed(String error);
+
+  /// Validation error for the server URL field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid http(s) URL.'**
+  String get cloudInvalidUrl;
+
+  /// Button that triggers an immediate sync with the cloud
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get cloudSyncNow;
+
+  /// Status shown while a sync is in flight
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get cloudSyncing;
+
+  /// Status showing the time of the last successful sync
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced: {time}'**
+  String cloudLastSynced(String time);
+
+  /// Message shown when a sync fails
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed: {error}'**
+  String cloudSyncFailed(String error);
+
+  /// Label for the server folder input field
+  ///
+  /// In en, this message translates to:
+  /// **'Folder on server'**
+  String get cloudFolderLabel;
+
+  /// Hint explaining the folder choice and device consistency
+  ///
+  /// In en, this message translates to:
+  /// **'Journal batches are stored in this folder. Use the same folder on all your devices.'**
+  String get cloudFolderHint;
+
+  /// Tooltip for the button opening the folder picker
+  ///
+  /// In en, this message translates to:
+  /// **'Browse server folders'**
+  String get cloudBrowse;
+
+  /// Title of the folder picker dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder'**
+  String get cloudPickFolder;
+
+  /// Button that creates a folder in the picker
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get cloudNewFolder;
+
+  /// Label of the new folder name input
+  ///
+  /// In en, this message translates to:
+  /// **'Folder name'**
+  String get cloudNewFolderName;
+
+  /// Confirm button of the new folder dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get cloudCreate;
+
+  /// Button that returns the selected folder path
+  ///
+  /// In en, this message translates to:
+  /// **'Use this folder'**
+  String get cloudUseThisFolder;
+
+  /// Shown when a folder has no subfolders
+  ///
+  /// In en, this message translates to:
+  /// **'No subfolders'**
+  String get cloudNoSubfolders;
+
+  /// Button retrying a failed folder listing
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get cloudRetry;
 }
 
 class _AppLocalizationsDelegate

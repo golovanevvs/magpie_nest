@@ -199,4 +199,95 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dialogEmptyTrashMessage =>
       'All snippets in the Trash will be permanently deleted. This action cannot be undone.';
+
+  @override
+  String get settingsCloud => 'Cloud';
+
+  @override
+  String get cloudStatusNotConfigured => 'Cloud sync is not configured.';
+
+  @override
+  String cloudStatusConnected(String url) {
+    return 'Connected to $url.';
+  }
+
+  @override
+  String get cloudUrlLabel => 'Server URL';
+
+  @override
+  String get cloudUsernameLabel => 'Username (optional)';
+
+  @override
+  String get cloudPasswordLabel => 'Password (optional)';
+
+  @override
+  String get cloudNoAuthHint =>
+      'Leave username and password empty to connect without authentication.';
+
+  @override
+  String get cloudTestConnection => 'Test connection';
+
+  @override
+  String get cloudConnect => 'Connect';
+
+  @override
+  String get cloudDisconnect => 'Disconnect';
+
+  @override
+  String get cloudConnectionOk => 'Connection successful.';
+
+  @override
+  String cloudConnectionFailed(String error) {
+    return 'Connection failed: $error';
+  }
+
+  @override
+  String get cloudInvalidUrl => 'Enter a valid http(s) URL.';
+
+  @override
+  String get cloudSyncNow => 'Sync now';
+
+  @override
+  String get cloudSyncing => 'Syncing…';
+
+  @override
+  String cloudLastSynced(String time) {
+    return 'Last synced: $time';
+  }
+
+  @override
+  String cloudSyncFailed(String error) {
+    return 'Sync failed: $error';
+  }
+
+  @override
+  String get cloudFolderLabel => 'Folder on server';
+
+  @override
+  String get cloudFolderHint =>
+      'Journal batches are stored in this folder. Use the same folder on all your devices.';
+
+  @override
+  String get cloudBrowse => 'Browse server folders';
+
+  @override
+  String get cloudPickFolder => 'Choose a folder';
+
+  @override
+  String get cloudNewFolder => 'New folder';
+
+  @override
+  String get cloudNewFolderName => 'Folder name';
+
+  @override
+  String get cloudCreate => 'Create';
+
+  @override
+  String get cloudUseThisFolder => 'Use this folder';
+
+  @override
+  String get cloudNoSubfolders => 'No subfolders';
+
+  @override
+  String get cloudRetry => 'Retry';
 }

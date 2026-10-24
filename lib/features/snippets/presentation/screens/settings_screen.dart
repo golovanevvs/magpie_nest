@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
+import 'package:magpie_nest/core/sync/sync_controller.dart';
+import 'package:magpie_nest/core/sync/webdav_credentials.dart';
+import 'package:magpie_nest/core/sync/webdav_transport.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/cloud_folder_picker_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
+  final CloudConnectionController cloud;
+  final SyncController sync;
   final Locale currentLocale;
   final ThemeMode currentThemeMode;
   final ValueChanged<Locale> onLocaleChanged;
@@ -9,6 +17,8 @@ class SettingsScreen extends StatefulWidget {
 
   const SettingsScreen({
     super.key,
+    required this.cloud,
+    required this.sync,
     required this.currentLocale,
     required this.currentThemeMode,
     required this.onLocaleChanged,
@@ -59,6 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final menuItems = [
       (icon: Icons.language, title: l10n.settingsLanguage),
       (icon: Icons.dark_mode, title: l10n.settingsTheme),
+      (icon: Icons.cloud, title: l10n.settingsCloud),
     ];
 
     return Row(
@@ -102,6 +113,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           currentThemeMode: _currentThemeMode,
           onThemeModeChanged: _handleThemeModeChanged,
         );
+      case 2:
+        return _CloudPanel(cloud: widget.cloud, sync: widget.sync);
       default:
         return const SizedBox.shrink();
     }
@@ -249,6 +262,243 @@ class _ThemePanel extends StatelessWidget {
           onThemeModeChanged: onThemeModeChanged,
         ),
       ],
+    );
+  }
+}
+
+class _CloudPanel extends StatefulWidget {
+  final CloudConnectionController cloud;
+  final SyncController sync;
+
+  const _CloudPanel({required this.cloud, required this.sync});
+
+  @override
+  State<_CloudPanel> createState() => _CloudPanelState();
+}
+
+class _CloudPanelState extends State<_CloudPanel> {
+  final _urlController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _folderController = TextEditingController(text: kDefaultJournalDir);
+
+  @override
+  void dispose() {
+    _urlController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _folderController.dispose();
+    super.dispose();
+  }
+
+  WebdavCredentials? _readForm() {
+    final url = _urlController.text.trim();
+    final uri = Uri.tryParse(url);
+    final validUrl =
+        url.isNotEmpty &&
+        uri != null &&
+        (uri.scheme == 'http' || uri.scheme == 'https') &&
+        uri.host.isNotEmpty;
+    if (!validUrl) return null;
+
+    final folder = _folderController.text;
+    if (folder.contains('..')) return null;
+
+    return WebdavCredentials(
+      url: url,
+      username: _usernameController.text.trim(),
+      password: _passwordController.text,
+      folder: normalizeJournalDir(folder),
+    );
+  }
+
+  Future<void> _pickFolder() async {
+    final credentials = _readForm();
+    if (credentials == null) {
+      _showSnackBar(AppLocalizations.of(context)!.cloudInvalidUrl);
+      return;
+    }
+    final picked = await showDialog<String>(
+      context: context,
+      builder: (_) => CloudFolderPickerDialog(
+        transport: webdavTransportFrom(credentials),
+        initialPath: _folderController.text,
+      ),
+    );
+    if (picked != null) {
+      setState(() => _folderController.text = picked);
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _run(Future<bool> Function(WebdavCredentials) action) async {
+    final credentials = _readForm();
+    if (credentials == null) {
+      _showSnackBar(AppLocalizations.of(context)!.cloudInvalidUrl);
+      return;
+    }
+    final l10n = AppLocalizations.of(context)!;
+    final ok = await action(credentials);
+    if (!mounted) return;
+    _showSnackBar(
+      ok
+          ? l10n.cloudConnectionOk
+          : l10n.cloudConnectionFailed(widget.cloud.error ?? ''),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return ListenableBuilder(
+      listenable: Listenable.merge([widget.cloud, widget.sync]),
+      builder: (context, _) {
+        final cloud = widget.cloud;
+        final connected = cloud.isConnected;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SectionHeader(title: l10n.settingsCloud),
+            const SizedBox(height: 8),
+
+            Text(
+              connected
+                  ? l10n.cloudStatusConnected(cloud.connectedUrl ?? '')
+                  : l10n.cloudStatusNotConfigured,
+            ),
+            if (connected)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '${l10n.cloudFolderLabel}: ${cloud.connectedFolder ?? ''}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+            const SizedBox(height: 16),
+
+            if (connected)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  OutlinedButton(
+                    onPressed: cloud.busy ? null : cloud.disconnect,
+                    child: Text(l10n.cloudDisconnect),
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: widget.sync.syncing ? null : widget.sync.syncNow,
+                    icon: widget.sync.syncing
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.sync),
+                    label: Text(l10n.cloudSyncNow),
+                  ),
+                  if (widget.sync.error != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        l10n.cloudSyncFailed(widget.sync.error!),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
+                  if (widget.sync.lastSyncedAt != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        l10n.cloudLastSynced(
+                          DateFormat.Hm().format(widget.sync.lastSyncedAt!),
+                        ),
+                      ),
+                    ),
+                ],
+              )
+            else ...[
+              TextField(
+                controller: _urlController,
+                decoration: InputDecoration(
+                  labelText: l10n.cloudUrlLabel,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: l10n.cloudUsernameLabel,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: l10n.cloudPasswordLabel,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _folderController,
+                decoration: InputDecoration(
+                  labelText: l10n.cloudFolderLabel,
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.folder_open),
+                    tooltip: l10n.cloudBrowse,
+                    onPressed: _pickFolder,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.cloudFolderHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.cloudNoAuthHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 16),
+
+              Wrap(
+                spacing: 12,
+                children: [
+                  OutlinedButton(
+                    onPressed: cloud.busy
+                        ? null
+                        : () => _run(cloud.testConnection),
+                    child: Text(l10n.cloudTestConnection),
+                  ),
+                  FilledButton(
+                    onPressed: cloud.busy ? null : () => _run(cloud.connect),
+                    child: Text(l10n.cloudConnect),
+                  ),
+                ],
+              ),
+
+              if (cloud.busy)
+                const Padding(
+                  padding: EdgeInsets.only(top: 12),
+                  child: SizedBox(height: 2, child: LinearProgressIndicator()),
+                ),
+            ],
+          ],
+        );
+      },
     );
   }
 }

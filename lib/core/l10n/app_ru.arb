@@ -252,5 +252,133 @@
   "dialogEmptyTrashMessage": "Все сниппеты из корзины будут удалены безвозвратно. Это действие нельзя отменить.",
   "@dialogEmptyTrashMessage": {
     "description": "Текст сообщения в диалоге подтверждения очистки корзины"
+  },
+  "settingsCloud": "Облако",
+  "@settingsCloud": {
+    "description": "Пункт меню настроек для конфигурации облачной синхронизации"
+  },
+  "cloudStatusNotConfigured": "Облачная синхронизация не настроена.",
+  "@cloudStatusNotConfigured": {
+    "description": "Текст статуса, когда WebDAV-аккаунт не подключён"
+  },
+  "cloudStatusConnected": "Подключено к {url}.",
+  "@cloudStatusConnected": {
+    "description": "Текст статуса, когда WebDAV-аккаунт подключён",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudUrlLabel": "Адрес сервера",
+  "@cloudUrlLabel": {
+    "description": "Подпись поля ввода адреса WebDAV-сервера"
+  },
+  "cloudUsernameLabel": "Имя пользователя (необязательно)",
+  "@cloudUsernameLabel": {
+    "description": "Подпись поля ввода имени пользователя WebDAV"
+  },
+  "cloudPasswordLabel": "Пароль (необязательно)",
+  "@cloudPasswordLabel": {
+    "description": "Подпись поля ввода пароля WebDAV"
+  },
+  "cloudNoAuthHint": "Оставьте имя пользователя и пароль пустыми для подключения без аутентификации.",
+  "@cloudNoAuthHint": {
+    "description": "Подсказка о том, что пустые креды означают подключение без аутентификации"
+  },
+  "cloudTestConnection": "Проверить соединение",
+  "@cloudTestConnection": {
+    "description": "Кнопка проверки соединения без сохранения кредов"
+  },
+  "cloudConnect": "Подключить",
+  "@cloudConnect": {
+    "description": "Кнопка, которая проверяет соединение и сохраняет креды"
+  },
+  "cloudDisconnect": "Отключить",
+  "@cloudDisconnect": {
+    "description": "Кнопка, которая удаляет сохранённые WebDAV-креды"
+  },
+  "cloudConnectionOk": "Соединение установлено.",
+  "@cloudConnectionOk": {
+    "description": "Сообщение при успешной проверке соединения"
+  },
+  "cloudConnectionFailed": "Ошибка соединения: {error}",
+  "@cloudConnectionFailed": {
+    "description": "Сообщение при неудачной проверке соединения",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudInvalidUrl": "Введите корректный http(s)-адрес.",
+  "@cloudInvalidUrl": {
+    "description": "Ошибка валидации поля адреса сервера"
+  },
+  "cloudSyncNow": "Синхронизировать",
+  "@cloudSyncNow": {
+    "description": "Кнопка запуска немедленной синхронизации с облаком"
+  },
+  "cloudSyncing": "Синхронизация…",
+  "@cloudSyncing": {
+    "description": "Статус, пока синхронизация выполняется"
+  },
+  "cloudLastSynced": "Последняя синхронизация: {time}",
+  "@cloudLastSynced": {
+    "description": "Статус со временем последней успешной синхронизации",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudSyncFailed": "Ошибка синхронизации: {error}",
+  "@cloudSyncFailed": {
+    "description": "Сообщение при неудачной синхронизации",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudFolderLabel": "Папка на сервере",
+  "@cloudFolderLabel": {
+    "description": "Подпись поля папки на сервере"
+  },
+  "cloudFolderHint": "Батчи журнала сохраняются в эту папку. Используйте одинаковую папку на всех устройствах.",
+  "@cloudFolderHint": {
+    "description": "Подсказка о выборе папки и согласованности между устройствами"
+  },
+  "cloudBrowse": "Обзор папок на сервере",
+  "@cloudBrowse": {
+    "description": "Подсказка кнопки открытия браузера папок"
+  },
+  "cloudPickFolder": "Выберите папку",
+  "@cloudPickFolder": {
+    "description": "Заголовок диалога выбора папки"
+  },
+  "cloudNewFolder": "Новая папка",
+  "@cloudNewFolder": {
+    "description": "Кнопка создания папки в браузере"
+  },
+  "cloudNewFolderName": "Имя папки",
+  "@cloudNewFolderName": {
+    "description": "Подпись поля ввода имени новой папки"
+  },
+  "cloudCreate": "Создать",
+  "@cloudCreate": {
+    "description": "Кнопка подтверждения создания новой папки"
+  },
+  "cloudUseThisFolder": "Выбрать эту папку",
+  "@cloudUseThisFolder": {
+    "description": "Кнопка возврата выбранного пути папки"
+  },
+  "cloudNoSubfolders": "Нет подпапок",
+  "@cloudNoSubfolders": {
+    "description": "Показывается, когда у папки нет подпапок"
+  },
+  "cloudRetry": "Повторить",
+  "@cloudRetry": {
+    "description": "Кнопка повторного запроса списка папок после ошибки"
   }
 }

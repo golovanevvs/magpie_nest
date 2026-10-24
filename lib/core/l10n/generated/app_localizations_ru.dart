@@ -199,4 +199,95 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get dialogEmptyTrashMessage =>
       'Все сниппеты из корзины будут удалены безвозвратно. Это действие нельзя отменить.';
+
+  @override
+  String get settingsCloud => 'Облако';
+
+  @override
+  String get cloudStatusNotConfigured => 'Облачная синхронизация не настроена.';
+
+  @override
+  String cloudStatusConnected(String url) {
+    return 'Подключено к $url.';
+  }
+
+  @override
+  String get cloudUrlLabel => 'Адрес сервера';
+
+  @override
+  String get cloudUsernameLabel => 'Имя пользователя (необязательно)';
+
+  @override
+  String get cloudPasswordLabel => 'Пароль (необязательно)';
+
+  @override
+  String get cloudNoAuthHint =>
+      'Оставьте имя пользователя и пароль пустыми для подключения без аутентификации.';
+
+  @override
+  String get cloudTestConnection => 'Проверить соединение';
+
+  @override
+  String get cloudConnect => 'Подключить';
+
+  @override
+  String get cloudDisconnect => 'Отключить';
+
+  @override
+  String get cloudConnectionOk => 'Соединение установлено.';
+
+  @override
+  String cloudConnectionFailed(String error) {
+    return 'Ошибка соединения: $error';
+  }
+
+  @override
+  String get cloudInvalidUrl => 'Введите корректный http(s)-адрес.';
+
+  @override
+  String get cloudSyncNow => 'Синхронизировать';
+
+  @override
+  String get cloudSyncing => 'Синхронизация…';
+
+  @override
+  String cloudLastSynced(String time) {
+    return 'Последняя синхронизация: $time';
+  }
+
+  @override
+  String cloudSyncFailed(String error) {
+    return 'Ошибка синхронизации: $error';
+  }
+
+  @override
+  String get cloudFolderLabel => 'Папка на сервере';
+
+  @override
+  String get cloudFolderHint =>
+      'Батчи журнала сохраняются в эту папку. Используйте одинаковую папку на всех устройствах.';
+
+  @override
+  String get cloudBrowse => 'Обзор папок на сервере';
+
+  @override
+  String get cloudPickFolder => 'Выберите папку';
+
+  @override
+  String get cloudNewFolder => 'Новая папка';
+
+  @override
+  String get cloudNewFolderName => 'Имя папки';
+
+  @override
+  String get cloudCreate => 'Создать';
+
+  @override
+  String get cloudUseThisFolder => 'Выбрать эту папку';
+
+  @override
+  String get cloudNoSubfolders => 'Нет подпапок';
+
+  @override
+  String get cloudRetry => 'Повторить';
 }

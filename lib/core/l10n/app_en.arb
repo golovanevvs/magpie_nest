@@ -252,5 +252,133 @@
   "dialogEmptyTrashMessage": "All snippets in the Trash will be permanently deleted. This action cannot be undone.",
   "@dialogEmptyTrashMessage": {
     "description": "Message shown in the confirmation dialog for emptying the Trash"
+  },
+  "settingsCloud": "Cloud",
+  "@settingsCloud": {
+    "description": "Settings menu item for cloud sync configuration"
+  },
+  "cloudStatusNotConfigured": "Cloud sync is not configured.",
+  "@cloudStatusNotConfigured": {
+    "description": "Status text shown when no WebDAV account is connected"
+  },
+  "cloudStatusConnected": "Connected to {url}.",
+  "@cloudStatusConnected": {
+    "description": "Status text shown when a WebDAV account is connected",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudUrlLabel": "Server URL",
+  "@cloudUrlLabel": {
+    "description": "Label for the WebDAV server URL input field"
+  },
+  "cloudUsernameLabel": "Username (optional)",
+  "@cloudUsernameLabel": {
+    "description": "Label for the WebDAV username input field"
+  },
+  "cloudPasswordLabel": "Password (optional)",
+  "@cloudPasswordLabel": {
+    "description": "Label for the WebDAV password input field"
+  },
+  "cloudNoAuthHint": "Leave username and password empty to connect without authentication.",
+  "@cloudNoAuthHint": {
+    "description": "Hint explaining that empty credentials mean no authentication"
+  },
+  "cloudTestConnection": "Test connection",
+  "@cloudTestConnection": {
+    "description": "Button that checks the WebDAV connection without saving credentials"
+  },
+  "cloudConnect": "Connect",
+  "@cloudConnect": {
+    "description": "Button that tests the connection and saves the credentials"
+  },
+  "cloudDisconnect": "Disconnect",
+  "@cloudDisconnect": {
+    "description": "Button that clears the stored WebDAV credentials"
+  },
+  "cloudConnectionOk": "Connection successful.",
+  "@cloudConnectionOk": {
+    "description": "Message shown when the connection test passes"
+  },
+  "cloudConnectionFailed": "Connection failed: {error}",
+  "@cloudConnectionFailed": {
+    "description": "Message shown when the connection test fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudInvalidUrl": "Enter a valid http(s) URL.",
+  "@cloudInvalidUrl": {
+    "description": "Validation error for the server URL field"
+  },
+  "cloudSyncNow": "Sync now",
+  "@cloudSyncNow": {
+    "description": "Button that triggers an immediate sync with the cloud"
+  },
+  "cloudSyncing": "Syncing…",
+  "@cloudSyncing": {
+    "description": "Status shown while a sync is in flight"
+  },
+  "cloudLastSynced": "Last synced: {time}",
+  "@cloudLastSynced": {
+    "description": "Status showing the time of the last successful sync",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudSyncFailed": "Sync failed: {error}",
+  "@cloudSyncFailed": {
+    "description": "Message shown when a sync fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudFolderLabel": "Folder on server",
+  "@cloudFolderLabel": {
+    "description": "Label for the server folder input field"
+  },
+  "cloudFolderHint": "Journal batches are stored in this folder. Use the same folder on all your devices.",
+  "@cloudFolderHint": {
+    "description": "Hint explaining the folder choice and device consistency"
+  },
+  "cloudBrowse": "Browse server folders",
+  "@cloudBrowse": {
+    "description": "Tooltip for the button opening the folder picker"
+  },
+  "cloudPickFolder": "Choose a folder",
+  "@cloudPickFolder": {
+    "description": "Title of the folder picker dialog"
+  },
+  "cloudNewFolder": "New folder",
+  "@cloudNewFolder": {
+    "description": "Button that creates a folder in the picker"
+  },
+  "cloudNewFolderName": "Folder name",
+  "@cloudNewFolderName": {
+    "description": "Label of the new folder name input"
+  },
+  "cloudCreate": "Create",
+  "@cloudCreate": {
+    "description": "Confirm button of the new folder dialog"
+  },
+  "cloudUseThisFolder": "Use this folder",
+  "@cloudUseThisFolder": {
+    "description": "Button that returns the selected folder path"
+  },
+  "cloudNoSubfolders": "No subfolders",
+  "@cloudNoSubfolders": {
+    "description": "Shown when a folder has no subfolders"
+  },
+  "cloudRetry": "Retry",
+  "@cloudRetry": {
+    "description": "Button retrying a failed folder listing"
   }
 }
