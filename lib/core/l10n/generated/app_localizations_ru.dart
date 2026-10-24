@@ -201,7 +201,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Все сниппеты из корзины будут удалены безвозвратно. Это действие нельзя отменить.';
 
   @override
-  String get settingsCloud => 'Облако';
+  String get settingsCloud => 'Синхронизация';
 
   @override
   String get cloudStatusNotConfigured => 'Облачная синхронизация не настроена.';

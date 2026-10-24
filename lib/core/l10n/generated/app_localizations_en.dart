@@ -201,7 +201,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'All snippets in the Trash will be permanently deleted. This action cannot be undone.';
 
   @override
-  String get settingsCloud => 'Cloud';
+  String get settingsCloud => 'Sync';
 
   @override
   String get cloudStatusNotConfigured => 'Cloud sync is not configured.';

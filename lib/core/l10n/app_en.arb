@@ -253,7 +253,7 @@
   "@dialogEmptyTrashMessage": {
     "description": "Message shown in the confirmation dialog for emptying the Trash"
   },
-  "settingsCloud": "Cloud",
+  "settingsCloud": "Sync",
   "@settingsCloud": {
     "description": "Settings menu item for cloud sync configuration"
   },

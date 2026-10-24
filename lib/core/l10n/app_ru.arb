@@ -253,7 +253,7 @@
   "@dialogEmptyTrashMessage": {
     "description": "Текст сообщения в диалоге подтверждения очистки корзины"
   },
-  "settingsCloud": "Облако",
+  "settingsCloud": "Синхронизация",
   "@settingsCloud": {
     "description": "Пункт меню настроек для конфигурации облачной синхронизации"
   },

@@ -473,7 +473,7 @@ abstract class AppLocalizations {
   /// Settings menu item for cloud sync configuration
   ///
   /// In en, this message translates to:
-  /// **'Cloud'**
+  /// **'Sync'**
   String get settingsCloud;
 
   /// Status text shown when no WebDAV account is connected
