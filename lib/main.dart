@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'
+    hide GlobalMaterialLocalizations, GlobalCupertinoLocalizations;
+import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/database/app_database.dart';
 import 'package:magpie_nest/core/highlight/languages_registry.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
