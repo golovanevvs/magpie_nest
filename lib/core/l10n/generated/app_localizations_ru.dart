@@ -212,6 +212,12 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get cloudProviderLabel => 'Провайдер';
+
+  @override
+  String get cloudProviderCustom => 'Свой вариант';
+
+  @override
   String get cloudUrlLabel => 'Адрес сервера';
 
   @override

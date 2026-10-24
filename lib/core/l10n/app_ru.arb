@@ -270,6 +270,14 @@
       }
     }
   },
+  "cloudProviderLabel": "Провайдер",
+  "@cloudProviderLabel": {
+    "description": "Подпись поля выбора облачного провайдера"
+  },
+  "cloudProviderCustom": "Свой вариант",
+  "@cloudProviderCustom": {
+    "description": "Пункт «свой вариант», когда пользователь вводит URL вручную"
+  },
   "cloudUrlLabel": "Адрес сервера",
   "@cloudUrlLabel": {
     "description": "Подпись поля ввода адреса WebDAV-сервера"

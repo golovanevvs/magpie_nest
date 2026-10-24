@@ -212,6 +212,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get cloudProviderLabel => 'Provider';
+
+  @override
+  String get cloudProviderCustom => 'Custom (manual)';
+
+  @override
   String get cloudUrlLabel => 'Server URL';
 
   @override

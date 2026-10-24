@@ -270,6 +270,14 @@
       }
     }
   },
+  "cloudProviderLabel": "Provider",
+  "@cloudProviderLabel": {
+    "description": "Label for the cloud provider selection field"
+  },
+  "cloudProviderCustom": "Custom (manual)",
+  "@cloudProviderCustom": {
+    "description": "The 'custom' option for entering a URL manually"
+  },
   "cloudUrlLabel": "Server URL",
   "@cloudUrlLabel": {
     "description": "Label for the WebDAV server URL input field"

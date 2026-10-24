@@ -488,6 +488,18 @@ abstract class AppLocalizations {
   /// **'Connected to {url}.'**
   String cloudStatusConnected(String url);
 
+  /// Label for the cloud provider selection field
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get cloudProviderLabel;
+
+  /// The 'custom' option for entering a URL manually
+  ///
+  /// In en, this message translates to:
+  /// **'Custom (manual)'**
+  String get cloudProviderCustom;
+
   /// Label for the WebDAV server URL input field
   ///
   /// In en, this message translates to:

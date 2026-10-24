@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
+import 'package:magpie_nest/core/sync/cloud_providers.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/core/sync/webdav_credentials.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
@@ -282,6 +283,13 @@ class _CloudPanelState extends State<_CloudPanel> {
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController(text: kDefaultSyncFolderName);
   final _parentController = TextEditingController();
+  String _selectedProvider = kCustomCloudProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _urlController.addListener(_onUrlChanged);
+  }
 
   @override
   void dispose() {
@@ -356,6 +364,26 @@ class _CloudPanelState extends State<_CloudPanel> {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _onUrlChanged() {
+    final url = _urlController.text.trim();
+    final isPreset = cloudProviders.any((p) => p.url == url);
+    if (!isPreset && _selectedProvider != kCustomCloudProvider) {
+      setState(() => _selectedProvider = kCustomCloudProvider);
+    }
+  }
+
+  void _onProviderChanged(String? value) {
+    if (value == null) return;
+    setState(() {
+      _selectedProvider = value;
+      if (value == kCustomCloudProvider) {
+        _urlController.clear();
+      } else {
+        _urlController.text = value;
+      }
+    });
   }
 
   Future<void> _run(Future<bool> Function(WebdavCredentials) action) async {
@@ -452,6 +480,36 @@ class _CloudPanelState extends State<_CloudPanel> {
                 ],
               )
             else ...[
+              InputDecorator(
+                decoration: InputDecoration(
+                  labelText: l10n.cloudProviderLabel,
+                  border: const OutlineInputBorder(),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedProvider,
+                    isExpanded: true,
+                    isDense: true,
+                    items: [
+                      for (final provider in cloudProviders)
+                        DropdownMenuItem<String>(
+                          value: provider.url,
+                          child: Text(provider.name),
+                        ),
+                      DropdownMenuItem<String>(
+                        value: kCustomCloudProvider,
+                        child: Text(l10n.cloudProviderCustom),
+                      ),
+                    ],
+                    onChanged: _onProviderChanged,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               TextField(
                 controller: _urlController,
                 decoration: InputDecoration(
