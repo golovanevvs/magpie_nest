@@ -349,6 +349,26 @@
   "@cloudFolderHint": {
     "description": "Подсказка о выборе папки и согласованности между устройствами"
   },
+  "cloudFolderNameLabel": "Имя папки",
+  "@cloudFolderNameLabel": {
+    "description": "Подпись поля имени папки журнала"
+  },
+  "cloudParentFolderLabel": "Расположение",
+  "@cloudParentFolderLabel": {
+    "description": "Подпись поля выбора родительской папки"
+  },
+  "cloudRootFolder": "Корень облака",
+  "@cloudRootFolder": {
+    "description": "Подсказка, показывающая корень облака как родительскую папку по умолчанию"
+  },
+  "cloudParentFolderHint": "Файлы журнала сохраняются в выбранном расположении под указанным именем папки.",
+  "@cloudParentFolderHint": {
+    "description": "Подсказка, как родительская папка и имя папки образуют путь к данным"
+  },
+  "cloudInvalidFolderName": "Введите корректное имя папки (буквы, цифры, подчёркивание, точка, дефис; без пробелов и зарезервированных символов).",
+  "@cloudInvalidFolderName": {
+    "description": "Сообщение при некорректном имени папки журнала"
+  },
   "cloudBrowse": "Обзор папок на сервере",
   "@cloudBrowse": {
     "description": "Подсказка кнопки открытия браузера папок"

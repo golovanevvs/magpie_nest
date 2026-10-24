@@ -280,18 +280,20 @@ class _CloudPanelState extends State<_CloudPanel> {
   final _urlController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _folderController = TextEditingController(text: kDefaultJournalDir);
+  final _nameController = TextEditingController(text: kDefaultSyncFolderName);
+  final _parentController = TextEditingController();
 
   @override
   void dispose() {
     _urlController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
-    _folderController.dispose();
+    _nameController.dispose();
+    _parentController.dispose();
     super.dispose();
   }
 
-  WebdavCredentials? _readForm() {
+  String? _validUrl() {
     final url = _urlController.text.trim();
     final uri = Uri.tryParse(url);
     final validUrl =
@@ -299,34 +301,54 @@ class _CloudPanelState extends State<_CloudPanel> {
         uri != null &&
         (uri.scheme == 'http' || uri.scheme == 'https') &&
         uri.host.isNotEmpty;
-    if (!validUrl) return null;
+    return validUrl ? url : null;
+  }
 
-    final folder = _folderController.text;
-    if (folder.contains('..')) return null;
+  String _previewFolder() {
+    final p = normalizeParent(_parentController.text);
+    final n = isValidFolderName(_nameController.text)
+        ? _nameController.text.trim()
+        : kDefaultSyncFolderName;
+    return p.isEmpty ? '/$n/' : '/$p/$n/';
+  }
+
+  WebdavCredentials? _readForm() {
+    final url = _validUrl();
+    if (url == null) return null;
+
+    final parent = normalizeParent(_parentController.text);
+    if (parent.contains('..')) return null;
+    if (!isValidFolderName(_nameController.text)) return null;
 
     return WebdavCredentials(
       url: url,
       username: _usernameController.text.trim(),
       password: _passwordController.text,
-      folder: normalizeJournalDir(folder),
+      folder: joinJournalDir(parent, _nameController.text),
     );
   }
 
   Future<void> _pickFolder() async {
-    final credentials = _readForm();
-    if (credentials == null) {
+    final url = _validUrl();
+    if (url == null) {
       _showSnackBar(AppLocalizations.of(context)!.cloudInvalidUrl);
       return;
     }
     final picked = await showDialog<String>(
       context: context,
       builder: (_) => CloudFolderPickerDialog(
-        transport: webdavTransportFrom(credentials),
-        initialPath: _folderController.text,
+        transport: webdavTransportFrom(
+          WebdavCredentials(
+            url: url,
+            username: _usernameController.text.trim(),
+            password: _passwordController.text,
+          ),
+        ),
+        initialPath: normalizeParent(_parentController.text),
       ),
     );
     if (picked != null) {
-      setState(() => _folderController.text = picked);
+      setState(() => _parentController.text = normalizeParent(picked));
     }
   }
 
@@ -339,7 +361,12 @@ class _CloudPanelState extends State<_CloudPanel> {
   Future<void> _run(Future<bool> Function(WebdavCredentials) action) async {
     final credentials = _readForm();
     if (credentials == null) {
-      _showSnackBar(AppLocalizations.of(context)!.cloudInvalidUrl);
+      final l10n = AppLocalizations.of(context)!;
+      _showSnackBar(
+        isValidFolderName(_nameController.text)
+            ? l10n.cloudInvalidUrl
+            : l10n.cloudInvalidFolderName,
+      );
       return;
     }
     final l10n = AppLocalizations.of(context)!;
@@ -451,9 +478,19 @@ class _CloudPanelState extends State<_CloudPanel> {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: _folderController,
+                controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: l10n.cloudFolderLabel,
+                  labelText: l10n.cloudFolderNameLabel,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _parentController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: l10n.cloudParentFolderLabel,
+                  hintText: l10n.cloudRootFolder,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.folder_open),
@@ -464,7 +501,12 @@ class _CloudPanelState extends State<_CloudPanel> {
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.cloudFolderHint,
+                l10n.cloudParentFolderHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${l10n.cloudFolderLabel}: ${_previewFolder()}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 8),

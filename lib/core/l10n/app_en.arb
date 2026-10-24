@@ -349,6 +349,26 @@
   "@cloudFolderHint": {
     "description": "Hint explaining the folder choice and device consistency"
   },
+  "cloudFolderNameLabel": "Folder name",
+  "@cloudFolderNameLabel": {
+    "description": "Label for the journal folder name input"
+  },
+  "cloudParentFolderLabel": "Location",
+  "@cloudParentFolderLabel": {
+    "description": "Label for the parent folder picker input"
+  },
+  "cloudRootFolder": "Cloud root",
+  "@cloudRootFolder": {
+    "description": "Hint showing the cloud root as the default parent folder"
+  },
+  "cloudParentFolderHint": "Journal files are stored in the selected location under the folder name.",
+  "@cloudParentFolderHint": {
+    "description": "Hint explaining how the parent folder and folder name build the data path"
+  },
+  "cloudInvalidFolderName": "Enter a valid folder name (letters, digits, underscore, dot, dash; no spaces or reserved symbols).",
+  "@cloudInvalidFolderName": {
+    "description": "Message shown when the journal folder name is invalid"
+  },
   "cloudBrowse": "Browse server folders",
   "@cloudBrowse": {
     "description": "Tooltip for the button opening the folder picker"

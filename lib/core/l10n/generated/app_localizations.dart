@@ -584,6 +584,36 @@ abstract class AppLocalizations {
   /// **'Journal batches are stored in this folder. Use the same folder on all your devices.'**
   String get cloudFolderHint;
 
+  /// Label for the journal folder name input
+  ///
+  /// In en, this message translates to:
+  /// **'Folder name'**
+  String get cloudFolderNameLabel;
+
+  /// Label for the parent folder picker input
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get cloudParentFolderLabel;
+
+  /// Hint showing the cloud root as the default parent folder
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud root'**
+  String get cloudRootFolder;
+
+  /// Hint explaining how the parent folder and folder name build the data path
+  ///
+  /// In en, this message translates to:
+  /// **'Journal files are stored in the selected location under the folder name.'**
+  String get cloudParentFolderHint;
+
+  /// Message shown when the journal folder name is invalid
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid folder name (letters, digits, underscore, dot, dash; no spaces or reserved symbols).'**
+  String get cloudInvalidFolderName;
+
   /// Tooltip for the button opening the folder picker
   ///
   /// In en, this message translates to:

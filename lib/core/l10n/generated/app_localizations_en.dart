@@ -268,6 +268,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Journal batches are stored in this folder. Use the same folder on all your devices.';
 
   @override
+  String get cloudFolderNameLabel => 'Folder name';
+
+  @override
+  String get cloudParentFolderLabel => 'Location';
+
+  @override
+  String get cloudRootFolder => 'Cloud root';
+
+  @override
+  String get cloudParentFolderHint =>
+      'Journal files are stored in the selected location under the folder name.';
+
+  @override
+  String get cloudInvalidFolderName =>
+      'Enter a valid folder name (letters, digits, underscore, dot, dash; no spaces or reserved symbols).';
+
+  @override
   String get cloudBrowse => 'Browse server folders';
 
   @override

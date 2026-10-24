@@ -268,6 +268,23 @@ class AppLocalizationsRu extends AppLocalizations {
       'Батчи журнала сохраняются в эту папку. Используйте одинаковую папку на всех устройствах.';
 
   @override
+  String get cloudFolderNameLabel => 'Имя папки';
+
+  @override
+  String get cloudParentFolderLabel => 'Расположение';
+
+  @override
+  String get cloudRootFolder => 'Корень облака';
+
+  @override
+  String get cloudParentFolderHint =>
+      'Файлы журнала сохраняются в выбранном расположении под указанным именем папки.';
+
+  @override
+  String get cloudInvalidFolderName =>
+      'Введите корректное имя папки (буквы, цифры, подчёркивание, точка, дефис; без пробелов и зарезервированных символов).';
+
+  @override
   String get cloudBrowse => 'Обзор папок на сервере';
 
   @override

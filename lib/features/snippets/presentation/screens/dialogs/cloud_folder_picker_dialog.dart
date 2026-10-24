@@ -73,9 +73,6 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    // The builder must cover the WHOLE dialog, including actions: otherwise
-    // the "Use this folder" button is built once at open time (at root,
-    // disabled) and never rebuilt on navigation.
     return ListenableBuilder(
       listenable: _browser,
       builder: (context, _) {
@@ -92,11 +89,7 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
               child: Text(l10n.dialogCancel),
             ),
             FilledButton(
-              // The root is not selectable: journal files must live in a
-              // dedicated folder, not directly in the drive root.
-              onPressed: _browser.atRoot
-                  ? null
-                  : () => Navigator.pop(context, _browser.path),
+              onPressed: () => Navigator.pop(context, _browser.path),
               child: Text(l10n.cloudUseThisFolder),
             ),
           ],
