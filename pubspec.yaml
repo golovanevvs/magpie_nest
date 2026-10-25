@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
   intl: ^0.20.2
   uuid: ^4.6.0
   flutter_highlight: ^0.7.0

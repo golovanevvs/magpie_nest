@@ -2,7 +2,7 @@
 DEVICE ?= windows
 
 .DEFAULT_GOAL := help
-.PHONY: help get codegen watch l10n db-migrate analyze test check run run-reset clean
+.PHONY: help get codegen watch l10n db-migrate analyze test check run run-reset run-driver run-driver-reset clean
 
 help: ## Show the list of commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -36,6 +36,12 @@ run: ## Run the app on $(DEVICE)
 
 run-reset: ## Run with a local DB reset (dev flag MAGPIE_NEST_RESET_DB)
 	flutter run -d $(DEVICE) --dart-define=MAGPIE_NEST_RESET_DB=true
+
+run-driver: ## Run the app with the Flutter Driver extension (driver_main.dart)
+	flutter run -d $(DEVICE) -t lib/driver_main.dart
+
+run-driver-reset: ## Run driver entrypoint with a local DB reset (dev flag MAGPIE_NEST_RESET_DB)
+	flutter run -d $(DEVICE) -t lib/driver_main.dart --dart-define=MAGPIE_NEST_RESET_DB=true
 
 clean: ## Clean build artifacts
 	flutter clean
