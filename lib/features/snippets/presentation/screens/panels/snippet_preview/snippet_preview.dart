@@ -3,6 +3,7 @@ import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:magpie_nest/core/constants/languages.dart';
 
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_dropdown.dart';
 import 'package:magpie_nest/core/utils/debouncer.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
@@ -248,14 +249,13 @@ class _SnippetPreviewState extends State<SnippetPreview> {
             onDescriptionChanged: _onDescriptionChanged,
           ),
           const SizedBox(height: 8),
-          DropdownButton(
+          AdaptiveDropdown<String>(
             value: snippet.activeFragment.language,
-            isDense: true,
             items: SupportedLanguages.allWithNames
                 .map(
-                  (lang) => DropdownMenuItem(
-                    value: lang['code'],
-                    child: Text(lang['name']!),
+                  (lang) => AdaptiveDropdownItem<String>(
+                    value: lang['code']!,
+                    label: lang['name']!,
                   ),
                 )
                 .toList(),

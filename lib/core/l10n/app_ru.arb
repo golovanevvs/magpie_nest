@@ -72,6 +72,14 @@
   "@dialogCancel": {
     "description": "Метка кнопки отмены в диалогах"
   },
+  "dialogClose": "Закрыть",
+  "@dialogClose": {
+    "description": "Метка кнопки закрытия в диалогах"
+  },
+  "dialogDone": "Готово",
+  "@dialogDone": {
+    "description": "Метка кнопки подтверждения в cupertino-пикерах"
+  },
   "dialogDelete": "Удалить",
   "@dialogDelete": {
     "description": "Метка кнопки удаления в диалогах"

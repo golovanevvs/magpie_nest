@@ -64,6 +64,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dialogCancel => 'Отмена';
 
   @override
+  String get dialogClose => 'Закрыть';
+
+  @override
+  String get dialogDone => 'Готово';
+
+  @override
   String get dialogDelete => 'Удалить';
 
   @override

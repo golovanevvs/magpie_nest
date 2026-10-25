@@ -6,6 +6,7 @@ import 'package:magpie_nest/core/sync/cloud_providers.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/core/sync/webdav_credentials.dart';
 import 'package:magpie_nest/core/ui/adaptive_button.dart';
+import 'package:magpie_nest/core/ui/adaptive_dropdown.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/cloud_folder_picker_dialog.dart';
@@ -504,19 +505,18 @@ class _CloudPanelState extends State<_CloudPanel> {
                   ),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
+                  child: AdaptiveDropdown<String>(
                     value: _selectedProvider,
                     isExpanded: true,
-                    isDense: true,
                     items: [
                       for (final provider in cloudProviders)
-                        DropdownMenuItem<String>(
+                        AdaptiveDropdownItem(
                           value: provider.url,
-                          child: Text(provider.name),
+                          label: provider.name,
                         ),
-                      DropdownMenuItem<String>(
+                      AdaptiveDropdownItem(
                         value: kCustomCloudProvider,
-                        child: Text(l10n.cloudProviderCustom),
+                        label: l10n.cloudProviderCustom,
                       ),
                     ],
                     onChanged: _onProviderChanged,

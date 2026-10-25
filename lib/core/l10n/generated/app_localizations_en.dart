@@ -64,6 +64,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogCancel => 'Cancel';
 
   @override
+  String get dialogClose => 'Close';
+
+  @override
+  String get dialogDone => 'Done';
+
+  @override
   String get dialogDelete => 'Delete';
 
   @override

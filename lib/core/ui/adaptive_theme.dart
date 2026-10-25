@@ -10,3 +10,14 @@ fluent.FluentThemeData fluentThemeOf(BuildContext context) {
     }),
   );
 }
+
+Widget fluentChrome(BuildContext context, {required Widget child}) {
+  return fluent.FluentTheme(
+    data: fluentThemeOf(context),
+    child: Localizations.override(
+      context: context,
+      delegates: const [fluent.FluentLocalizations.delegate],
+      child: child,
+    ),
+  );
+}

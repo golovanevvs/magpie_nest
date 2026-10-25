@@ -206,6 +206,18 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get dialogCancel;
 
+  /// Label for the close button in dialogs
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get dialogClose;
+
+  /// Label for the done button in cupertino pickers
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get dialogDone;
+
   /// Label for the delete button in dialogs
   ///
   /// In en, this message translates to:

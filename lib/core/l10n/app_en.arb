@@ -72,6 +72,14 @@
   "@dialogCancel": {
     "description": "Label for the cancel button in dialogs"
   },
+  "dialogClose": "Close",
+  "@dialogClose": {
+    "description": "Label for the close button in dialogs"
+  },
+  "dialogDone": "Done",
+  "@dialogDone": {
+    "description": "Label for the done button in cupertino pickers"
+  },
   "dialogDelete": "Delete",
   "@dialogDelete": {
     "description": "Label for the delete button in dialogs"
