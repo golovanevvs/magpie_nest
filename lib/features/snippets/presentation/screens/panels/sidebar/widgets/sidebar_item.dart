@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
 
 class SidebarItem extends StatelessWidget {
   final IconData icon;
@@ -24,7 +25,7 @@ class SidebarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ListTile(
+    return AdaptiveListTile(
       leading: Icon(
         icon,
         size: 18,
@@ -38,12 +39,9 @@ class SidebarItem extends StatelessWidget {
           fontWeight: selected ? FontWeight.w500 : FontWeight.normal,
         ),
       ),
-      minLeadingWidth: 0,
       dense: true,
       selected: selected,
-      selectedTileColor: colorScheme.primaryContainer.withAlpha(51),
       contentPadding: EdgeInsets.only(left: 16 + indent, right: 8),
-      visualDensity: VisualDensity.compact,
       onTap: onTap,
       trailing: expandIcon != null
           ? GestureDetector(

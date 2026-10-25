@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
+import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
@@ -106,12 +107,10 @@ class _SnippetListItem extends StatelessWidget {
     final folderName = _resolveFolderName(l10n);
     final formattedDate = DateFormat('dd.MM.yyyy').format(snippet.updatedAt);
 
-    return ListTile(
+    return AdaptiveListTile(
       dense: true,
       selected: selected,
-      selectedTileColor: colorScheme.primaryContainer.withAlpha(51),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      visualDensity: VisualDensity.compact,
       onTap: onTap,
       title: Text(
         snippet.name,
