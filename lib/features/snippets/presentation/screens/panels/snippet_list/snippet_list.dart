@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
@@ -35,7 +36,7 @@ class SnippetList extends StatelessWidget {
               ),
               if (controller.activeSection == SidebarSection.trash) ...[
                 const SizedBox(width: 8),
-                IconButton(
+                AdaptiveIconButton(
                   icon: const Icon(Icons.delete_sweep_outlined),
                   tooltip: l10n.buttonEmptyTrash,
                   onPressed: () => _confirmEmptyTrash(context, controller),

@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
+import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 
 class StatusBar extends StatelessWidget {
   final CloudConnectionController cloud;
@@ -128,11 +129,11 @@ class StatusBar extends StatelessWidget {
 
   Widget _buildSettingsButton(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return IconButton(
+    return AdaptiveIconButton(
       icon: const Icon(Icons.settings, size: 18),
       tooltip: l10n.navSettings,
       onPressed: onSettingsTap,
-      visualDensity: VisualDensity.compact,
+      compact: true,
     );
   }
 }

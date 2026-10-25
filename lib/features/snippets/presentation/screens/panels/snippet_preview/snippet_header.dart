@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/confirmation_dialog.dart';
@@ -90,27 +91,27 @@ class SnippetHeader extends StatelessWidget {
               ),
             ),
             if (controller.activeSection == SidebarSection.trash)
-              IconButton(
+              AdaptiveIconButton(
                 icon: const Icon(Icons.restore_from_trash),
                 tooltip: l10n.buttonRestore,
                 onPressed: () => controller.restoreSnippet(snippet.id),
               ),
             // Empty Trash Button
             if (controller.activeSection == SidebarSection.trash)
-              IconButton(
+              AdaptiveIconButton(
                 icon: const Icon(Icons.delete_forever_outlined),
                 tooltip: l10n.buttonDeleteForever,
                 onPressed: () => _confirmDeleteForever(context),
               ),
             // Add Description Button
             if (showAddDescriptionButton)
-              IconButton(
+              AdaptiveIconButton(
                 icon: const Icon(Icons.notes),
                 tooltip: l10n.buttonAddDescription,
                 onPressed: onAddDescription,
               ),
             // Add Fragment Button
-            IconButton(
+            AdaptiveIconButton(
               icon: Icon(Icons.note_add_outlined),
               tooltip: l10n.buttonAddFragment,
               onPressed: () {
@@ -118,14 +119,14 @@ class SnippetHeader extends StatelessWidget {
               },
             ),
             // Favorite Button
-            IconButton(
+            AdaptiveIconButton(
               icon: Icon(snippet.isFavorite ? Icons.star : Icons.star_border),
               tooltip: l10n.buttonFavorite,
               onPressed: () => controller.toggleFavorite(snippet.id),
             ),
             // Delete Button
             if (controller.activeSection != SidebarSection.trash)
-              IconButton(
+              AdaptiveIconButton(
                 icon: const Icon(Icons.delete_outline),
                 tooltip: l10n.buttonDelete,
                 onPressed: () => _confirmDeleteSnippet(context),

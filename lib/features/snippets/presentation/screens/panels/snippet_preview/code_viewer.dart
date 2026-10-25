@@ -7,6 +7,7 @@ import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:flutter_highlight/themes/atom-one-light.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 
 class CodeViewer extends StatelessWidget {
   final CodeController controller;
@@ -66,7 +67,7 @@ class CodeViewer extends StatelessWidget {
                   style: TextStyle(color: headerForeground, fontSize: 12),
                 ),
                 const Spacer(),
-                IconButton(
+                AdaptiveIconButton(
                   icon: Icon(Icons.copy, color: headerForeground, size: 18),
                   tooltip: l10n.buttonCopy,
                   onPressed: () {

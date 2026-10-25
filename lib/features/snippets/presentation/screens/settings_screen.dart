@@ -5,6 +5,7 @@ import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/cloud_providers.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/core/sync/webdav_credentials.dart';
+import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/cloud_folder_picker_dialog.dart';
 
@@ -556,7 +557,7 @@ class _CloudPanelState extends State<_CloudPanel> {
                   labelText: l10n.cloudParentFolderLabel,
                   hintText: l10n.cloudRootFolder,
                   border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
+                  suffixIcon: AdaptiveIconButton(
                     icon: const Icon(Icons.folder_open),
                     tooltip: l10n.cloudBrowse,
                     onPressed: _pickFolder,

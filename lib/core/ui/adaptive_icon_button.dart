@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
 import 'package:material_ui/material_ui.dart';
 
 import 'package:magpie_nest/core/platform/design_language.dart';
+import 'package:magpie_nest/core/ui/adaptive_theme.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 
 class AdaptiveIconButton extends StatelessWidget {
@@ -33,7 +34,7 @@ class AdaptiveIconButton extends StatelessWidget {
 
     if (designLanguage == DesignLanguage.fluent) {
       return fluent.FluentTheme(
-        data: fluent.FluentThemeData(brightness: Theme.of(context).brightness),
+        data: fluentThemeOf(context),
         child: fluent.IconButton(icon: icon, onPressed: onPressed),
       );
     }
