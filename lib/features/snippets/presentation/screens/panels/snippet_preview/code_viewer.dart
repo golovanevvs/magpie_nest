@@ -1,4 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' as sdk;
+import 'package:flutter_localizations/flutter_localizations.dart' as sdk_l10n;
 import 'package:flutter/services.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
@@ -80,20 +83,31 @@ class CodeViewer extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: CodeTheme(
-              data: CodeThemeData(styles: styles),
-              child: CodeField(
-                controller: controller,
-                gutterStyle: GutterStyle(
-                  showLineNumbers: true,
-                  width: gutterWidth,
+            child: sdk.Material(
+              type: sdk.MaterialType.transparency,
+              child: sdk.Localizations.override(
+                context: context,
+                delegates: const [
+                  // ignore: deprecated_member_use
+                  sdk_l10n.GlobalMaterialLocalizations.delegate,
+                  sdk_l10n.GlobalWidgetsLocalizations.delegate,
+                ],
+                child: CodeTheme(
+                  data: CodeThemeData(styles: styles),
+                  child: CodeField(
+                    controller: controller,
+                    gutterStyle: GutterStyle(
+                      showLineNumbers: true,
+                      width: gutterWidth,
+                    ),
+                    textStyle: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                    expands: true,
+                  ),
                 ),
-                textStyle: const TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 14,
-                  height: 1.5,
-                ),
-                expands: true,
               ),
             ),
           ),
