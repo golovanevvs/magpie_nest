@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/extensions/first_where_or_null.dart';
@@ -218,25 +219,14 @@ class _FolderTreeState extends State<FolderTree> {
 
   Future<void> _confirmDelete(BuildContext context, Folder folder) async {
     final l10n = AppLocalizations.of(context)!;
-    final shouldDelete = await showDialog<bool>(
+    final shouldDelete = await showAdaptiveConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.dialogDeleteFolderTitle),
-        content: Text(l10n.dialogDeleteFolderMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.dialogCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.dialogDelete),
-          ),
-        ],
-      ),
+      title: l10n.dialogDeleteFolderTitle,
+      message: l10n.dialogDeleteFolderMessage,
+      confirmLabel: l10n.dialogDelete,
     );
 
-    if (shouldDelete == true) {
+    if (shouldDelete) {
       await widget.controller.deleteFolder(folder.id);
     }
   }

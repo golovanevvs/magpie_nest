@@ -1,11 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/confirmation_dialog.dart';
 
 class SnippetList extends StatelessWidget {
   final AppController controller;
@@ -74,15 +74,13 @@ Future<void> _confirmEmptyTrash(
   AppController controller,
 ) async {
   final l10n = AppLocalizations.of(context)!;
-  final shouldEmpty = await showDialog<bool>(
+  final shouldEmpty = await showAdaptiveConfirmationDialog(
     context: context,
-    builder: (context) => ConfirmationDialog(
-      title: l10n.dialogEmptyTrashTitle,
-      message: l10n.dialogEmptyTrashMessage,
-      confirmLabel: l10n.buttonEmptyTrash,
-    ),
+    title: l10n.dialogEmptyTrashTitle,
+    message: l10n.dialogEmptyTrashMessage,
+    confirmLabel: l10n.buttonEmptyTrash,
   );
-  if (shouldEmpty == true) {
+  if (shouldEmpty) {
     await controller.emptyTrash();
   }
 }

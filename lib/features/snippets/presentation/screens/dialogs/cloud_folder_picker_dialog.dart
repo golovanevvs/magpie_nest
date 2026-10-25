@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/sync/cloud_folder_browser.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
+import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 
 class CloudFolderPickerDialog extends StatefulWidget {
   final WebdavTransport transport;
@@ -42,7 +43,7 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
     final controller = TextEditingController();
     final name = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => AdaptiveAlertDialog(
         title: Text(l10n.cloudNewFolder),
         content: TextField(
           controller: controller,
@@ -50,13 +51,13 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
           decoration: InputDecoration(labelText: l10n.cloudNewFolderName),
         ),
         actions: [
-          TextButton(
+          AdaptiveDialogAction(
+            label: l10n.dialogCancel,
             onPressed: () => Navigator.pop(context),
-            child: Text(l10n.dialogCancel),
           ),
-          FilledButton(
+          AdaptiveFilledDialogAction(
+            label: l10n.cloudCreate,
             onPressed: () => Navigator.pop(context, controller.text),
-            child: Text(l10n.cloudCreate),
           ),
         ],
       ),
@@ -76,21 +77,21 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
     return ListenableBuilder(
       listenable: _browser,
       builder: (context, _) {
-        return AlertDialog(
+        return AdaptiveAlertDialog(
           title: Text(l10n.cloudPickFolder),
           content: SizedBox(width: 320, height: 360, child: _buildBody()),
           actions: [
-            TextButton(
+            AdaptiveDialogAction(
+              label: l10n.cloudNewFolder,
               onPressed: _createFolder,
-              child: Text(l10n.cloudNewFolder),
             ),
-            TextButton(
+            AdaptiveDialogAction(
+              label: l10n.dialogCancel,
               onPressed: () => Navigator.pop(context),
-              child: Text(l10n.dialogCancel),
             ),
-            FilledButton(
+            AdaptiveFilledDialogAction(
+              label: l10n.cloudUseThisFolder,
               onPressed: () => Navigator.pop(context, _browser.path),
-              child: Text(l10n.cloudUseThisFolder),
             ),
           ],
         );

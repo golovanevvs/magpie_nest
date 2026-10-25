@@ -28,14 +28,17 @@ class AdaptiveIconButton extends StatelessWidget {
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         onPressed: onPressed,
-        child: icon,
+        child: tooltip == null ? icon : Tooltip(message: tooltip, child: icon),
       );
     }
 
     if (designLanguage == DesignLanguage.fluent) {
+      final button = fluent.IconButton(icon: icon, onPressed: onPressed);
       return fluent.FluentTheme(
         data: fluentThemeOf(context),
-        child: fluent.IconButton(icon: icon, onPressed: onPressed),
+        child: tooltip == null
+            ? button
+            : fluent.Tooltip(message: tooltip!, child: button),
       );
     }
 

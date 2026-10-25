@@ -1,10 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/confirmation_dialog.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/delete_confirmation_dialog.dart';
 
 class SnippetHeader extends StatelessWidget {
   final AppController controller;
@@ -35,27 +34,28 @@ class SnippetHeader extends StatelessWidget {
   });
 
   Future<void> _confirmDeleteSnippet(BuildContext context) async {
-    final shouldDelete = await showDialog<bool>(
+    final l10n = AppLocalizations.of(context)!;
+    final shouldDelete = await showAdaptiveConfirmationDialog(
       context: context,
-      builder: (context) => const DeleteConfirmationDialog(),
+      title: l10n.dialogDeleteTitle,
+      message: l10n.dialogDeleteMessage,
+      confirmLabel: l10n.dialogDelete,
     );
 
-    if (shouldDelete == true) {
+    if (shouldDelete) {
       controller.deleteSnippet(snippet.id);
     }
   }
 
   Future<void> _confirmDeleteForever(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
-    final shouldDelete = await showDialog<bool>(
+    final shouldDelete = await showAdaptiveConfirmationDialog(
       context: context,
-      builder: (context) => ConfirmationDialog(
-        title: l10n.dialogDeleteForeverTitle,
-        message: l10n.dialogDeleteForeverMessage,
-        confirmLabel: l10n.buttonDeleteForever,
-      ),
+      title: l10n.dialogDeleteForeverTitle,
+      message: l10n.dialogDeleteForeverMessage,
+      confirmLabel: l10n.buttonDeleteForever,
     );
-    if (shouldDelete == true) {
+    if (shouldDelete) {
       await controller.permanentlyDeleteSnippet(snippet.id);
     }
   }
