@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
+import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 
 class StatusBar extends StatelessWidget {
@@ -110,20 +111,25 @@ class StatusBar extends StatelessWidget {
 
   Widget _buildSyncButton(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return TextButton.icon(
+    return AdaptiveButton(
       onPressed: sync.canSync ? () => sync.syncNow() : null,
-      style: TextButton.styleFrom(
-        visualDensity: VisualDensity.compact,
-        textStyle: Theme.of(context).textTheme.bodySmall,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          sync.syncing
+              ? const SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.sync, size: 16),
+          const SizedBox(width: 8),
+          Text(
+            l10n.cloudSyncNow,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
       ),
-      icon: sync.syncing
-          ? const SizedBox(
-              width: 14,
-              height: 14,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.sync, size: 16),
-      label: Text(l10n.cloudSyncNow),
     );
   }
 

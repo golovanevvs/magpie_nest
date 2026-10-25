@@ -5,6 +5,7 @@ import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/cloud_providers.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/core/sync/webdav_credentials.dart';
+import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/cloud_folder_picker_dialog.dart';
@@ -449,21 +450,27 @@ class _CloudPanelState extends State<_CloudPanel> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  OutlinedButton(
+                  AdaptiveOutlinedButton(
                     onPressed: cloud.busy ? null : cloud.disconnect,
                     child: Text(l10n.cloudDisconnect),
                   ),
                   const SizedBox(height: 16),
-                  FilledButton.icon(
+                  AdaptiveFilledButton(
                     onPressed: widget.sync.syncing ? null : widget.sync.syncNow,
-                    icon: widget.sync.syncing
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.sync),
-                    label: Text(l10n.cloudSyncNow),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        widget.sync.syncing
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.sync, size: 16),
+                        const SizedBox(width: 8),
+                        Text(l10n.cloudSyncNow),
+                      ],
+                    ),
                   ),
                   if (widget.sync.error != null)
                     Padding(
@@ -584,13 +591,13 @@ class _CloudPanelState extends State<_CloudPanel> {
               Wrap(
                 spacing: 12,
                 children: [
-                  OutlinedButton(
+                  AdaptiveOutlinedButton(
                     onPressed: cloud.busy
                         ? null
                         : () => _run(cloud.testConnection),
                     child: Text(l10n.cloudTestConnection),
                   ),
-                  FilledButton(
+                  AdaptiveFilledButton(
                     onPressed: cloud.busy ? null : () => _run(cloud.connect),
                     child: Text(l10n.cloudConnect),
                   ),

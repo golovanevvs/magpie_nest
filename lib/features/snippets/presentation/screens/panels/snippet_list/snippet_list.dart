@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
@@ -26,13 +27,19 @@ class SnippetList extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: FilledButton.icon(
+                child: AdaptiveFilledButton(
                   onPressed: () => controller.createDefaultSnippet(
                     l10n.defaultSnippetName,
                     defaultFragmentBaseName: l10n.fragmentNameBase,
                   ),
-                  icon: const Icon(Icons.add),
-                  label: Text(l10n.buttonNewSnippet),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.add, size: 18),
+                      const SizedBox(width: 8),
+                      Text(l10n.buttonNewSnippet),
+                    ],
+                  ),
                 ),
               ),
               if (controller.activeSection == SidebarSection.trash) ...[

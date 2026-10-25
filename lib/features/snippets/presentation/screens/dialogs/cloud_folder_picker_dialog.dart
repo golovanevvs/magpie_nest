@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/sync/cloud_folder_browser.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
+import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 
 class CloudFolderPickerDialog extends StatefulWidget {
@@ -111,7 +112,7 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
         children: [
           Text(l10n.cloudConnectionFailed(_browser.error!)),
           const SizedBox(height: 12),
-          OutlinedButton(
+          AdaptiveOutlinedButton(
             onPressed: _browser.reload,
             child: Text(l10n.cloudRetry),
           ),
