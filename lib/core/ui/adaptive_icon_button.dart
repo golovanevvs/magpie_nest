@@ -9,11 +9,13 @@ class AdaptiveIconButton extends StatelessWidget {
     required this.icon,
     required this.onPressed,
     this.tooltip,
+    this.compact = false,
   });
 
   final Widget icon;
   final VoidCallback? onPressed;
   final String? tooltip;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,15 @@ class AdaptiveIconButton extends StatelessWidget {
       );
     }
 
-    return IconButton(icon: icon, onPressed: onPressed, tooltip: tooltip);
+    return IconButton(
+      icon: icon,
+      onPressed: onPressed,
+      tooltip: tooltip,
+      visualDensity: compact ? VisualDensity.compact : null,
+      padding: compact ? EdgeInsets.zero : null,
+      constraints: compact
+          ? const BoxConstraints(minWidth: 28, minHeight: 28)
+          : null,
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
@@ -26,13 +27,11 @@ class FoldersHeader extends StatelessWidget {
               ),
             ),
           ),
-          IconButton(
+          AdaptiveIconButton(
             icon: const Icon(Icons.add, size: 18),
             tooltip: l10n.buttonNewFolder,
             onPressed: () => _createFolderAndSelect(context),
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+            compact: true,
           ),
         ],
       ),
