@@ -8,6 +8,9 @@ import 'package:magpie_nest/core/sync/webdav_credentials.dart';
 import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_dropdown.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
+import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
+import 'package:magpie_nest/core/ui/adaptive_progress_indicator.dart';
+import 'package:magpie_nest/core/ui/adaptive_text_field.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/cloud_folder_picker_dialog.dart';
 
@@ -89,7 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             itemCount: menuItems.length,
             itemBuilder: (context, index) {
               final item = menuItems[index];
-              return ListTile(
+              return AdaptiveListTile(
                 leading: Icon(item.icon),
                 title: Text(item.title),
                 selected: _selectedMenuIndex == index,
@@ -160,19 +163,14 @@ class _LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu(
-      key: ValueKey(currentLocale),
-      initialSelection: currentLocale,
-      onSelected: (Locale? value) {
+    return AdaptiveDropdown<Locale>(
+      value: currentLocale,
+      onChanged: (Locale? value) {
         if (value != null) onLocaleChanged(value);
       },
-      inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      ),
-      dropdownMenuEntries: const [
-        DropdownMenuEntry(value: Locale('en'), label: 'English'),
-        DropdownMenuEntry(value: Locale('ru'), label: 'Русский'),
+      items: const [
+        AdaptiveDropdownItem(value: Locale('en'), label: 'English'),
+        AdaptiveDropdownItem(value: Locale('ru'), label: 'Русский'),
       ],
     );
   }
@@ -191,33 +189,25 @@ class _ThemeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return RadioGroup(
-      groupValue: currentThemeMode,
+    return AdaptiveDropdown<ThemeMode>(
+      value: currentThemeMode,
       onChanged: (ThemeMode? value) {
         if (value != null) onThemeModeChanged(value);
       },
-      child: Column(
-        children: [
-          RadioListTile<ThemeMode>(
-            title: Text(l10n.settingsThemeLight),
-            value: ThemeMode.light,
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-          ),
-          RadioListTile<ThemeMode>(
-            title: Text(l10n.settingsThemeDark),
-            value: ThemeMode.dark,
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-          ),
-          RadioListTile<ThemeMode>(
-            title: Text(l10n.settingsThemeSystem),
-            value: ThemeMode.system,
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-          ),
-        ],
-      ),
+      items: [
+        AdaptiveDropdownItem(
+          value: ThemeMode.light,
+          label: l10n.settingsThemeLight,
+        ),
+        AdaptiveDropdownItem(
+          value: ThemeMode.dark,
+          label: l10n.settingsThemeDark,
+        ),
+        AdaptiveDropdownItem(
+          value: ThemeMode.system,
+          label: l10n.settingsThemeSystem,
+        ),
+      ],
     );
   }
 }
@@ -465,7 +455,8 @@ class _CloudPanelState extends State<_CloudPanel> {
                             ? const SizedBox(
                                 width: 16,
                                 height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child:
+                                    AdaptiveProgressIndicator(strokeWidth: 2),
                               )
                             : const Icon(Icons.sync, size: 16),
                         const SizedBox(width: 8),
@@ -524,7 +515,7 @@ class _CloudPanelState extends State<_CloudPanel> {
                 ),
               ),
               const SizedBox(height: 12),
-              TextField(
+              AdaptiveTextField(
                 controller: _urlController,
                 decoration: InputDecoration(
                   labelText: l10n.cloudUrlLabel,
@@ -532,7 +523,7 @@ class _CloudPanelState extends State<_CloudPanel> {
                 ),
               ),
               const SizedBox(height: 12),
-              TextField(
+              AdaptiveTextField(
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: l10n.cloudUsernameLabel,
@@ -540,7 +531,7 @@ class _CloudPanelState extends State<_CloudPanel> {
                 ),
               ),
               const SizedBox(height: 12),
-              TextField(
+              AdaptiveTextField(
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
@@ -549,7 +540,7 @@ class _CloudPanelState extends State<_CloudPanel> {
                 ),
               ),
               const SizedBox(height: 12),
-              TextField(
+              AdaptiveTextField(
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: l10n.cloudFolderNameLabel,
@@ -557,7 +548,7 @@ class _CloudPanelState extends State<_CloudPanel> {
                 ),
               ),
               const SizedBox(height: 12),
-              TextField(
+              AdaptiveTextField(
                 controller: _parentController,
                 readOnly: true,
                 decoration: InputDecoration(
@@ -607,7 +598,10 @@ class _CloudPanelState extends State<_CloudPanel> {
               if (cloud.busy)
                 const Padding(
                   padding: EdgeInsets.only(top: 12),
-                  child: SizedBox(height: 2, child: LinearProgressIndicator()),
+                  child: SizedBox(
+                    height: 2,
+                    child: AdaptiveLinearProgressIndicator(),
+                  ),
                 ),
             ],
           ],

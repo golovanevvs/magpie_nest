@@ -5,6 +5,7 @@ import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
+import 'package:magpie_nest/core/ui/adaptive_progress_indicator.dart';
 
 class StatusBar extends StatelessWidget {
   final CloudConnectionController cloud;
@@ -120,7 +121,7 @@ class StatusBar extends StatelessWidget {
               ? const SizedBox(
                   width: 14,
                   height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: AdaptiveProgressIndicator(strokeWidth: 2),
                 )
               : const Icon(Icons.sync, size: 16),
           const SizedBox(width: 8),

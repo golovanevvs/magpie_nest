@@ -4,6 +4,9 @@ import 'package:magpie_nest/core/sync/cloud_folder_browser.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
+import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
+import 'package:magpie_nest/core/ui/adaptive_progress_indicator.dart';
+import 'package:magpie_nest/core/ui/adaptive_text_field.dart';
 
 class CloudFolderPickerDialog extends StatefulWidget {
   final WebdavTransport transport;
@@ -46,7 +49,7 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
       context: context,
       builder: (context) => AdaptiveAlertDialog(
         title: Text(l10n.cloudNewFolder),
-        content: TextField(
+        content: AdaptiveTextField(
           controller: controller,
           autofocus: true,
           decoration: InputDecoration(labelText: l10n.cloudNewFolderName),
@@ -104,7 +107,7 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
     final l10n = AppLocalizations.of(context)!;
 
     if (_browser.busy) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: AdaptiveProgressIndicator());
     }
     if (_browser.error != null) {
       return Column(
@@ -133,14 +136,14 @@ class _CloudFolderPickerDialogState extends State<CloudFolderPickerDialog> {
               : ListView(
                   children: [
                     if (!_browser.atRoot)
-                      ListTile(
+                      AdaptiveListTile(
                         leading: const Icon(Icons.arrow_upward),
                         title: const Text('..'),
                         dense: true,
                         onTap: _browser.up,
                       ),
                     for (final name in _browser.folders)
-                      ListTile(
+                      AdaptiveListTile(
                         leading: const Icon(Icons.folder),
                         title: Text(name),
                         dense: true,

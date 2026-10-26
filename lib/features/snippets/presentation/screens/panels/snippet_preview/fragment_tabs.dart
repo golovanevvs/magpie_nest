@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_text_field.dart';
 import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
@@ -170,7 +171,7 @@ class _FragmentTabState extends State<FragmentTab> {
           child: _isEditing
               ? SizedBox(
                   width: 120,
-                  child: TextField(
+                  child: AdaptiveTextField(
                     controller: _nameController,
                     focusNode: _focusNode,
                     decoration: InputDecoration(

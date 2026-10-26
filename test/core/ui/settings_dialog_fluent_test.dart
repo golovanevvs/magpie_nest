@@ -5,6 +5,8 @@ import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/core/sync/webdav_credentials.dart';
 import 'package:magpie_nest/core/sync/webdav_credentials_store.dart';
+import 'package:magpie_nest/core/ui/adaptive_dropdown.dart';
+import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/settings_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -64,8 +66,8 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(ListTile), findsAtLeastNWidgets(3));
-    expect(find.byType(DropdownMenu<Locale>), findsOneWidget);
+    expect(find.byType(AdaptiveListTile), findsAtLeastNWidgets(3));
+    expect(find.byType(AdaptiveDropdown<Locale>), findsOneWidget);
     expect(find.text('English'), findsWidgets);
   });
 }

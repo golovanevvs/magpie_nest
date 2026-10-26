@@ -4,6 +4,7 @@ import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/platform/design_language.dart';
 import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 import 'package:magpie_nest/core/ui/adaptive_theme.dart';
+import 'package:magpie_nest/core/ui/adaptive_text_field.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/extensions/first_where_or_null.dart';
@@ -344,7 +345,7 @@ class _FolderEditFieldState extends State<FolderEditField> {
         top: 4,
         bottom: 4,
       ),
-      child: TextField(
+      child: AdaptiveTextField(
         controller: _controller,
         focusNode: _focusNode,
         autofocus: true,

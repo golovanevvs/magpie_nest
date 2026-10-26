@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/ui/adaptive_text_field.dart';
 
 class SearchField extends StatelessWidget {
   final TextEditingController controller;
@@ -17,7 +18,7 @@ class SearchField extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: TextField(
+      child: AdaptiveTextField(
         controller: controller,
         decoration: InputDecoration(
           hintText: l10n.sidebarSearchHint,

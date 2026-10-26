@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
+import 'package:magpie_nest/core/ui/adaptive_text_field.dart';
 import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 
@@ -74,7 +75,7 @@ class SnippetHeader extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: TextField(
+              child: AdaptiveTextField(
                 controller: nameController,
                 focusNode: nameFocusNode,
                 decoration: InputDecoration(
@@ -135,7 +136,7 @@ class SnippetHeader extends StatelessWidget {
         ),
         if (showDescriptionField) ...[
           const SizedBox(height: 8),
-          TextField(
+          AdaptiveTextField(
             controller: descriptionController,
             decoration: InputDecoration(
               hintText: l10n.fieldDescriptionHint,
