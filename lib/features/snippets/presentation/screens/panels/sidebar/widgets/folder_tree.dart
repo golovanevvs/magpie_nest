@@ -1,6 +1,9 @@
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/platform/design_language.dart';
 import 'package:magpie_nest/core/ui/adaptive_dialog.dart';
+import 'package:magpie_nest/core/ui/adaptive_theme.dart';
 import 'package:magpie_nest/features/folders/domain/models/folder.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/sidebar/extensions/first_where_or_null.dart';
@@ -26,25 +29,42 @@ class FolderTree extends StatefulWidget {
 
 class _FolderTreeState extends State<FolderTree> {
   final Set<String> _expandedFolderIds = {};
+  final fluent.FlyoutController _flyoutController = fluent.FlyoutController();
+
+  @override
+  void dispose() {
+    _flyoutController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final designLanguage = designLanguageFor(Theme.of(context).platform);
     final rootFolders = _visibleFolders(widget.controller.folders);
 
+    final Widget tree;
     if (rootFolders.isEmpty && widget.searchQuery.isNotEmpty) {
-      return Center(
+      tree = Center(
         child: Text(
           AppLocalizations.of(context)!.sidebarNoFolders,
           style: TextStyle(color: Theme.of(context).hintColor, fontSize: 13),
         ),
       );
+    } else {
+      tree = ListView.builder(
+        itemCount: rootFolders.length,
+        itemBuilder: (context, index) =>
+            _buildFolderItem(context, rootFolders[index]),
+      );
     }
 
-    return ListView.builder(
-      itemCount: rootFolders.length,
-      itemBuilder: (context, index) =>
-          _buildFolderItem(context, rootFolders[index]),
-    );
+    if (designLanguage == DesignLanguage.fluent) {
+      return fluentChrome(
+        context,
+        child: fluent.FlyoutTarget(controller: _flyoutController, child: tree),
+      );
+    }
+    return tree;
   }
 
   List<Folder> _visibleFolders(List<Folder> folders) {
@@ -167,6 +187,48 @@ class _FolderTreeState extends State<FolderTree> {
     Offset position,
   ) {
     final l10n = AppLocalizations.of(context)!;
+
+    if (designLanguageFor(Theme.of(context).platform) ==
+        DesignLanguage.fluent) {
+      _flyoutController.showFlyout<void>(
+        builder: (flyoutContext) => fluentChrome(
+          flyoutContext,
+          child: fluent.MenuFlyout(
+            items: [
+              fluent.MenuFlyoutItem(
+                text: Text(l10n.contextMenuNewFolder),
+                onPressed: () => _createSubFolder(folder.id),
+              ),
+              const fluent.MenuFlyoutSeparator(),
+              fluent.MenuFlyoutItem(
+                text: Text(l10n.contextMenuRename),
+                onPressed: () => _startEditing(folder),
+              ),
+              fluent.MenuFlyoutItem(
+                text: Text(l10n.buttonDelete),
+                onPressed: () {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (context.mounted) _confirmDelete(context, folder);
+                  });
+                },
+              ),
+              const fluent.MenuFlyoutSeparator(),
+              fluent.MenuFlyoutItem(
+                text: Text(l10n.contextMenuSetIcon),
+                onPressed: () {},
+              ),
+              const fluent.MenuFlyoutSeparator(),
+              fluent.MenuFlyoutItem(
+                text: Text(l10n.contextMenuDefaultLanguage),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+        position: position,
+      );
+      return;
+    }
 
     showMenu<void>(
       context: context,

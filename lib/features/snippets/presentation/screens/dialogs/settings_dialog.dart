@@ -41,7 +41,16 @@ Future<void> showSettingsDialog(
           child: fluent.ContentDialog(
             constraints: const BoxConstraints(maxWidth: 780),
             title: Text(l10n.settingsTitle),
-            content: SizedBox(width: 760, height: 560, child: settings),
+            content: SizedBox(
+              width: 760,
+              height: 560,
+              // ContentDialog provides no Material ancestor (unlike Dialog),
+              // so wrap the shared Material-based settings body explicitly.
+              child: Material(
+                type: MaterialType.transparency,
+                child: settings,
+              ),
+            ),
             actions: [
               fluent.Button(
                 onPressed: () => Navigator.of(dialogContext).pop(),
