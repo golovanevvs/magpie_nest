@@ -54,6 +54,11 @@ void main() {
 
     expect(find.byType(ListTile), findsNothing);
     expect(find.byType(fluent.HoverButton), findsNothing);
+    expect(find.byType(MouseRegion), findsWidgets);
+    expect(
+      tester.getSize(find.byType(AnimatedContainer)).height,
+      greaterThanOrEqualTo(36),
+    );
     await tester.tap(find.text('Item'));
     expect(pressed, isTrue);
   });

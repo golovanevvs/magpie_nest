@@ -1,11 +1,14 @@
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
+import 'package:magpie_nest/core/platform/design_language.dart';
 import 'package:magpie_nest/core/sync/cloud_connection_controller.dart';
 import 'package:magpie_nest/core/sync/sync_controller.dart';
 import 'package:magpie_nest/core/ui/adaptive_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_progress_indicator.dart';
+import 'package:magpie_nest/core/ui/adaptive_theme.dart';
 
 class StatusBar extends StatelessWidget {
   final CloudConnectionController cloud;
@@ -80,31 +83,71 @@ class StatusBar extends StatelessWidget {
       text = l10n.statusCloudConnected;
     }
 
+    final designLanguage = designLanguageFor(Theme.of(context).platform);
+    final message = tooltip ?? text;
+    final Widget content = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(color: color),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (designLanguage == DesignLanguage.fluent) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: fluentChrome(
+          context,
+          child: fluent.Tooltip(
+            message: message,
+            child: fluent.HoverButton(
+              onPressed: onCloudStatusTap,
+              builder: (chipContext, states) {
+                final fluentTheme = fluent.FluentTheme.of(chipContext);
+                final Color? backgroundColor;
+                if (states.contains(WidgetState.pressed)) {
+                  backgroundColor =
+                      fluentTheme.resources.subtleFillColorTertiary;
+                } else if (states.contains(WidgetState.hovered)) {
+                  backgroundColor =
+                      fluentTheme.resources.subtleFillColorSecondary;
+                } else {
+                  backgroundColor = null;
+                }
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: content,
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: Tooltip(
-        message: tooltip ?? text,
+        message: message,
         child: InkWell(
           onTap: onCloudStatusTap,
           borderRadius: BorderRadius.circular(4),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 16, color: color),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    text,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(color: color),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          child: content,
         ),
       ),
     );

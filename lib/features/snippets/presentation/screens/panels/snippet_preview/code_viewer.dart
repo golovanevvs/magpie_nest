@@ -8,6 +8,7 @@ import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:flutter_highlight/themes/atom-one-light.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
+import 'package:magpie_nest/core/ui/adaptive_snack_bar.dart';
 
 class CodeViewer extends StatelessWidget {
   final CodeController controller;
@@ -72,11 +73,10 @@ class CodeViewer extends StatelessWidget {
                   tooltip: l10n.buttonCopy,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: controller.text));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.snackbarCopied),
-                        duration: const Duration(seconds: 1),
-                      ),
+                    showAdaptiveSnackBar(
+                      context,
+                      message: l10n.snackbarCopied,
+                      duration: const Duration(seconds: 1),
                     );
                   },
                 ),

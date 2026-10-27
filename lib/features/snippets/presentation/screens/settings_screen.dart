@@ -10,6 +10,7 @@ import 'package:magpie_nest/core/ui/adaptive_dropdown.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
 import 'package:magpie_nest/core/ui/adaptive_progress_indicator.dart';
+import 'package:magpie_nest/core/ui/adaptive_snack_bar.dart';
 import 'package:magpie_nest/core/ui/adaptive_text_field.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/cloud_folder_picker_dialog.dart';
@@ -360,9 +361,7 @@ class _CloudPanelState extends State<_CloudPanel> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    showAdaptiveSnackBar(context, message: message);
   }
 
   void _onUrlChanged() {
@@ -486,33 +485,22 @@ class _CloudPanelState extends State<_CloudPanel> {
                 ],
               )
             else ...[
-              InputDecorator(
-                decoration: InputDecoration(
-                  labelText: l10n.cloudProviderLabel,
-                  border: const OutlineInputBorder(),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+              AdaptiveDropdown<String>(
+                value: _selectedProvider,
+                isExpanded: true,
+                label: l10n.cloudProviderLabel,
+                items: [
+                  for (final provider in cloudProviders)
+                    AdaptiveDropdownItem(
+                      value: provider.url,
+                      label: provider.name,
+                    ),
+                  AdaptiveDropdownItem(
+                    value: kCustomCloudProvider,
+                    label: l10n.cloudProviderCustom,
                   ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: AdaptiveDropdown<String>(
-                    value: _selectedProvider,
-                    isExpanded: true,
-                    items: [
-                      for (final provider in cloudProviders)
-                        AdaptiveDropdownItem(
-                          value: provider.url,
-                          label: provider.name,
-                        ),
-                      AdaptiveDropdownItem(
-                        value: kCustomCloudProvider,
-                        label: l10n.cloudProviderCustom,
-                      ),
-                    ],
-                    onChanged: _onProviderChanged,
-                  ),
-                ),
+                ],
+                onChanged: _onProviderChanged,
               ),
               const SizedBox(height: 12),
               AdaptiveTextField(

@@ -20,6 +20,7 @@ class AdaptiveDropdown<T> extends StatelessWidget {
     required this.onChanged,
     this.value,
     this.isExpanded = false,
+    this.label,
   });
 
   final T? value;
@@ -27,12 +28,15 @@ class AdaptiveDropdown<T> extends StatelessWidget {
   final ValueChanged<T?> onChanged;
   final bool isExpanded;
 
+  final String? label;
+
   @override
   Widget build(BuildContext context) {
     final designLanguage = designLanguageFor(Theme.of(context).platform);
 
+    Widget control;
     if (designLanguage == DesignLanguage.fluent) {
-      return fluentChrome(
+      control = fluentChrome(
         context,
         child: fluent.ComboBox<T>(
           value: value,
@@ -47,10 +51,8 @@ class AdaptiveDropdown<T> extends StatelessWidget {
           onChanged: onChanged,
         ),
       );
-    }
-
-    if (designLanguage == DesignLanguage.cupertino) {
-      return cupertino.CupertinoButton(
+    } else if (designLanguage == DesignLanguage.cupertino) {
+      control = cupertino.CupertinoButton(
         onPressed: () => _showCupertinoPicker(context),
         sizeStyle: cupertino.CupertinoButtonSize.medium,
         child: Row(
@@ -58,9 +60,7 @@ class AdaptiveDropdown<T> extends StatelessWidget {
           children: [
             Flexible(
               child: Text(
-                items
-                        .firstWhere((item) => item.value == value)
-                        .label,
+                items.firstWhere((item) => item.value == value).label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -70,19 +70,39 @@ class AdaptiveDropdown<T> extends StatelessWidget {
           ],
         ),
       );
+    } else {
+      control = DropdownButton<T>(
+        value: value,
+        isDense: true,
+        isExpanded: isExpanded,
+        items: items
+            .map(
+              (item) => DropdownMenuItem<T>(
+                value: item.value,
+                child: Text(item.label),
+              ),
+            )
+            .toList(),
+        onChanged: onChanged,
+      );
     }
 
-    return DropdownButton<T>(
-      value: value,
-      isDense: true,
-      isExpanded: isExpanded,
-      items: items
-          .map(
-            (item) =>
-                DropdownMenuItem<T>(value: item.value, child: Text(item.label)),
-          )
-          .toList(),
-      onChanged: onChanged,
+    final caption = label;
+    if (caption == null) return control;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          caption,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 4),
+        control,
+      ],
     );
   }
 

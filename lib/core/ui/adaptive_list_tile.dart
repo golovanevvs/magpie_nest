@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/platform/design_language.dart';
 import 'package:magpie_nest/core/ui/adaptive_theme.dart';
 
-class AdaptiveListTile extends StatelessWidget {
+class AdaptiveListTile extends StatefulWidget {
   const AdaptiveListTile({
     super.key,
     this.leading,
@@ -28,6 +28,13 @@ class AdaptiveListTile extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<AdaptiveListTile> createState() => _AdaptiveListTileState();
+}
+
+class _AdaptiveListTileState extends State<AdaptiveListTile> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
     final designLanguage = designLanguageFor(Theme.of(context).platform);
 
@@ -35,11 +42,11 @@ class AdaptiveListTile extends StatelessWidget {
       return fluent.FluentTheme(
         data: fluentThemeOf(context),
         child: fluent.HoverButton(
-          onPressed: onTap,
+          onPressed: widget.onTap,
           builder: (hoverContext, states) {
             final fluentTheme = fluent.FluentTheme.of(hoverContext);
             final Color? backgroundColor;
-            if (selected) {
+            if (widget.selected) {
               backgroundColor = fluentTheme.resources.subtleFillColorTertiary;
             } else if (states.contains(WidgetState.pressed)) {
               backgroundColor = fluentTheme.resources.subtleFillColorTertiary;
@@ -62,56 +69,79 @@ class AdaptiveListTile extends StatelessWidget {
     }
 
     if (designLanguage == DesignLanguage.cupertino) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Container(
-          color: selected
-              ? cupertino.CupertinoDynamicColor.resolve(
-                  cupertino.CupertinoColors.systemFill,
-                  context,
-                )
-              : null,
-          child: _buildRow(),
+      final Color? backgroundColor;
+      if (widget.selected) {
+        backgroundColor = cupertino.CupertinoDynamicColor.resolve(
+          cupertino.CupertinoColors.systemFill,
+          context,
+        );
+      } else if (_hovered && widget.onTap != null) {
+        backgroundColor = cupertino.CupertinoDynamicColor.resolve(
+          cupertino.CupertinoColors.tertiarySystemFill,
+          context,
+        );
+      } else {
+        backgroundColor = null;
+      }
+      return MouseRegion(
+        cursor: widget.onTap != null
+            ? SystemMouseCursors.click
+            : MouseCursor.defer,
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
+            constraints: BoxConstraints(minHeight: widget.dense ? 36 : 44),
+            color: backgroundColor,
+            child: _buildRow(),
+          ),
         ),
       );
     }
 
     return ListTile(
-      leading: leading,
-      title: title,
-      subtitle: subtitle,
-      trailing: trailing,
-      selected: selected,
-      selectedTileColor:
-          Theme.of(context).colorScheme.primaryContainer.withAlpha(51),
-      dense: dense,
+      leading: widget.leading,
+      title: widget.title,
+      subtitle: widget.subtitle,
+      trailing: widget.trailing,
+      selected: widget.selected,
+      selectedTileColor: Theme.of(
+        context,
+      ).colorScheme.primaryContainer.withAlpha(51),
+      dense: widget.dense,
       minLeadingWidth: 0,
-      contentPadding: contentPadding,
+      contentPadding: widget.contentPadding,
       visualDensity: VisualDensity.compact,
-      onTap: onTap,
+      onTap: widget.onTap,
     );
   }
 
   Widget _buildRow() {
     return Padding(
-      padding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 16),
+      padding:
+          widget.contentPadding ?? const EdgeInsets.symmetric(horizontal: 16),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: dense ? 8 : 10),
+        padding: EdgeInsets.symmetric(vertical: widget.dense ? 8 : 10),
         child: Row(
           children: [
-            if (leading != null) ...[leading!, const SizedBox(width: 12)],
+            if (widget.leading != null) ...[
+              widget.leading!,
+              const SizedBox(width: 12),
+            ],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  title,
-                  ?subtitle,
-                ],
+                children: [widget.title, ?widget.subtitle],
               ),
             ),
-            if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+            if (widget.trailing != null) ...[
+              const SizedBox(width: 8),
+              widget.trailing!,
+            ],
           ],
         ),
       ),
