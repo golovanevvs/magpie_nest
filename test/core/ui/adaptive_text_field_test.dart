@@ -83,4 +83,64 @@ void main() {
     expect(find.byType(fluent.TextBox), findsNothing);
     expect(find.byType(cupertino.CupertinoTextField), findsOneWidget);
   });
+
+  testWidgets('renders borderless fluent TextBox without field chrome', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: AdaptiveTextField(
+            decoration: const InputDecoration(
+              hintText: 'Title',
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+            style: const TextStyle(fontSize: 24),
+          ),
+        ),
+      ),
+    );
+
+    final box = tester.widget<fluent.TextBox>(find.byType(fluent.TextBox));
+    const states = <WidgetState>{};
+    expect(box.decoration!.resolve(states).border, Border());
+    expect(box.decoration!.resolve(states).color, Colors.transparent);
+    expect(box.foregroundDecoration!.resolve(states).border, Border());
+  });
+
+  testWidgets('renders borderless CupertinoTextField without the field box', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: AdaptiveTextField(
+            decoration: const InputDecoration(
+              hintText: 'Description',
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+            maxLines: null,
+          ),
+        ),
+      ),
+    );
+
+    final field = tester.widget<cupertino.CupertinoTextField>(
+      find.byType(cupertino.CupertinoTextField),
+    );
+    expect(field.decoration, isNull);
+    expect(field.padding, EdgeInsets.zero);
+  });
 }

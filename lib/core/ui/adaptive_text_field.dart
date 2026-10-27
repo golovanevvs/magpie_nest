@@ -59,6 +59,14 @@ class AdaptiveTextField extends StatelessWidget {
             placeholder: _placeholder,
             style: style,
             padding: _effectivePadding,
+            decoration: _isBorderless
+                ? const WidgetStatePropertyAll(
+                    BoxDecoration(border: Border(), color: Colors.transparent),
+                  )
+                : null,
+            foregroundDecoration: _isBorderless
+                ? const WidgetStatePropertyAll(BoxDecoration(border: Border()))
+                : null,
             prefix: decoration?.prefixIcon,
             suffix: decoration?.suffixIcon,
             onChanged: onChanged,
@@ -77,6 +85,33 @@ class AdaptiveTextField extends StatelessWidget {
     }
 
     if (designLanguage == DesignLanguage.cupertino) {
+      if (_isBorderless) {
+        return _withError(
+          context,
+          cupertino.CupertinoTextField(
+            controller: controller,
+            focusNode: focusNode,
+            autofocus: autofocus,
+            placeholder: _placeholder,
+            style: style,
+            decoration: null,
+            padding: EdgeInsets.zero,
+            prefix: decoration?.prefixIcon,
+            suffix: decoration?.suffixIcon,
+            onChanged: onChanged,
+            onSubmitted: onSubmitted,
+            onTapOutside: onTapOutside,
+            textInputAction: textInputAction,
+            keyboardType: keyboardType,
+            maxLines: maxLines,
+            minLines: minLines,
+            enabled: enabled,
+            readOnly: readOnly,
+            obscureText: obscureText,
+          ),
+        );
+      }
+
       return _withError(
         context,
         cupertino.CupertinoTextField(
@@ -144,6 +179,11 @@ class AdaptiveTextField extends StatelessWidget {
   }
 
   String? get _placeholder => decoration?.labelText ?? decoration?.hintText;
+
+  bool get _isBorderless =>
+      decoration?.border == InputBorder.none &&
+      decoration?.focusedBorder == InputBorder.none &&
+      decoration?.enabledBorder == InputBorder.none;
 
   EdgeInsetsGeometry get _effectivePadding {
     final contentPadding = decoration?.contentPadding;
