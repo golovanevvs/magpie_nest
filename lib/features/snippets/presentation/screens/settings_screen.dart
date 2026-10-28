@@ -364,6 +364,80 @@ class _CloudPanelState extends State<_CloudPanel> {
     showAdaptiveSnackBar(context, message: message);
   }
 
+  Future<void> _confirmDisconnect() async {
+    final l10n = AppLocalizations.of(context)!;
+    final destroyCloud = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.cloudDisconnectDialogTitle),
+        content: Text(l10n.cloudDisconnectDialogBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.dialogCancel),
+          ),
+          OutlinedButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cloudDisconnectJust),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.cloudDisconnectAndDelete),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || destroyCloud == null) return;
+    if (destroyCloud) {
+      await _confirmDeleteAndDisconnect();
+    } else {
+      await widget.cloud.disconnect();
+    }
+  }
+
+  Future<void> _confirmDeleteAndDisconnect() async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.cloudDeleteTitle),
+        content: Text(
+          l10n.cloudDeleteBody(
+            widget.cloud.connectedFolder ?? '',
+            widget.cloud.connectedUrl ?? '',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.dialogCancel),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.cloudDeleteConfirm),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || confirm != true) return;
+
+    final ok = await widget.sync.purgeRemote();
+    if (!mounted) return;
+    if (ok) {
+      await widget.cloud.disconnect();
+    } else {
+      _showSnackBar(l10n.cloudPurgeFailed(widget.sync.error ?? ''));
+    }
+  }
+
   void _onUrlChanged() {
     final url = _urlController.text.trim();
     final isPreset = cloudProviders.any((p) => p.url == url);
@@ -441,12 +515,17 @@ class _CloudPanelState extends State<_CloudPanel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AdaptiveOutlinedButton(
-                    onPressed: cloud.busy ? null : cloud.disconnect,
+                    onPressed:
+                        cloud.busy || widget.sync.syncing || widget.sync.purging
+                            ? null
+                            : _confirmDisconnect,
                     child: Text(l10n.cloudDisconnect),
                   ),
                   const SizedBox(height: 16),
                   AdaptiveFilledButton(
-                    onPressed: widget.sync.syncing ? null : widget.sync.syncNow,
+                    onPressed: widget.sync.syncing || widget.sync.purging
+                        ? null
+                        : widget.sync.syncNow,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

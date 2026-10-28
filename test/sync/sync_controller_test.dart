@@ -103,4 +103,52 @@ void main() {
     expect(await inFlight, isTrue);
     expect(sync.syncing, isFalse);
   });
+
+  test('purgeRemote without a cloud connection does not run the purge runner', () async {
+    var purgeCalled = false;
+    final cloud = CloudConnectionController(
+      store: SecureWebdavCredentialsStore(FakeSecureStorage()),
+      tester: passingTester,
+    );
+    final sync = SyncController(
+      runner: () async {},
+      purgeRunner: () async => purgeCalled = true,
+      cloud: cloud,
+    );
+
+    final ok = await sync.purgeRemote();
+
+    expect(ok, isFalse);
+    expect(purgeCalled, isFalse);
+    expect(sync.error, isNull);
+  });
+
+  test('purgeRemote with a connection runs the purge runner', () async {
+    var purgeCalled = false;
+    final sync = SyncController(
+      runner: () async {},
+      purgeRunner: () async => purgeCalled = true,
+      cloud: await connectedCloud(),
+    );
+
+    final ok = await sync.purgeRemote();
+
+    expect(ok, isTrue);
+    expect(purgeCalled, isTrue);
+    expect(sync.purging, isFalse);
+    expect(sync.error, isNull);
+  });
+
+  test('purgeRemote reports errors from the purge runner', () async {
+    final sync = SyncController(
+      runner: () async {},
+      purgeRunner: () async => throw Exception('dav offline'),
+      cloud: await connectedCloud(),
+    );
+
+    final ok = await sync.purgeRemote();
+
+    expect(ok, isFalse);
+    expect(sync.error, contains('dav offline'));
+  });
 }

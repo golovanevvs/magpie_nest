@@ -243,6 +243,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cloudDisconnect => 'Disconnect';
 
   @override
+  String get cloudDisconnectDialogTitle => 'Disconnect from cloud';
+
+  @override
+  String get cloudDisconnectDialogBody =>
+      'Choose what to do with your data on the server.';
+
+  @override
+  String get cloudDisconnectJust => 'Just disconnect';
+
+  @override
+  String get cloudDisconnectAndDelete => 'Disconnect & delete cloud copy';
+
+  @override
+  String get cloudDeleteTitle => 'Delete cloud copy?';
+
+  @override
+  String cloudDeleteBody(String folder, String url) {
+    return 'This permanently deletes the shared sync folder \"$folder\" on $url. Other devices lose this copy. Local data on this device is NOT deleted.';
+  }
+
+  @override
+  String get cloudDeleteConfirm => 'Delete & disconnect';
+
+  @override
+  String cloudPurgeFailed(String error) {
+    return 'Could not delete the cloud copy: $error';
+  }
+
+  @override
   String get cloudConnectionOk => 'Connection successful.';
 
   @override

@@ -53,6 +53,13 @@ class FakeWebdavTransport implements WebdavTransport {
 
   @override
   Future<WebdavFile?> readProps(String path) async => null;
+
+  @override
+  Future<void> remove(String path) async {
+    final clean = _norm(path);
+    files.remove(clean);
+    dirs.remove(clean);
+  }
 }
 
 CloudFolderBrowser browser(FakeWebdavTransport t, {String initialPath = ''}) =>

@@ -22,6 +22,9 @@ class LazyWebdavSyncRepository implements ISyncRepository {
   Future<List<JournalEntry>> fetchAfter(String? cursor) async =>
       (await _repository()).fetchAfter(cursor);
 
+  @override
+  Future<void> clearRemote() async => (await _repository()).clearRemote();
+
   Future<WebdavSyncRepository> _repository() async {
     final credentials = await _store.read();
     if (credentials == null) throw StateError('Cloud is not configured');

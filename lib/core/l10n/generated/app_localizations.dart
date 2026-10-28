@@ -548,6 +548,54 @@ abstract class AppLocalizations {
   /// **'Disconnect'**
   String get cloudDisconnect;
 
+  /// Title of the disconnect confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect from cloud'**
+  String get cloudDisconnectDialogTitle;
+
+  /// Body text of the disconnect dialog explaining the two options
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what to do with your data on the server.'**
+  String get cloudDisconnectDialogBody;
+
+  /// Option that only clears local credentials and keeps the cloud copy
+  ///
+  /// In en, this message translates to:
+  /// **'Just disconnect'**
+  String get cloudDisconnectJust;
+
+  /// Destructive option that also removes the shared cloud copy
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect & delete cloud copy'**
+  String get cloudDisconnectAndDelete;
+
+  /// Title of the destructive confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete cloud copy?'**
+  String get cloudDeleteTitle;
+
+  /// Warning shown before deleting the cloud copy
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes the shared sync folder \"{folder}\" on {url}. Other devices lose this copy. Local data on this device is NOT deleted.'**
+  String cloudDeleteBody(String folder, String url);
+
+  /// Confirmation button for deleting the cloud copy
+  ///
+  /// In en, this message translates to:
+  /// **'Delete & disconnect'**
+  String get cloudDeleteConfirm;
+
+  /// Message shown when deleting the cloud copy fails
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the cloud copy: {error}'**
+  String cloudPurgeFailed(String error);
+
   /// Message shown when the connection test passes
   ///
   /// In en, this message translates to:

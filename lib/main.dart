@@ -46,7 +46,11 @@ Future<void> main() async {
       store: SecureWebdavCredentialsStore(),
     ),
   );
-  final sync = SyncController(runner: syncEngine.syncNow, cloud: cloud);
+  final sync = SyncController(
+    runner: syncEngine.syncNow,
+    cloud: cloud,
+    purgeRunner: syncEngine.purgeRemote,
+  );
 
   runApp(
     MagpieNestApp(

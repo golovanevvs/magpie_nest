@@ -12,6 +12,7 @@ class _Conflict extends Error {}
 class FakeWebdavTransport implements WebdavTransport {
   final Map<String, Uint8List> files = {};
   final Set<String> dirs = {};
+  final List<String> removed = [];
   Map<String, dynamic>? lastWriteHeaders;
   Object? throwOnReadDir;
 
@@ -56,6 +57,13 @@ class FakeWebdavTransport implements WebdavTransport {
 
   @override
   Future<WebdavFile?> readProps(String path) async => null;
+
+  @override
+  Future<void> remove(String path) async {
+    removed.add(path);
+    files.remove(path);
+    dirs.removeWhere((d) => d == path || d.startsWith('$path/'));
+  }
 }
 
 WebdavSyncRepository repo(FakeWebdavTransport t) =>
@@ -183,6 +191,42 @@ void main() {
     expect(
       repo(t).fetchAfter(null),
       throwsA(isA<WebdavException>()),
+    );
+  });
+
+  test('clearRemote deletes every batch file and the journal folder', () async {
+    final t = FakeWebdavTransport();
+    await repo(t).pushBatch(batch('b1', DateTime.utc(2026, 1, 2, 3, 4, 5)));
+    await repo(t).pushBatch(batch('b2', DateTime.utc(2026, 1, 2, 3, 5, 0)));
+
+    await repo(t).clearRemote();
+
+    expect(t.files, isEmpty);
+    expect(t.removed, contains('magpie_nest/'));
+    expect(t.removed, hasLength(3)); // two batch files + the folder
+  });
+
+  test('clearRemote is a no-op when the journal folder is missing (404)', () async {
+    final t = FakeWebdavTransport();
+    t.throwOnReadDir = WebdavException(message: 'Resource not found', statusCode: 404);
+
+    await repo(t).clearRemote();
+
+    expect(t.removed, isEmpty);
+  });
+
+  test('clearRemote rethrows non-404 readDir errors', () async {
+    final t = FakeWebdavTransport();
+    t.throwOnReadDir = WebdavException(message: 'Access forbidden', statusCode: 403);
+
+    expect(repo(t).clearRemote(), throwsA(isA<WebdavException>()));
+  });
+
+  test('refuses to construct with a root sync folder', () async {
+    final t = FakeWebdavTransport();
+    expect(
+      () => WebdavSyncRepository(transport: t, journalDir: '/'),
+      throwsStateError,
     );
   });
 }

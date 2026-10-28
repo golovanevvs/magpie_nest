@@ -8,6 +8,7 @@ import 'package:magpie_nest/core/sync/webdav_credentials_store.dart';
 import 'package:magpie_nest/core/ui/adaptive_dropdown.dart';
 import 'package:magpie_nest/core/ui/adaptive_list_tile.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/dialogs/settings_dialog.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/settings_screen.dart';
 import 'package:material_ui/material_ui.dart';
 
 class _FakeCredentialsStore implements WebdavCredentialsStore {
@@ -69,5 +70,47 @@ void main() {
     expect(find.byType(AdaptiveListTile), findsAtLeastNWidgets(3));
     expect(find.byType(AdaptiveDropdown<Locale>), findsOneWidget);
     expect(find.text('English'), findsWidgets);
+  });
+
+  testWidgets('cloud section renders its TextBoxes on Windows', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    final cloud = await makeCloud();
+    final sync = SyncController(runner: () async {}, cloud: cloud);
+    var locale = const Locale('en');
+    var themeMode = ThemeMode.system;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () {
+                showSettingsDialog(
+                  context,
+                  cloud: cloud,
+                  sync: sync,
+                  currentLocale: locale,
+                  currentThemeMode: themeMode,
+                  onLocaleChanged: (v) => locale = v,
+                  onThemeModeChanged: (v) => themeMode = v,
+                  initialSection: SettingsSection.cloud,
+                );
+              },
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Test connection'), findsOneWidget);
   });
 }

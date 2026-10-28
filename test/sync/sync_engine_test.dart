@@ -224,6 +224,24 @@ void main() {
     expect(atA!.name, 'from B');
     expect(atB!.name, 'from B');
   });
+
+  test('purgeRemote clears the remote journal and resets the pull cursor', () async {
+    final repoA = DriftSnippetRepository(dbA);
+    await repoA.saveSnippet(_makeSnippet());
+    await engineA.syncNow();
+
+    expect(cloud.pushed, isNotEmpty, reason: 'a batch should have been pushed');
+    expect(
+      await dbA.getSyncMeta('lastPulledJournalFile'),
+      isNotNull,
+      reason: 'cursor should be set after a pull',
+    );
+
+    await engineA.purgeRemote();
+
+    expect(cloud.pushed, isEmpty);
+    expect(await dbA.getSyncMeta('lastPulledJournalFile'), '');
+  });
 }
 
 Snippet _makeSnippet({String id = 'snip-1', String name = 'Hello'}) {

@@ -15,7 +15,11 @@ class WebdavSyncRepository implements ISyncRepository {
   WebdavSyncRepository({
     required this.transport,
     this.journalDir = kDefaultJournalDir,
-  });
+  }) {
+    if (!_nonRootDir(journalDir)) {
+      throw StateError('Sync folder must have a subfolder (got "$journalDir")');
+    }
+  }
 
   String _fileName(SyncBatch batch) {
     final ts = batch.createdAt.toUtc().toIso8601String().replaceAll(':', '-');
@@ -41,7 +45,7 @@ class WebdavSyncRepository implements ISyncRepository {
     try {
       entries = await transport.readDir(journalDir);
     } on WebdavException catch (e) {
-      if (e.statusCode == 404) return const []; // no journal folder yet - an empty log
+      if (e.statusCode == 404) return const [];
       rethrow;
     }
     final files = entries.where((e) => !e.isDir).toList()
@@ -58,5 +62,34 @@ class WebdavSyncRepository implements ISyncRepository {
       );
     }
     return journalEntries;
+  }
+
+  @override
+  Future<void> clearRemote() async {
+    if (!_nonRootDir(journalDir)) {
+      throw StateError(
+        'Refusing to clear remote: the sync folder must have a subfolder '
+        '(got "$journalDir")',
+      );
+    }
+    try {
+      final entries = await transport.readDir(journalDir);
+      for (final f in entries.where((e) => !e.isDir)) {
+        await transport.remove(f.path);
+      }
+    } on WebdavException catch (e) {
+      if (e.statusCode != 404) rethrow;
+      return;
+    }
+    try {
+      await transport.remove(journalDir);
+    } on WebdavException catch (e) {
+      if (e.statusCode != 404) rethrow;
+    }
+  }
+
+  static bool _nonRootDir(String dir) {
+    final d = dir.replaceAll(RegExp(r'^/+|/+$'), '');
+    return d.isNotEmpty;
   }
 }

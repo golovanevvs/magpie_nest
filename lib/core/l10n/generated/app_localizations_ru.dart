@@ -243,6 +243,35 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cloudDisconnect => 'Отключить';
 
   @override
+  String get cloudDisconnectDialogTitle => 'Отключение от облака';
+
+  @override
+  String get cloudDisconnectDialogBody =>
+      'Выберите, что сделать с данными на сервере.';
+
+  @override
+  String get cloudDisconnectJust => 'Только отключить';
+
+  @override
+  String get cloudDisconnectAndDelete => 'Отключить и удалить облачную копию';
+
+  @override
+  String get cloudDeleteTitle => 'Удалить облачную копию?';
+
+  @override
+  String cloudDeleteBody(String folder, String url) {
+    return 'Будет безвозвратно удалена общая папка синхронизации \"$folder\" на сервере $url. Другие устройства потеряют эту копию. Локальные данные на этом устройстве НЕ будут удалены.';
+  }
+
+  @override
+  String get cloudDeleteConfirm => 'Удалить и отключить';
+
+  @override
+  String cloudPurgeFailed(String error) {
+    return 'Не удалось удалить облачную копию: $error';
+  }
+
+  @override
   String get cloudConnectionOk => 'Соединение установлено.';
 
   @override

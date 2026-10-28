@@ -13,6 +13,7 @@ abstract interface class WebdavTransport {
     Map<String, dynamic>? headers,
   });
   Future<WebdavFile?> readProps(String path);
+  Future<void> remove(String path);
 }
 
 class WebdavTransportAdapter implements WebdavTransport {
@@ -33,6 +34,8 @@ class WebdavTransportAdapter implements WebdavTransport {
   }) => client.write(path, data, headers: headers);
   @override
   Future<WebdavFile?> readProps(String path) => client.readProps(path);
+  @override
+  Future<void> remove(String path) => client.remove(path);
 }
 
 WebdavClient webdavClientFrom(WebdavCredentials credentials) {

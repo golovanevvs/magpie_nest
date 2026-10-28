@@ -19,6 +19,9 @@ class InMemorySyncRepository implements ISyncRepository {
     ];
   }
 
+  @override
+  Future<void> clearRemote() async => _journal.clear();
+
   Iterable<JournalEntry> get pushed => _journal;
 
   String _fileNameFor(SyncBatch batch) {

@@ -310,6 +310,51 @@
   "@cloudDisconnect": {
     "description": "Button that clears the stored WebDAV credentials"
   },
+  "cloudDisconnectDialogTitle": "Disconnect from cloud",
+  "@cloudDisconnectDialogTitle": {
+    "description": "Title of the disconnect confirmation dialog"
+  },
+  "cloudDisconnectDialogBody": "Choose what to do with your data on the server.",
+  "@cloudDisconnectDialogBody": {
+    "description": "Body text of the disconnect dialog explaining the two options"
+  },
+  "cloudDisconnectJust": "Just disconnect",
+  "@cloudDisconnectJust": {
+    "description": "Option that only clears local credentials and keeps the cloud copy"
+  },
+  "cloudDisconnectAndDelete": "Disconnect & delete cloud copy",
+  "@cloudDisconnectAndDelete": {
+    "description": "Destructive option that also removes the shared cloud copy"
+  },
+  "cloudDeleteTitle": "Delete cloud copy?",
+  "@cloudDeleteTitle": {
+    "description": "Title of the destructive confirmation dialog"
+  },
+  "cloudDeleteBody": "This permanently deletes the shared sync folder \"{folder}\" on {url}. Other devices lose this copy. Local data on this device is NOT deleted.",
+  "@cloudDeleteBody": {
+    "description": "Warning shown before deleting the cloud copy",
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudDeleteConfirm": "Delete & disconnect",
+  "@cloudDeleteConfirm": {
+    "description": "Confirmation button for deleting the cloud copy"
+  },
+  "cloudPurgeFailed": "Could not delete the cloud copy: {error}",
+  "@cloudPurgeFailed": {
+    "description": "Message shown when deleting the cloud copy fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "cloudConnectionOk": "Connection successful.",
   "@cloudConnectionOk": {
     "description": "Message shown when the connection test passes"

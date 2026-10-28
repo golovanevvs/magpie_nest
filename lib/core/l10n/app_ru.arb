@@ -310,6 +310,51 @@
   "@cloudDisconnect": {
     "description": "Кнопка, которая удаляет сохранённые WebDAV-креды"
   },
+  "cloudDisconnectDialogTitle": "Отключение от облака",
+  "@cloudDisconnectDialogTitle": {
+    "description": "Заголовок диалога подтверждения отключения"
+  },
+  "cloudDisconnectDialogBody": "Выберите, что сделать с данными на сервере.",
+  "@cloudDisconnectDialogBody": {
+    "description": "Текст диалога отключения, описывающий два варианта"
+  },
+  "cloudDisconnectJust": "Только отключить",
+  "@cloudDisconnectJust": {
+    "description": "Вариант, который только удаляет локальные креды и оставляет облачную копию"
+  },
+  "cloudDisconnectAndDelete": "Отключить и удалить облачную копию",
+  "@cloudDisconnectAndDelete": {
+    "description": "Деструктивный вариант, который также удаляет общую облачную копию"
+  },
+  "cloudDeleteTitle": "Удалить облачную копию?",
+  "@cloudDeleteTitle": {
+    "description": "Заголовок деструктивного диалога подтверждения"
+  },
+  "cloudDeleteBody": "Будет безвозвратно удалена общая папка синхронизации \"{folder}\" на сервере {url}. Другие устройства потеряют эту копию. Локальные данные на этом устройстве НЕ будут удалены.",
+  "@cloudDeleteBody": {
+    "description": "Предупреждение перед удалением облачной копии",
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudDeleteConfirm": "Удалить и отключить",
+  "@cloudDeleteConfirm": {
+    "description": "Кнопка подтверждения удаления облачной копии"
+  },
+  "cloudPurgeFailed": "Не удалось удалить облачную копию: {error}",
+  "@cloudPurgeFailed": {
+    "description": "Сообщение при ошибке удаления облачной копии",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "cloudConnectionOk": "Соединение установлено.",
   "@cloudConnectionOk": {
     "description": "Сообщение при успешной проверке соединения"

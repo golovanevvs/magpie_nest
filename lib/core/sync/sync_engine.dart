@@ -64,6 +64,11 @@ class SyncEngine {
     await pullRemote();
   }
 
+  Future<void> purgeRemote() async {
+    await _syncRepository.clearRemote();
+    await _db.setSyncMeta('lastPulledJournalFile', '');
+  }
+
   List<SyncChange> _coalesceChanges(List<SyncChange> changes) {
     final coalesced = <SyncChange>[];
     final position = <String, int>{};

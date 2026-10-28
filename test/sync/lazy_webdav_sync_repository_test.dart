@@ -25,6 +25,7 @@ class FakeSecureStorage implements SecureStorage {
 
 class FakeWebdavTransport implements WebdavTransport {
   final Map<String, Uint8List> files = {};
+  final List<String> removed = [];
 
   @override
   Future<void> mkdirAll(String path) async {}
@@ -58,6 +59,12 @@ class FakeWebdavTransport implements WebdavTransport {
 
   @override
   Future<WebdavFile?> readProps(String path) async => null;
+
+  @override
+  Future<void> remove(String path) async {
+    removed.add(path);
+    files.remove(path);
+  }
 }
 
 const credentials = WebdavCredentials(
@@ -140,5 +147,18 @@ void main() {
     final after = await subject.fetchAfter('2026-a.json');
     expect(after, hasLength(1));
     expect(after[0].batch.batchId, 'bB');
+  });
+
+  test('clearRemote delegates to the transport built from stored credentials', () async {
+    final transport = FakeWebdavTransport();
+    transport.files['magpie_nest/2026-a.json'] = encoded(batch('bA'));
+    final store = SecureWebdavCredentialsStore(FakeSecureStorage());
+    await store.save(credentials);
+    final subject = repo(store, transport);
+
+    await subject.clearRemote();
+
+    expect(transport.files, isEmpty);
+    expect(transport.removed, contains('magpie_nest/'));
   });
 }
