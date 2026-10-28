@@ -11,7 +11,9 @@ class DriftSnippetRepository implements ISnippetRepository {
 
   @override
   Future<List<Snippet>> getAllSnippets() async {
-    final snippetRows = await (db.select(db.snippets)).get();
+    final snippetRows = await (db.select(
+      db.snippets,
+    )..where((table) => table.isDeleted.equals(false))).get();
     return _withFragments(snippetRows);
   }
 
@@ -39,9 +41,9 @@ class DriftSnippetRepository implements ISnippetRepository {
 
   @override
   Future<List<Snippet>> getFavoriteSnippets() async {
-    final rows = await (db.select(
-      db.snippets,
-    )..where((table) => table.isFavorite.equals(true))).get();
+    final rows = await (db.select(db.snippets)..where(
+      (table) => table.isFavorite.equals(true) & table.isDeleted.equals(false),
+    )).get();
     return _withFragments(rows);
   }
 
@@ -56,7 +58,9 @@ class DriftSnippetRepository implements ISnippetRepository {
   @override
   Future<void> saveSnippet(Snippet snippet) async {
     await db.transaction(() async {
-      await db.into(db.snippets).insertOnConflictUpdate(_snippetToRow(snippet));
+      await db
+          .into(db.snippets)
+          .insertOnConflictUpdate(_snippetToRow(snippet).toCompanion(false));
       await db.recordOutbox(
         Outbox.entityTypeSnippet,
         snippet.id,
@@ -85,7 +89,9 @@ class DriftSnippetRepository implements ISnippetRepository {
         final fragment = snippet.fragments[i];
         await db
             .into(db.fragments)
-            .insertOnConflictUpdate(_fragmentToRow(snippet.id, fragment, i));
+            .insertOnConflictUpdate(
+              _fragmentToRow(snippet.id, fragment, i).toCompanion(false),
+            );
         await db.recordOutbox(
           Outbox.entityTypeFragment,
           fragment.id,

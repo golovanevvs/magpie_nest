@@ -73,8 +73,6 @@ class SyncMeta extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-/// Local change journal: one row per pending local mutation.
-/// Consumed by the sync engine (drained in batches), removed after ack.
 @DataClassName('OutboxEntryRow')
 class OutboxEntries extends Table {
   IntColumn get seq => integer().autoIncrement()();
@@ -238,6 +236,17 @@ class AppDatabase extends _$AppDatabase {
           ..orderBy([(e) => OrderingTerm.asc(e.seq)])
           ..limit(limit))
         .get();
+  }
+
+  Future<bool> hasPendingOutboxDelete(String entityType, String entityId) {
+    return (select(outboxEntries)..where(
+          (e) =>
+              e.entityType.equals(entityType) &
+              e.entityId.equals(entityId) &
+              e.operation.equals(Outbox.opDelete),
+        ))
+        .get()
+        .then((rows) => rows.isNotEmpty);
   }
 
   Future<void> markOutboxEntriesSynced(List<int> seqs) {

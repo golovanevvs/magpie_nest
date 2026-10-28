@@ -29,7 +29,9 @@ class DriftFolderRepository implements IFolderRepository {
   @override
   Future<void> saveFolder(Folder folder) async {
     await db.transaction(() async {
-      await db.into(db.folders).insertOnConflictUpdate(_toRow(folder));
+      await db
+          .into(db.folders)
+          .insertOnConflictUpdate(_toRow(folder).toCompanion(false));
       await db.recordOutbox(
         Outbox.entityTypeFolder,
         folder.id,

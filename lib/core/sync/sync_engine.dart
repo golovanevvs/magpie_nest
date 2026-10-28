@@ -140,6 +140,12 @@ class SyncEngine {
     final local = await _readLocalRow(change.entityType, change.entityId);
 
     if (local == null) {
+      final pendingDelete = await _db.hasPendingOutboxDelete(
+        change.entityType,
+        change.entityId,
+      );
+      if (pendingDelete) return;
+
       await _writeRemoteRow(change.entityType, payload);
       return;
     }
