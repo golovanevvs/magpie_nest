@@ -1,14 +1,22 @@
+import 'dart:io';
+
 import 'package:magpie_nest/core/database/app_database.dart';
 import 'package:magpie_nest/core/sync/i_sync_repository.dart';
 import 'package:magpie_nest/core/sync/sync_batch.dart';
+import 'package:magpie_nest/core/sync/sync_device.dart';
 import 'package:magpie_nest/core/sync/sync_row_codec.dart';
 import 'package:uuid/uuid.dart';
 
 class SyncEngine {
   final AppDatabase _db;
   final ISyncRepository _syncRepository;
+  final DateTime Function() _clock;
 
-  SyncEngine({required this._db, required this._syncRepository});
+  SyncEngine({
+    required this._db,
+    required this._syncRepository,
+    DateTime Function()? clock,
+  }) : _clock = clock ?? DateTime.now;
 
   Future<void> pushPending() async {
     final entries = await _db.getPendingOutboxEntries();
@@ -57,17 +65,74 @@ class SyncEngine {
     if (lastFile != null) {
       await _db.setSyncMeta('lastPulledJournalFile', lastFile);
     }
+    await _heartbeat(myDeviceId, lastFile ?? cursor ?? '');
   }
 
   Future<void> syncNow() async {
     await pushPending();
     await pullRemote();
+    await _pruneSafely();
   }
 
   Future<void> purgeRemote() async {
     await _syncRepository.clearRemote();
     await _db.setSyncMeta('lastPulledJournalFile', '');
   }
+
+  Future<void> pruneJournal() async {
+    final now = _clock();
+    final lastPruneAt = await _db.getSyncMeta('lastJournalPruneAt');
+    if (lastPruneAt != null &&
+        now.difference(DateTime.parse(lastPruneAt)) < kJournalPruneThrottle) {
+      return;
+    }
+    final devices = await _syncRepository.listDevices();
+    final live = devices
+        .where((device) => now.difference(device.updatedAt) < kDeviceStaleAfter)
+        .toList();
+    if (live.isEmpty) return;
+    if (live.any((device) => device.lastPulledJournalFile.isEmpty)) return;
+    var cutoff = live
+        .map((device) => device.lastPulledJournalFile)
+        .reduce((a, b) => a.compareTo(b) <= 0 ? a : b);
+    final ageFloor = _journalBoundary(now.subtract(kJournalMinAge));
+    if (ageFloor.compareTo(cutoff) < 0) {
+      cutoff = ageFloor;
+    }
+    await _syncRepository.deleteJournalBefore(cutoff);
+    await _db.setSyncMeta('lastJournalPruneAt', now.toUtc().toIso8601String());
+  }
+
+  Future<void> _pruneSafely() async {
+    try {
+      await pruneJournal();
+    } on Object {
+      return;
+    }
+  }
+
+  Future<void> _heartbeat(String deviceId, String lastPulledJournalFile) async {
+    final now = _clock();
+    final storedCreatedAt = await _db.getSyncMeta('deviceCreatedAt');
+    final createdAtText = (storedCreatedAt == null || storedCreatedAt.isEmpty)
+        ? now.toUtc().toIso8601String()
+        : storedCreatedAt;
+    if (storedCreatedAt == null || storedCreatedAt.isEmpty) {
+      await _db.setSyncMeta('deviceCreatedAt', createdAtText);
+    }
+    await _syncRepository.upsertDevice(
+      SyncDeviceInfo(
+        deviceId: deviceId,
+        platform: Platform.operatingSystem,
+        createdAt: DateTime.parse(createdAtText),
+        updatedAt: now,
+        lastPulledJournalFile: lastPulledJournalFile,
+      ),
+    );
+  }
+
+  String _journalBoundary(DateTime moment) =>
+      moment.toUtc().toIso8601String().replaceAll(':', '-');
 
   List<SyncChange> _coalesceChanges(List<SyncChange> changes) {
     final coalesced = <SyncChange>[];

@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:magpie_nest/core/database/app_database.dart';
 import 'package:magpie_nest/core/sync/sync_batch.dart';
+import 'package:magpie_nest/core/sync/sync_device.dart';
 import 'package:magpie_nest/core/sync/sync_engine.dart';
 import 'package:magpie_nest/features/snippets/data/repositories/drift_snippet_repository.dart';
 import 'package:magpie_nest/features/snippets/domain/models/fragment.dart';
@@ -225,23 +226,143 @@ void main() {
     expect(atB!.name, 'from B');
   });
 
-  test('purgeRemote clears the remote journal and resets the pull cursor', () async {
+  test(
+    'purgeRemote clears the remote journal and resets the pull cursor',
+    () async {
+      final repoA = DriftSnippetRepository(dbA);
+      await repoA.saveSnippet(_makeSnippet());
+      await engineA.syncNow();
+
+      expect(
+        cloud.pushed,
+        isNotEmpty,
+        reason: 'a batch should have been pushed',
+      );
+      expect(
+        await dbA.getSyncMeta('lastPulledJournalFile'),
+        isNotNull,
+        reason: 'cursor should be set after a pull',
+      );
+
+      await engineA.purgeRemote();
+
+      expect(cloud.pushed, isEmpty);
+      expect(await dbA.getSyncMeta('lastPulledJournalFile'), '');
+    },
+  );
+
+  test('syncNow registers the device with its pull cursor', () async {
     final repoA = DriftSnippetRepository(dbA);
     await repoA.saveSnippet(_makeSnippet());
     await engineA.syncNow();
 
-    expect(cloud.pushed, isNotEmpty, reason: 'a batch should have been pushed');
-    expect(
-      await dbA.getSyncMeta('lastPulledJournalFile'),
-      isNotNull,
-      reason: 'cursor should be set after a pull',
-    );
+    final devices = await cloud.listDevices();
 
-    await engineA.purgeRemote();
+    expect(devices, hasLength(1));
+    expect(devices.single.deviceId, 'device-A');
+    expect(devices.single.lastPulledJournalFile, isNotEmpty);
+  });
+
+  test('pruneJournal deletes files pulled by every live device', () async {
+    final now = DateTime.now().toUtc();
+    await cloud.pushBatch(
+      _batchWithCreatedAt('old-1', now.subtract(const Duration(days: 100))),
+    );
+    final oldName = (await cloud.fetchAfter(null)).single.file;
+    await cloud.upsertDevice(_deviceInfo('device-A', oldName, now));
+    await cloud.upsertDevice(_deviceInfo('device-B', oldName, now));
+
+    await engineA.pruneJournal();
 
     expect(cloud.pushed, isEmpty);
-    expect(await dbA.getSyncMeta('lastPulledJournalFile'), '');
   });
+
+  test(
+    'pruneJournal keeps files until every live device has pulled them',
+    () async {
+      final now = DateTime.now().toUtc();
+      await cloud.pushBatch(
+        _batchWithCreatedAt('old-1', now.subtract(const Duration(days: 100))),
+      );
+      final oldName = (await cloud.fetchAfter(null)).single.file;
+      await cloud.upsertDevice(_deviceInfo('device-A', oldName, now));
+      await cloud.upsertDevice(_deviceInfo('device-B', '', now));
+
+      await engineA.pruneJournal();
+
+      expect(cloud.pushed, isNotEmpty);
+    },
+  );
+
+  test('pruneJournal ignores stale devices', () async {
+    final now = DateTime.now().toUtc();
+    await cloud.pushBatch(
+      _batchWithCreatedAt('old-1', now.subtract(const Duration(days: 100))),
+    );
+    final oldName = (await cloud.fetchAfter(null)).single.file;
+    await cloud.upsertDevice(_deviceInfo('device-A', oldName, now));
+    await cloud.upsertDevice(
+      _deviceInfo('device-C', '', now.subtract(const Duration(days: 200))),
+    );
+
+    await engineA.pruneJournal();
+
+    expect(cloud.pushed, isEmpty);
+  });
+
+  test('pruneJournal without registered devices keeps the journal', () async {
+    final now = DateTime.now().toUtc();
+    await cloud.pushBatch(
+      _batchWithCreatedAt('old-1', now.subtract(const Duration(days: 100))),
+    );
+
+    await engineA.pruneJournal();
+
+    expect(cloud.pushed, isNotEmpty);
+  });
+
+  test('pruneJournal is throttled', () async {
+    final now = DateTime.now().toUtc();
+    await cloud.pushBatch(
+      _batchWithCreatedAt('old-1', now.subtract(const Duration(days: 100))),
+    );
+    final oldName = (await cloud.fetchAfter(null)).single.file;
+    await cloud.upsertDevice(_deviceInfo('device-A', oldName, now));
+    await cloud.upsertDevice(_deviceInfo('device-B', oldName, now));
+
+    await engineA.pruneJournal();
+    expect(cloud.pushed, isEmpty);
+
+    await cloud.pushBatch(
+      _batchWithCreatedAt('old-2', now.subtract(const Duration(days: 200))),
+    );
+    await engineA.pruneJournal();
+
+    expect(cloud.pushed, isNotEmpty);
+  });
+}
+
+SyncBatch _batchWithCreatedAt(String batchId, DateTime createdAt) {
+  return SyncBatch(
+    batchId: batchId,
+    deviceId: 'device-A',
+    createdAt: createdAt,
+    changes: const [],
+  );
+}
+
+SyncDeviceInfo _deviceInfo(
+  String deviceId,
+  String lastPulledJournalFile,
+  DateTime updatedAt,
+) {
+  return SyncDeviceInfo(
+    deviceId: deviceId,
+    platform: 'test',
+    createdAt: DateTime.utc(2026, 1, 1),
+    updatedAt: updatedAt,
+    lastPulledJournalFile: lastPulledJournalFile,
+  );
 }
 
 Snippet _makeSnippet({String id = 'snip-1', String name = 'Hello'}) {

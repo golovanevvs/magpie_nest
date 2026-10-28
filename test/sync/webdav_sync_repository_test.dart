@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:magpie_nest/core/sync/sync_batch.dart';
+import 'package:magpie_nest/core/sync/sync_device.dart';
 import 'package:magpie_nest/core/sync/webdav_sync_repository.dart';
 import 'package:magpie_nest/core/sync/webdav_transport.dart';
 import 'package:webdav_client_plus/webdav_client_plus.dart';
@@ -176,22 +177,28 @@ void main() {
     );
   });
 
-  test('fetchAfter treats a missing journal folder (404) as an empty log', () async {
-    final t = FakeWebdavTransport();
-    t.throwOnReadDir = WebdavException(message: 'Resource not found', statusCode: 404);
+  test(
+    'fetchAfter treats a missing journal folder (404) as an empty log',
+    () async {
+      final t = FakeWebdavTransport();
+      t.throwOnReadDir = WebdavException(
+        message: 'Resource not found',
+        statusCode: 404,
+      );
 
-    final entries = await repo(t).fetchAfter(null);
-    expect(entries, isEmpty);
-  });
+      final entries = await repo(t).fetchAfter(null);
+      expect(entries, isEmpty);
+    },
+  );
 
   test('fetchAfter rethrows non-404 readDir errors', () async {
     final t = FakeWebdavTransport();
-    t.throwOnReadDir = WebdavException(message: 'Access forbidden', statusCode: 403);
-
-    expect(
-      repo(t).fetchAfter(null),
-      throwsA(isA<WebdavException>()),
+    t.throwOnReadDir = WebdavException(
+      message: 'Access forbidden',
+      statusCode: 403,
     );
+
+    expect(repo(t).fetchAfter(null), throwsA(isA<WebdavException>()));
   });
 
   test('clearRemote deletes every batch file and the journal folder', () async {
@@ -206,18 +213,27 @@ void main() {
     expect(t.removed, hasLength(3)); // two batch files + the folder
   });
 
-  test('clearRemote is a no-op when the journal folder is missing (404)', () async {
-    final t = FakeWebdavTransport();
-    t.throwOnReadDir = WebdavException(message: 'Resource not found', statusCode: 404);
+  test(
+    'clearRemote is a no-op when the journal folder is missing (404)',
+    () async {
+      final t = FakeWebdavTransport();
+      t.throwOnReadDir = WebdavException(
+        message: 'Resource not found',
+        statusCode: 404,
+      );
 
-    await repo(t).clearRemote();
+      await repo(t).clearRemote();
 
-    expect(t.removed, isEmpty);
-  });
+      expect(t.removed, isEmpty);
+    },
+  );
 
   test('clearRemote rethrows non-404 readDir errors', () async {
     final t = FakeWebdavTransport();
-    t.throwOnReadDir = WebdavException(message: 'Access forbidden', statusCode: 403);
+    t.throwOnReadDir = WebdavException(
+      message: 'Access forbidden',
+      statusCode: 403,
+    );
 
     expect(repo(t).clearRemote(), throwsA(isA<WebdavException>()));
   });
@@ -229,4 +245,87 @@ void main() {
       throwsStateError,
     );
   });
+
+  test('upsertDevice writes devices/<id>.json with a JSON payload', () async {
+    final t = FakeWebdavTransport();
+    await repo(t).upsertDevice(_device(id: 'dev1', cursor: 'a.json'));
+
+    expect(t.dirs, contains('magpie_nest/devices/'));
+    final path = t.files.keys.single;
+    expect(path, 'magpie_nest/devices/dev1.json');
+    final json = jsonDecode(utf8.decode(t.files[path]!)) as Map;
+    expect(json['deviceId'], 'dev1');
+    expect(json['lastPulledJournalFile'], 'a.json');
+  });
+
+  test('listDevices reads registered devices', () async {
+    final t = FakeWebdavTransport();
+    final subject = repo(t);
+    await subject.upsertDevice(_device(id: 'dev1', cursor: 'a.json'));
+    await subject.upsertDevice(_device(id: 'dev2', cursor: ''));
+
+    final devices = await subject.listDevices();
+
+    expect(devices, hasLength(2));
+    expect(devices.map((d) => d.deviceId), containsAll(['dev1', 'dev2']));
+    expect(
+      devices.firstWhere((d) => d.deviceId == 'dev1').lastPulledJournalFile,
+      'a.json',
+    );
+  });
+
+  test(
+    'listDevices returns an empty list when the devices folder is missing',
+    () async {
+      final t = FakeWebdavTransport();
+      t.throwOnReadDir = WebdavException(
+        message: 'Resource not found',
+        statusCode: 404,
+      );
+
+      expect(await repo(t).listDevices(), isEmpty);
+    },
+  );
+
+  test(
+    'deleteJournalBefore removes only files at or before the cutoff',
+    () async {
+      final t = FakeWebdavTransport();
+      t.files['magpie_nest/2026-a.json'] = Uint8List(0);
+      t.files['magpie_nest/2026-b.json'] = Uint8List(0);
+      t.files['magpie_nest/devices/dev1.json'] = Uint8List(0);
+
+      await repo(t).deleteJournalBefore('2026-a.json');
+
+      expect(t.files.keys, [
+        'magpie_nest/2026-b.json',
+        'magpie_nest/devices/dev1.json',
+      ]);
+      expect(t.removed, ['magpie_nest/2026-a.json']);
+    },
+  );
+
+  test(
+    'deleteJournalBefore is a no-op when the journal folder is missing (404)',
+    () async {
+      final t = FakeWebdavTransport();
+      t.throwOnReadDir = WebdavException(
+        message: 'Resource not found',
+        statusCode: 404,
+      );
+
+      await repo(t).deleteJournalBefore('2026-a.json');
+
+      expect(t.removed, isEmpty);
+    },
+  );
 }
+
+SyncDeviceInfo _device({required String id, required String cursor}) =>
+    SyncDeviceInfo(
+      deviceId: id,
+      platform: 'windows',
+      createdAt: DateTime.utc(2026, 1, 1),
+      updatedAt: DateTime.utc(2026, 1, 2),
+      lastPulledJournalFile: cursor,
+    );
