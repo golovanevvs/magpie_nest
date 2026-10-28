@@ -1,17 +1,17 @@
 import 'package:material_ui/material_ui.dart';
-// ignore: deprecated_member_use
 import 'package:flutter/material.dart' as sdk;
 import 'package:flutter_localizations/flutter_localizations.dart' as sdk_l10n;
 import 'package:flutter/services.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
-import 'package:flutter_highlight/themes/atom-one-dark.dart';
-import 'package:flutter_highlight/themes/atom-one-light.dart';
+import 'package:re_editor/re_editor.dart';
+import 'package:re_highlight/styles/atom-one-dark.dart';
+import 'package:re_highlight/styles/atom-one-light.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/ui/adaptive_icon_button.dart';
 import 'package:magpie_nest/core/ui/adaptive_snack_bar.dart';
+import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/language_mapper.dart';
 
 class CodeViewer extends StatelessWidget {
-  final CodeController controller;
+  final CodeLineEditingController controller;
   final String language;
 
   const CodeViewer({
@@ -20,22 +20,10 @@ class CodeViewer extends StatelessWidget {
     required this.language,
   });
 
-  double _gutterWidthFor(int lineCount) {
-    const issueFoldingColumns = 32.0;
-    const margin = 10.0;
-    const digitWidth = 8.4;
-    const padding = 6.0;
-    final digits = lineCount.toString().length;
-    return issueFoldingColumns + margin + padding + digits * digitWidth;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final lineCount = controller.text.split('\n').length;
-    final gutterWidth = _gutterWidthFor(lineCount);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final styles = isDark ? atomOneDarkTheme : atomOneLightTheme;
     final editorBackground = isDark
         ? const Color(0xFF282C34)
         : const Color(0xFFFAFAFA);
@@ -43,6 +31,9 @@ class CodeViewer extends StatelessWidget {
         ? const Color(0xFF21252B)
         : const Color(0xFFEDEDED);
     final headerForeground = isDark ? Colors.white70 : Colors.black54;
+
+    final mode = codeLanguageMode(language);
+    final theme = isDark ? atomOneDarkTheme : atomOneLightTheme;
 
     return Container(
       decoration: BoxDecoration(
@@ -84,29 +75,63 @@ class CodeViewer extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: sdk.Material(
-              type: sdk.MaterialType.transparency,
+            child: sdk.Theme(
+              data: sdk.ThemeData(
+                brightness:
+                    isDark ? sdk.Brightness.dark : sdk.Brightness.light,
+              ),
               child: sdk.Localizations.override(
                 context: context,
                 delegates: const [
-                  // ignore: deprecated_member_use
                   sdk_l10n.GlobalMaterialLocalizations.delegate,
                   sdk_l10n.GlobalWidgetsLocalizations.delegate,
                 ],
-                child: CodeTheme(
-                  data: CodeThemeData(styles: styles),
-                  child: CodeField(
+                child: sdk.Material(
+                  type: sdk.MaterialType.transparency,
+                  child: CodeEditor(
                     controller: controller,
-                    gutterStyle: GutterStyle(
-                      showLineNumbers: true,
-                      width: gutterWidth,
-                    ),
-                    textStyle: const TextStyle(
+                    style: CodeEditorStyle(
                       fontFamily: 'monospace',
                       fontSize: 14,
-                      height: 1.5,
+                      fontHeight: 1.5,
+                      textColor: isDark ? Colors.white : Colors.black87,
+                      cursorColor: isDark ? Colors.white : Colors.black87,
+                      cursorLineColor: isDark
+                          ? const Color(0xFF282C34)
+                          : const Color(0xFFFAFAFA),
+                      selectionColor: isDark
+                          ? const Color(0x3348A7E9)
+                          : const Color(0x33009688),
+                      highlightColor: isDark
+                          ? const Color(0x3348A7E9)
+                          : const Color(0x33009688),
+                      codeTheme: mode == null
+                          ? null
+                          : CodeHighlightTheme(
+                              languages: {
+                                language: CodeHighlightThemeMode(mode: mode),
+                              },
+                              theme: theme,
+                            ),
                     ),
-                    expands: true,
+                    indicatorBuilder:
+                        (context, editingController, chunkController, notifier) {
+                      return Row(
+                        children: [
+                          DefaultCodeLineNumber(
+                            controller: editingController,
+                            notifier: notifier,
+                          ),
+                          DefaultCodeChunkIndicator(
+                            width: 16,
+                            controller: chunkController,
+                            notifier: notifier,
+                          ),
+                        ],
+                      );
+                    },
+                    chunkAnalyzer: DefaultCodeChunkAnalyzer(),
+                    padding: const EdgeInsets.all(12),
                   ),
                 ),
               ),

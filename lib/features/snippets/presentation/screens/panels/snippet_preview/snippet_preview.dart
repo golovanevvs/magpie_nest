@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
+import 'package:re_editor/re_editor.dart';
 import 'package:magpie_nest/core/constants/languages.dart';
 
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
@@ -9,7 +9,6 @@ import 'package:magpie_nest/features/snippets/domain/models/snippet.dart';
 import 'package:magpie_nest/features/snippets/presentation/controllers/app_controller.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/code_viewer.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/fragment_tabs.dart';
-import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/language_mapper.dart';
 import 'package:magpie_nest/features/snippets/presentation/screens/panels/snippet_preview/snippet_header.dart';
 
 class SnippetPreview extends StatefulWidget {
@@ -27,7 +26,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
   late final FocusNode _nameFocusNode;
   late final Debouncer _descriptionDebouncer;
   late final Debouncer _contentDebouncer;
-  late CodeController _codeController;
+  late CodeLineEditingController _codeController;
 
   bool _nameIsEmpty = false;
   String? _syncedSnippetId;
@@ -49,12 +48,11 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
     final snippet = widget.controller.selectedSnippet;
 
-    _codeController = CodeController(text: '');
+    _codeController = CodeLineEditingController.fromText('');
+    _codeController.addListener(_onCodeChanged);
 
     if (snippet != null) {
       _syncSnippetState(snippet);
-    } else {
-      _codeController.addListener(_onCodeChanged);
     }
   }
 
@@ -108,12 +106,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
 
     _isSyncingCode = true;
     _syncedFragmentLanguage = snippet.activeFragment.language;
-    _codeController.dispose();
-    _codeController = CodeController(
-      text: activeFragment.content,
-      language: mapLanguage(activeFragment.language),
-    );
-    _codeController.addListener(_onCodeChanged);
+    _codeController.text = activeFragment.content;
     _isSyncingCode = false;
   }
 
@@ -148,12 +141,7 @@ class _SnippetPreviewState extends State<SnippetPreview> {
     _syncedFragmentLanguage = snippet.activeFragment.language;
 
     _isSyncingCode = true;
-    _codeController.dispose();
-    _codeController = CodeController(
-      text: snippet.activeFragment.content,
-      language: mapLanguage(snippet.activeFragment.language),
-    );
-    _codeController.addListener(_onCodeChanged);
+    _codeController.text = snippet.activeFragment.content;
     _isSyncingCode = false;
   }
 
