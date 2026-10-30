@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 env:
-  FLUTTER_VERSION: "3.50.0-1.0.pre-119"
+  FLUTTER_VERSION: "10cb3ae97136007b12aa987a6d0d456b0ea10cb1"
 
 jobs:
   test:
