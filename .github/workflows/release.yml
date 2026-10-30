@@ -13,7 +13,6 @@ concurrency:
 
 env:
   FLUTTER_VERSION: "3.50.0-1.0.pre-119"
-  VERSION: ${{ github.ref_name }}
 
 jobs:
   test:
@@ -62,10 +61,11 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev ninja-build
 
       - name: Build
+        shell: bash
         run: >-
           flutter build ${{ matrix.target == 'android' && 'apk' || matrix.target }}
           --release
-          --build-name=${{ env.VERSION }}
+          --build-name=${GITHUB_REF_NAME#v}
           --build-number=${{ github.run_number }}
 
       - name: Package Windows
@@ -106,6 +106,19 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+      - name: Install git-cliff
+        run: |
+          REPO=orhunp/git-cliff
+          V=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" | jq -r .tag_name)
+          curl -fsSL "https://github.com/$REPO/releases/download/$V/git-cliff-x86_64-unknown-linux-gnu.tar.gz" -o /tmp/git-cliff.tgz
+          tar -xzf /tmp/git-cliff.tgz -C /tmp
+          sudo mv /tmp/git-cliff/git-cliff /usr/local/bin/git-cliff
+      - name: Generate release notes
+        run: git cliff -o CHANGELOG.md
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -114,4 +127,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: artifacts/*
-          generate_release_notes: true
+          body_path: CHANGELOG.md
