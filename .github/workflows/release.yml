@@ -1,0 +1,117 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: "3.50.0-1.0.pre-119"
+  VERSION: ${{ github.ref_name }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: windows
+            artifact: magpie_nest-windows-x64.zip
+          - os: ubuntu-latest
+            target: linux
+            artifact: magpie_nest-linux-x64.tar.gz
+          - os: macos-latest
+            target: macos
+            artifact: magpie_nest-macos.zip
+          - os: ubuntu-latest
+            target: android
+            artifact: magpie_nest-android.apk
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+
+      - name: Install Linux dependencies
+        if: matrix.target == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev ninja-build
+
+      - name: Build
+        run: >-
+          flutter build ${{ matrix.target == 'android' && 'apk' || matrix.target }}
+          --release
+          --build-name=${{ env.VERSION }}
+          --build-number=${{ github.run_number }}
+
+      - name: Package Windows
+        if: matrix.target == 'windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath artifacts/${{ matrix.artifact }}
+
+      - name: Package Linux
+        if: matrix.target == 'linux'
+        run: |
+          mkdir -p artifacts
+          tar -czf artifacts/${{ matrix.artifact }} -C build/linux/x64/release bundle
+
+      - name: Package macOS
+        if: matrix.target == 'macos'
+        run: |
+          mkdir -p artifacts
+          ditto -c -k --keepParent build/macos/Build/Products/Release/magpie_nest.app artifacts/${{ matrix.artifact }}
+
+      - name: Package Android
+        if: matrix.target == 'android'
+        run: |
+          mkdir -p artifacts
+          cp build/app/outputs/flutter-apk/app-release.apk artifacts/${{ matrix.artifact }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: artifacts/${{ matrix.artifact }}
+          if-no-files-found: error
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
