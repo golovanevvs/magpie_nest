@@ -1,0 +1,482 @@
+{
+  "@@locale": "en",
+  "appTitle": "Magpie Nest",
+  "@appTitle": {
+    "description": "The main title of the application shown in the app bar"
+  },
+  "navLibrary": "Library",
+  "@navLibrary": {
+    "description": "Navigation rail label for the Library section"
+  },
+  "navAllSnippets": "All Snippets",
+  "@navAllSnippets": {
+    "description": "Navigation rail label for the All Snippets section"
+  },
+  "navSettings": "Settings",
+  "@navSettings": {
+    "description": "Label for the settings entry point"
+  },
+  "navFavorites": "Favorites",
+  "@navFavorites": {
+    "description": "Navigation rail label for the Favorites section"
+  },
+  "navTrash": "Trash",
+  "@navTrash": {
+    "description": "Navigation rail label for the Trash section"
+  },
+  "sidebarInbox": "Inbox",
+  "@sidebarInbox": {
+    "description": "Sidebar label for the Inbox virtual folder"
+  },
+  "sidebarFavorites": "Favorites",
+  "@sidebarFavorites": {
+    "description": "Sidebar title for the Favorites section"
+  },
+  "sidebarTrash": "Trash",
+  "@sidebarTrash": {
+    "description": "Sidebar title for the Trash section"
+  },
+  "sidebarSearchHint": "Search folders",
+  "@sidebarSearchHint": {
+    "description": "Hint text for the folder search field"
+  },
+  "sidebarNoFolders": "No folders found",
+  "@sidebarNoFolders": {
+    "description": "Message shown when no folders match the search query"
+  },
+  "sidebarLibrary": "Library",
+  "@sidebarLibrary": {
+    "description": "Sidebar section title for library items"
+  },
+  "sidebarFolders": "Folders",
+  "@sidebarFolders": {
+    "description": "Sidebar section title for folder tree"
+  },
+  "viewerSelectSnippet": "Select a snippet to view",
+  "@viewerSelectSnippet": {
+    "description": "Placeholder text shown when no snippet is selected"
+  },
+  "listNoSnippets": "No snippets",
+  "@listNoSnippets": {
+    "description": "Placeholder text shown when the snippet list is empty"
+  },
+  "dialogDeleteTitle": "Delete Snippet",
+  "@dialogDeleteTitle": {
+    "description": "Title of the confirmation dialog when deleting a snippet"
+  },
+  "dialogDeleteMessage": "Are you sure you want to delete this snippet? It will be moved to the Trash.",
+  "@dialogDeleteMessage": {
+    "description": "Message shown in the delete confirmation dialog"
+  },
+  "dialogCancel": "Cancel",
+  "@dialogCancel": {
+    "description": "Label for the cancel button in dialogs"
+  },
+  "dialogClose": "Close",
+  "@dialogClose": {
+    "description": "Label for the close button in dialogs"
+  },
+  "dialogDone": "Done",
+  "@dialogDone": {
+    "description": "Label for the done button in cupertino pickers"
+  },
+  "dialogDelete": "Delete",
+  "@dialogDelete": {
+    "description": "Label for the delete button in dialogs"
+  },
+  "buttonRestore": "Restore",
+  "@buttonRestore": {
+    "description": "Label for the restore button in the snippet viewer"
+  },
+  "buttonCopy": "Copy to clipboard",
+  "@buttonCopy": {
+    "description": "Tooltip for the copy button in the code viewer"
+  },
+  "buttonFavorite": "Toggle favorite",
+  "@buttonFavorite": {
+    "description": "Tooltip for the favorite button in the snippet viewer"
+  },
+  "snackbarCopied": "Copied to clipboard",
+  "@snackbarCopied": {
+    "description": "Message shown after copying code to clipboard"
+  },
+  "dialogCreateSnippetTitle": "Create New Snippet",
+  "@dialogCreateSnippetTitle": {
+    "description": "Title of the dialog for creating a new snippet"
+  },
+  "fieldSnippetName": "Snippet Name",
+  "@fieldSnippetName": {
+    "description": "Label for the snippet name input field"
+  },
+  "fieldLanguage": "Language",
+  "@fieldLanguage": {
+    "description": "Label for the language selection dropdown"
+  },
+  "fieldContent": "Content",
+  "@fieldContent": {
+    "description": "Label for the snippet content input field"
+  },
+  "dialogCreate": "Create",
+  "@dialogCreate": {
+    "description": "Label for the create button in dialogs"
+  },
+  "errorNameRequired": "Snippet name is required",
+  "@errorNameRequired": {
+    "description": "Error message shown when snippet name is empty"
+  },
+  "buttonNewSnippet": "New Snippet",
+  "@buttonNewSnippet": {
+    "description": "Label for the button to create a new snippet"
+  },
+  "defaultFolderName": "Folder",
+  "@defaultFolderName": {
+    "description": "Default base name for newly created folders"
+  },
+  "buttonNewFolder": "New Folder",
+  "@buttonNewFolder": {
+    "description": "Tooltip for the new folder button"
+  },
+  "buttonRename": "Rename",
+  "@buttonRename": {
+    "description": "Tooltip for the rename button"
+  },
+  "buttonDelete": "Delete",
+  "@buttonDelete": {
+    "description": "Tooltip for the delete button"
+  },
+  "dialogDeleteFolderTitle": "Delete Folder",
+  "@dialogDeleteFolderTitle": {
+    "description": "Title of the confirmation dialog when deleting a folder"
+  },
+  "dialogDeleteFolderMessage": "Are you sure you want to delete this folder? All snippets inside will be moved to the Trash.",
+  "@dialogDeleteFolderMessage": {
+    "description": "Message shown in the delete folder confirmation dialog"
+  },
+  "contextMenuNewFolder": "New Folder",
+  "@contextMenuNewFolder": {
+    "description": "Context menu item to create a new subfolder"
+  },
+  "contextMenuRename": "Rename",
+  "@contextMenuRename": {
+    "description": "Context menu item to rename a folder"
+  },
+  "contextMenuSetIcon": "Set Icon",
+  "@contextMenuSetIcon": {
+    "description": "Context menu item to set a folder icon"
+  },
+  "contextMenuDefaultLanguage": "Default Language",
+  "@contextMenuDefaultLanguage": {
+    "description": "Context menu item to set a folder's default snippet language"
+  },
+  "defaultSnippetName": "Snippet",
+  "@defaultSnippetName": {
+    "description": "Default base name for newly created snippets"
+  },
+  "errorNameCannotBeEmpty": "Name cannot be empty",
+  "@errorNameCannotBeEmpty": {
+    "description": "Error shown when snippet or folder name is empty"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title of the settings screen"
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Section header for language selection"
+  },
+  "settingsTheme": "Theme",
+  "@settingsTheme": {
+    "description": "Section header for theme selection"
+  },
+  "settingsThemeLight": "Light",
+  "@settingsThemeLight": {
+    "description": "Light theme option"
+  },
+  "settingsThemeDark": "Dark",
+  "@settingsThemeDark": {
+    "description": "Dark theme option"
+  },
+  "settingsThemeSystem": "System",
+  "@settingsThemeSystem": {
+    "description": "System theme option (follows OS preference)"
+  },
+  "fieldDescription": "Description",
+  "@fieldDescription": {
+    "description": "Placeholder text for the snippet description field"
+  },
+  "fieldDescriptionHint": "Add a description...",
+  "@fieldDescriptionHint": {
+    "description": "Hint shown when the description is empty"
+  },
+  "buttonAddDescription": "Add description",
+  "@buttonAddDescription": {
+    "description": "Tooltip/label for the button that shows the description field"
+  },
+  "buttonAddFragment": "Add fragment",
+  "@buttonAddFragment": {
+    "description": "Tooltip for the button that adds a new fragment to a snippet"
+  },
+  "defaultFragmentName": "Fragment {number}",
+  "@defaultFragmentName": {
+    "description": "Default name for a new fragment",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldFragmentName": "Fragment name",
+  "@fieldFragmentName": {
+    "description": "Placeholder when editing a fragment name"
+  },
+  "fragmentNameBase": "Fragment",
+  "@fragmentNameBase": {
+    "description": "Base name for fragments, number is appended by the controller"
+  },
+  "buttonDeleteForever": "Delete forever",
+  "@buttonDeleteForever": {
+    "description": "Tooltip for the button that permanently deletes a snippet from the Trash"
+  },
+  "dialogDeleteForeverTitle": "Delete forever",
+  "@dialogDeleteForeverTitle": {
+    "description": "Title of the confirmation dialog for permanently deleting a snippet"
+  },
+  "dialogDeleteForeverMessage": "This snippet will be permanently deleted. This action cannot be undone.",
+  "@dialogDeleteForeverMessage": {
+    "description": "Message shown in the confirmation dialog for permanently deleting a snippet"
+  },
+  "buttonEmptyTrash": "Empty Trash",
+  "@buttonEmptyTrash": {
+    "description": "Tooltip for the button that empties the entire Trash"
+  },
+  "dialogEmptyTrashTitle": "Empty Trash",
+  "@dialogEmptyTrashTitle": {
+    "description": "Title of the confirmation dialog for emptying the Trash"
+  },
+  "dialogEmptyTrashMessage": "All snippets in the Trash will be permanently deleted. This action cannot be undone.",
+  "@dialogEmptyTrashMessage": {
+    "description": "Message shown in the confirmation dialog for emptying the Trash"
+  },
+  "settingsCloud": "Sync",
+  "@settingsCloud": {
+    "description": "Settings menu item for cloud sync configuration"
+  },
+  "cloudStatusNotConfigured": "Cloud sync is not configured.",
+  "@cloudStatusNotConfigured": {
+    "description": "Status text shown when no WebDAV account is connected"
+  },
+  "cloudStatusConnected": "Connected to {url}.",
+  "@cloudStatusConnected": {
+    "description": "Status text shown when a WebDAV account is connected",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudProviderLabel": "Provider",
+  "@cloudProviderLabel": {
+    "description": "Label for the cloud provider selection field"
+  },
+  "cloudProviderCustom": "Custom (manual)",
+  "@cloudProviderCustom": {
+    "description": "The 'custom' option for entering a URL manually"
+  },
+  "cloudUrlLabel": "Server URL",
+  "@cloudUrlLabel": {
+    "description": "Label for the WebDAV server URL input field"
+  },
+  "cloudUsernameLabel": "Username (optional)",
+  "@cloudUsernameLabel": {
+    "description": "Label for the WebDAV username input field"
+  },
+  "cloudPasswordLabel": "Password (optional)",
+  "@cloudPasswordLabel": {
+    "description": "Label for the WebDAV password input field"
+  },
+  "cloudNoAuthHint": "Leave username and password empty to connect without authentication.",
+  "@cloudNoAuthHint": {
+    "description": "Hint explaining that empty credentials mean no authentication"
+  },
+  "cloudTestConnection": "Test connection",
+  "@cloudTestConnection": {
+    "description": "Button that checks the WebDAV connection without saving credentials"
+  },
+  "cloudConnect": "Connect",
+  "@cloudConnect": {
+    "description": "Button that tests the connection and saves the credentials"
+  },
+  "cloudDisconnect": "Disconnect",
+  "@cloudDisconnect": {
+    "description": "Button that clears the stored WebDAV credentials"
+  },
+  "cloudDisconnectDialogTitle": "Disconnect from cloud",
+  "@cloudDisconnectDialogTitle": {
+    "description": "Title of the disconnect confirmation dialog"
+  },
+  "cloudDisconnectDialogBody": "Choose what to do with your data on the server.",
+  "@cloudDisconnectDialogBody": {
+    "description": "Body text of the disconnect dialog explaining the two options"
+  },
+  "cloudDisconnectJust": "Just disconnect",
+  "@cloudDisconnectJust": {
+    "description": "Option that only clears local credentials and keeps the cloud copy"
+  },
+  "cloudDisconnectAndDelete": "Disconnect & delete cloud copy",
+  "@cloudDisconnectAndDelete": {
+    "description": "Destructive option that also removes the shared cloud copy"
+  },
+  "cloudDeleteTitle": "Delete cloud copy?",
+  "@cloudDeleteTitle": {
+    "description": "Title of the destructive confirmation dialog"
+  },
+  "cloudDeleteBody": "This permanently deletes the shared sync folder \"{folder}\" on {url}. Other devices lose this copy. Local data on this device is NOT deleted.",
+  "@cloudDeleteBody": {
+    "description": "Warning shown before deleting the cloud copy",
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudDeleteConfirm": "Delete & disconnect",
+  "@cloudDeleteConfirm": {
+    "description": "Confirmation button for deleting the cloud copy"
+  },
+  "cloudPurgeFailed": "Could not delete the cloud copy: {error}",
+  "@cloudPurgeFailed": {
+    "description": "Message shown when deleting the cloud copy fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudConnectionOk": "Connection successful.",
+  "@cloudConnectionOk": {
+    "description": "Message shown when the connection test passes"
+  },
+  "cloudConnectionFailed": "Connection failed: {error}",
+  "@cloudConnectionFailed": {
+    "description": "Message shown when the connection test fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudInvalidUrl": "Enter a valid http(s) URL.",
+  "@cloudInvalidUrl": {
+    "description": "Validation error for the server URL field"
+  },
+  "cloudSyncNow": "Sync now",
+  "@cloudSyncNow": {
+    "description": "Button that triggers an immediate sync with the cloud"
+  },
+  "cloudSyncing": "Syncing…",
+  "@cloudSyncing": {
+    "description": "Status shown while a sync is in flight"
+  },
+  "cloudLastSynced": "Last synced: {time}",
+  "@cloudLastSynced": {
+    "description": "Status showing the time of the last successful sync",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudSyncFailed": "Sync failed: {error}",
+  "@cloudSyncFailed": {
+    "description": "Message shown when a sync fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudFolderLabel": "Folder on server",
+  "@cloudFolderLabel": {
+    "description": "Label for the server folder input field"
+  },
+  "cloudFolderHint": "Journal batches are stored in this folder. Use the same folder on all your devices.",
+  "@cloudFolderHint": {
+    "description": "Hint explaining the folder choice and device consistency"
+  },
+  "cloudFolderNameLabel": "Folder name",
+  "@cloudFolderNameLabel": {
+    "description": "Label for the journal folder name input"
+  },
+  "cloudParentFolderLabel": "Location",
+  "@cloudParentFolderLabel": {
+    "description": "Label for the parent folder picker input"
+  },
+  "cloudRootFolder": "Cloud root",
+  "@cloudRootFolder": {
+    "description": "Hint showing the cloud root as the default parent folder"
+  },
+  "cloudParentFolderHint": "Journal files are stored in the selected location under the folder name.",
+  "@cloudParentFolderHint": {
+    "description": "Hint explaining how the parent folder and folder name build the data path"
+  },
+  "cloudInvalidFolderName": "Enter a valid folder name (letters, digits, underscore, dot, dash; no spaces or reserved symbols).",
+  "@cloudInvalidFolderName": {
+    "description": "Message shown when the journal folder name is invalid"
+  },
+  "cloudBrowse": "Browse server folders",
+  "@cloudBrowse": {
+    "description": "Tooltip for the button opening the folder picker"
+  },
+  "cloudPickFolder": "Choose a folder",
+  "@cloudPickFolder": {
+    "description": "Title of the folder picker dialog"
+  },
+  "cloudNewFolder": "New folder",
+  "@cloudNewFolder": {
+    "description": "Button that creates a folder in the picker"
+  },
+  "cloudNewFolderName": "Folder name",
+  "@cloudNewFolderName": {
+    "description": "Label of the new folder name input"
+  },
+  "cloudCreate": "Create",
+  "@cloudCreate": {
+    "description": "Confirm button of the new folder dialog"
+  },
+  "cloudUseThisFolder": "Use this folder",
+  "@cloudUseThisFolder": {
+    "description": "Button that returns the selected folder path"
+  },
+  "cloudNoSubfolders": "No subfolders",
+  "@cloudNoSubfolders": {
+    "description": "Shown when a folder has no subfolders"
+  },
+  "cloudRetry": "Retry",
+  "@cloudRetry": {
+    "description": "Button retrying a failed folder listing"
+  },
+  "statusCloudNotConfigured": "Cloud not connected",
+  "@statusCloudNotConfigured": {
+    "description": "Status bar label shown when no cloud account is configured"
+  },
+  "statusCloudConnected": "Connected",
+  "@statusCloudConnected": {
+    "description": "Status bar label shown when the cloud is connected but has never synced"
+  },
+  "statusCloudSynced": "Synced at {time}",
+  "@statusCloudSynced": {
+    "description": "Status bar label showing the time of the last successful sync",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "statusCloudSyncError": "Sync error",
+  "@statusCloudSyncError": {
+    "description": "Status bar label shown when the last sync failed"
+  }
+}

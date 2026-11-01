@@ -1,0 +1,482 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Magpie Nest",
+  "@appTitle": {
+    "description": "Главный заголовок приложения, отображаемый в панели приложения"
+  },
+  "navLibrary": "Библиотека",
+  "@navLibrary": {
+    "description": "Метка навигационной панели для раздела Библиотека"
+  },
+  "navAllSnippets": "Все сниппеты",
+  "@navAllSnippets": {
+    "description": "Метка навигационной панели для раздела Все сниппеты"
+  },
+  "navSettings": "Настройки",
+  "@navSettings": {
+    "description": "Подпись точки входа в настройки"
+  },
+  "navFavorites": "Избранное",
+  "@navFavorites": {
+    "description": "Метка навигационной панели для раздела Избранное"
+  },
+  "navTrash": "Корзина",
+  "@navTrash": {
+    "description": "Метка навигационной панели для раздела Корзина"
+  },
+  "sidebarInbox": "Входящие",
+  "@sidebarInbox": {
+    "description": "Метка боковой панели для виртуальной папки Входящие"
+  },
+  "sidebarFavorites": "Избранное",
+  "@sidebarFavorites": {
+    "description": "Заголовок боковой панели для раздела Избранное"
+  },
+  "sidebarTrash": "Корзина",
+  "@sidebarTrash": {
+    "description": "Заголовок боковой панели для раздела Корзина"
+  },
+  "sidebarSearchHint": "Поиск папок",
+  "@sidebarSearchHint": {
+    "description": "Подсказка в поле поиска папок"
+  },
+  "sidebarNoFolders": "Папки не найдены",
+  "@sidebarNoFolders": {
+    "description": "Сообщение, когда поиск не дал результатов"
+  },
+  "sidebarLibrary": "Библиотека",
+  "@sidebarLibrary": {
+    "description": "Заголовок раздела библиотеки в боковой панели"
+  },
+  "sidebarFolders": "Папки",
+  "@sidebarFolders": {
+    "description": "Заголовок раздела папок в боковой панели"
+  },
+  "viewerSelectSnippet": "Выберите сниппет для просмотра",
+  "@viewerSelectSnippet": {
+    "description": "Текст-заполнитель, показываемый, когда ни один сниппет не выбран"
+  },
+  "listNoSnippets": "Нет сниппетов",
+  "@listNoSnippets": {
+    "description": "Текст-заполнитель, показываемый, когда список сниппетов пуст"
+  },
+  "dialogDeleteTitle": "Удалить сниппет",
+  "@dialogDeleteTitle": {
+    "description": "Заголовок диалога подтверждения при удалении сниппета"
+  },
+  "dialogDeleteMessage": "Вы уверены, что хотите удалить этот сниппет? Он будет перемещён в корзину.",
+  "@dialogDeleteMessage": {
+    "description": "Сообщение в диалоге подтверждения удаления"
+  },
+  "dialogCancel": "Отмена",
+  "@dialogCancel": {
+    "description": "Метка кнопки отмены в диалогах"
+  },
+  "dialogClose": "Закрыть",
+  "@dialogClose": {
+    "description": "Метка кнопки закрытия в диалогах"
+  },
+  "dialogDone": "Готово",
+  "@dialogDone": {
+    "description": "Метка кнопки подтверждения в cupertino-пикерах"
+  },
+  "dialogDelete": "Удалить",
+  "@dialogDelete": {
+    "description": "Метка кнопки удаления в диалогах"
+  },
+  "buttonRestore": "Восстановить",
+  "@buttonRestore": {
+    "description": "Метка кнопки восстановления в просмотрщике сниппетов"
+  },
+  "buttonCopy": "Скопировать в буфер обмена",
+  "@buttonCopy": {
+    "description": "Подсказка для кнопки копирования в просмотрщике кода"
+  },
+  "buttonFavorite": "В избранное",
+  "@buttonFavorite": {
+    "description": "Подсказка для кнопки добавления в избранное"
+  },
+  "snackbarCopied": "Скопировано в буфер обмена",
+  "@snackbarCopied": {
+    "description": "Сообщение, показываемое после копирования кода в буфер обмена"
+  },
+  "dialogCreateSnippetTitle": "Создать новый сниппет",
+  "@dialogCreateSnippetTitle": {
+    "description": "Заголовок диалога создания нового сниппета"
+  },
+  "fieldSnippetName": "Название сниппета",
+  "@fieldSnippetName": {
+    "description": "Метка поля ввода названия сниппета"
+  },
+  "fieldLanguage": "Язык",
+  "@fieldLanguage": {
+    "description": "Метка выпадающего списка выбора языка"
+  },
+  "fieldContent": "Содержимое",
+  "@fieldContent": {
+    "description": "Метка поля ввода содержимого сниппета"
+  },
+  "dialogCreate": "Создать",
+  "@dialogCreate": {
+    "description": "Метка кнопки создания в диалогах"
+  },
+  "errorNameRequired": "Название сниппета обязательно",
+  "@errorNameRequired": {
+    "description": "Сообщение об ошибке, когда название сниппета пустое"
+  },
+  "buttonNewSnippet": "Новый сниппет",
+  "@buttonNewSnippet": {
+    "description": "Метка кнопки создания нового сниппета"
+  },
+  "defaultFolderName": "Папка",
+  "@defaultFolderName": {
+    "description": "Базовое имя по умолчанию для новых папок"
+  },
+  "buttonNewFolder": "Новая папка",
+  "@buttonNewFolder": {
+    "description": "Подсказка для кнопки создания новой папки"
+  },
+  "buttonRename": "Переименовать",
+  "@buttonRename": {
+    "description": "Подсказка для кнопки переименования"
+  },
+  "buttonDelete": "Удалить",
+  "@buttonDelete": {
+    "description": "Подсказка для кнопки удаления"
+  },
+  "dialogDeleteFolderTitle": "Удалить папку",
+  "@dialogDeleteFolderTitle": {
+    "description": "Заголовок диалога подтверждения при удалении папки"
+  },
+  "dialogDeleteFolderMessage": "Вы уверены, что хотите удалить эту папку? Все сниппеты внутри будут перемещены в Корзину.",
+  "@dialogDeleteFolderMessage": {
+    "description": "Сообщение в диалоге подтверждения удаления папки"
+  },
+  "contextMenuNewFolder": "Новая папка",
+  "@contextMenuNewFolder": {
+    "description": "Пункт контекстного меню для создания новой подпапки"
+  },
+  "contextMenuRename": "Переименовать",
+  "@contextMenuRename": {
+    "description": "Пункт контекстного меню для переименования папки"
+  },
+  "contextMenuSetIcon": "Установить иконку",
+  "@contextMenuSetIcon": {
+    "description": "Пункт контекстного меню для установки иконки папки"
+  },
+  "contextMenuDefaultLanguage": "Язык по умолчанию",
+  "@contextMenuDefaultLanguage": {
+    "description": "Пункт контекстного меню для выбора языка сниппетов по умолчанию"
+  },
+  "defaultSnippetName": "Сниппет",
+  "@defaultSnippetName": {
+    "description": "Базовое имя по умолчанию для новых сниппетов"
+  },
+  "errorNameCannotBeEmpty": "Имя не может быть пустым",
+  "@errorNameCannotBeEmpty": {
+    "description": "Ошибка при пустом имени сниппета или папки"
+  },
+  "settingsTitle": "Настройки",
+  "@settingsTitle": {
+    "description": "Заголовок экрана настроек"
+  },
+  "settingsLanguage": "Язык",
+  "@settingsLanguage": {
+    "description": "Заголовок секции выбора языка"
+  },
+  "settingsTheme": "Тема",
+  "@settingsTheme": {
+    "description": "Заголовок секции выбора темы"
+  },
+  "settingsThemeLight": "Светлая",
+  "@settingsThemeLight": {
+    "description": "Вариант светлой темы"
+  },
+  "settingsThemeDark": "Тёмная",
+  "@settingsThemeDark": {
+    "description": "Вариант тёмной темы"
+  },
+  "settingsThemeSystem": "Системная",
+  "@settingsThemeSystem": {
+    "description": "Системная тема (следует настройкам ОС)"
+  },
+  "fieldDescription": "Описание",
+  "@fieldDescription": {
+    "description": "Текст-подсказка для поля описания сниппета"
+  },
+  "fieldDescriptionHint": "Добавить описание...",
+  "@fieldDescriptionHint": {
+    "description": "Подсказка, показываемая при пустом описании"
+  },
+  "buttonAddDescription": "Добавить описание",
+  "@buttonAddDescription": {
+    "description": "Текст кнопки, показывающей поле описания"
+  },
+  "buttonAddFragment": "Добавить фрагмент",
+  "@buttonAddFragment": {
+    "description": "Текст кнопки добавления нового фрагмента к сниппету"
+  },
+  "defaultFragmentName": "Фрагмент {number}",
+  "@defaultFragmentName": {
+    "description": "Имя по умолчанию для нового фрагмента",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldFragmentName": "Имя фрагмента",
+  "@fieldFragmentName": {
+    "description": "Подсказка при редактировании имени фрагмента"
+  },
+  "fragmentNameBase": "Фрагмент",
+  "@fragmentNameBase": {
+    "description": "Базовое имя для фрагментов, номер добавляется контроллером"
+  },
+  "buttonDeleteForever": "Удалить навсегда",
+  "@buttonDeleteForever": {
+    "description": "Подсказка для кнопки безвозвратного удаления сниппета из корзины"
+  },
+  "dialogDeleteForeverTitle": "Удалить навсегда",
+  "@dialogDeleteForeverTitle": {
+    "description": "Заголовок диалога подтверждения безвозвратного удаления сниппета"
+  },
+  "dialogDeleteForeverMessage": "Сниппет будет удалён безвозвратно. Это действие нельзя отменить.",
+  "@dialogDeleteForeverMessage": {
+    "description": "Текст сообщения в диалоге подтверждения безвозвратного удаления сниппета"
+  },
+  "buttonEmptyTrash": "Очистить корзину",
+  "@buttonEmptyTrash": {
+    "description": "Подсказка для кнопки полной очистки корзины"
+  },
+  "dialogEmptyTrashTitle": "Очистить корзину",
+  "@dialogEmptyTrashTitle": {
+    "description": "Заголовок диалога подтверждения очистки корзины"
+  },
+  "dialogEmptyTrashMessage": "Все сниппеты из корзины будут удалены безвозвратно. Это действие нельзя отменить.",
+  "@dialogEmptyTrashMessage": {
+    "description": "Текст сообщения в диалоге подтверждения очистки корзины"
+  },
+  "settingsCloud": "Синхронизация",
+  "@settingsCloud": {
+    "description": "Пункт меню настроек для конфигурации облачной синхронизации"
+  },
+  "cloudStatusNotConfigured": "Облачная синхронизация не настроена.",
+  "@cloudStatusNotConfigured": {
+    "description": "Текст статуса, когда WebDAV-аккаунт не подключён"
+  },
+  "cloudStatusConnected": "Подключено к {url}.",
+  "@cloudStatusConnected": {
+    "description": "Текст статуса, когда WebDAV-аккаунт подключён",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudProviderLabel": "Провайдер",
+  "@cloudProviderLabel": {
+    "description": "Подпись поля выбора облачного провайдера"
+  },
+  "cloudProviderCustom": "Свой вариант",
+  "@cloudProviderCustom": {
+    "description": "Пункт «свой вариант», когда пользователь вводит URL вручную"
+  },
+  "cloudUrlLabel": "Адрес сервера",
+  "@cloudUrlLabel": {
+    "description": "Подпись поля ввода адреса WebDAV-сервера"
+  },
+  "cloudUsernameLabel": "Имя пользователя (необязательно)",
+  "@cloudUsernameLabel": {
+    "description": "Подпись поля ввода имени пользователя WebDAV"
+  },
+  "cloudPasswordLabel": "Пароль (необязательно)",
+  "@cloudPasswordLabel": {
+    "description": "Подпись поля ввода пароля WebDAV"
+  },
+  "cloudNoAuthHint": "Оставьте имя пользователя и пароль пустыми для подключения без аутентификации.",
+  "@cloudNoAuthHint": {
+    "description": "Подсказка о том, что пустые креды означают подключение без аутентификации"
+  },
+  "cloudTestConnection": "Проверить соединение",
+  "@cloudTestConnection": {
+    "description": "Кнопка проверки соединения без сохранения кредов"
+  },
+  "cloudConnect": "Подключить",
+  "@cloudConnect": {
+    "description": "Кнопка, которая проверяет соединение и сохраняет креды"
+  },
+  "cloudDisconnect": "Отключить",
+  "@cloudDisconnect": {
+    "description": "Кнопка, которая удаляет сохранённые WebDAV-креды"
+  },
+  "cloudDisconnectDialogTitle": "Отключение от облака",
+  "@cloudDisconnectDialogTitle": {
+    "description": "Заголовок диалога подтверждения отключения"
+  },
+  "cloudDisconnectDialogBody": "Выберите, что сделать с данными на сервере.",
+  "@cloudDisconnectDialogBody": {
+    "description": "Текст диалога отключения, описывающий два варианта"
+  },
+  "cloudDisconnectJust": "Только отключить",
+  "@cloudDisconnectJust": {
+    "description": "Вариант, который только удаляет локальные креды и оставляет облачную копию"
+  },
+  "cloudDisconnectAndDelete": "Отключить и удалить облачную копию",
+  "@cloudDisconnectAndDelete": {
+    "description": "Деструктивный вариант, который также удаляет общую облачную копию"
+  },
+  "cloudDeleteTitle": "Удалить облачную копию?",
+  "@cloudDeleteTitle": {
+    "description": "Заголовок деструктивного диалога подтверждения"
+  },
+  "cloudDeleteBody": "Будет безвозвратно удалена общая папка синхронизации \"{folder}\" на сервере {url}. Другие устройства потеряют эту копию. Локальные данные на этом устройстве НЕ будут удалены.",
+  "@cloudDeleteBody": {
+    "description": "Предупреждение перед удалением облачной копии",
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudDeleteConfirm": "Удалить и отключить",
+  "@cloudDeleteConfirm": {
+    "description": "Кнопка подтверждения удаления облачной копии"
+  },
+  "cloudPurgeFailed": "Не удалось удалить облачную копию: {error}",
+  "@cloudPurgeFailed": {
+    "description": "Сообщение при ошибке удаления облачной копии",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudConnectionOk": "Соединение установлено.",
+  "@cloudConnectionOk": {
+    "description": "Сообщение при успешной проверке соединения"
+  },
+  "cloudConnectionFailed": "Ошибка соединения: {error}",
+  "@cloudConnectionFailed": {
+    "description": "Сообщение при неудачной проверке соединения",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudInvalidUrl": "Введите корректный http(s)-адрес.",
+  "@cloudInvalidUrl": {
+    "description": "Ошибка валидации поля адреса сервера"
+  },
+  "cloudSyncNow": "Синхронизировать",
+  "@cloudSyncNow": {
+    "description": "Кнопка запуска немедленной синхронизации с облаком"
+  },
+  "cloudSyncing": "Синхронизация…",
+  "@cloudSyncing": {
+    "description": "Статус, пока синхронизация выполняется"
+  },
+  "cloudLastSynced": "Последняя синхронизация: {time}",
+  "@cloudLastSynced": {
+    "description": "Статус со временем последней успешной синхронизации",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudSyncFailed": "Ошибка синхронизации: {error}",
+  "@cloudSyncFailed": {
+    "description": "Сообщение при неудачной синхронизации",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cloudFolderLabel": "Папка на сервере",
+  "@cloudFolderLabel": {
+    "description": "Подпись поля папки на сервере"
+  },
+  "cloudFolderHint": "Батчи журнала сохраняются в эту папку. Используйте одинаковую папку на всех устройствах.",
+  "@cloudFolderHint": {
+    "description": "Подсказка о выборе папки и согласованности между устройствами"
+  },
+  "cloudFolderNameLabel": "Имя папки",
+  "@cloudFolderNameLabel": {
+    "description": "Подпись поля имени папки журнала"
+  },
+  "cloudParentFolderLabel": "Расположение",
+  "@cloudParentFolderLabel": {
+    "description": "Подпись поля выбора родительской папки"
+  },
+  "cloudRootFolder": "Корень облака",
+  "@cloudRootFolder": {
+    "description": "Подсказка, показывающая корень облака как родительскую папку по умолчанию"
+  },
+  "cloudParentFolderHint": "Файлы журнала сохраняются в выбранном расположении под указанным именем папки.",
+  "@cloudParentFolderHint": {
+    "description": "Подсказка, как родительская папка и имя папки образуют путь к данным"
+  },
+  "cloudInvalidFolderName": "Введите корректное имя папки (буквы, цифры, подчёркивание, точка, дефис; без пробелов и зарезервированных символов).",
+  "@cloudInvalidFolderName": {
+    "description": "Сообщение при некорректном имени папки журнала"
+  },
+  "cloudBrowse": "Обзор папок на сервере",
+  "@cloudBrowse": {
+    "description": "Подсказка кнопки открытия браузера папок"
+  },
+  "cloudPickFolder": "Выберите папку",
+  "@cloudPickFolder": {
+    "description": "Заголовок диалога выбора папки"
+  },
+  "cloudNewFolder": "Новая папка",
+  "@cloudNewFolder": {
+    "description": "Кнопка создания папки в браузере"
+  },
+  "cloudNewFolderName": "Имя папки",
+  "@cloudNewFolderName": {
+    "description": "Подпись поля ввода имени новой папки"
+  },
+  "cloudCreate": "Создать",
+  "@cloudCreate": {
+    "description": "Кнопка подтверждения создания новой папки"
+  },
+  "cloudUseThisFolder": "Выбрать эту папку",
+  "@cloudUseThisFolder": {
+    "description": "Кнопка возврата выбранного пути папки"
+  },
+  "cloudNoSubfolders": "Нет подпапок",
+  "@cloudNoSubfolders": {
+    "description": "Показывается, когда у папки нет подпапок"
+  },
+  "cloudRetry": "Повторить",
+  "@cloudRetry": {
+    "description": "Кнопка повторного запроса списка папок после ошибки"
+  },
+  "statusCloudNotConfigured": "Облако не подключено",
+  "@statusCloudNotConfigured": {
+    "description": "Надпись статус-бара, когда облачный аккаунт не настроен"
+  },
+  "statusCloudConnected": "Подключено",
+  "@statusCloudConnected": {
+    "description": "Надпись статус-бара, когда облако подключено, но синхронизаций ещё не было"
+  },
+  "statusCloudSynced": "Синхронизировано в {time}",
+  "@statusCloudSynced": {
+    "description": "Надпись статус-бара со временем последней успешной синхронизации",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "statusCloudSyncError": "Ошибка синхронизации",
+  "@statusCloudSyncError": {
+    "description": "Надпись статус-бара, когда последняя синхронизация завершилась ошибкой"
+  }
+}
