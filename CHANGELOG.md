@@ -12,6 +12,11 @@ Add navigation drawer and app bar for non-expanded layouts
 
 Master-detail layout for compact mode
 
+
+### Misc
+
+**release:** Bump version to 0.2.0
+
 ## [0.1.0] - 2026-11-01
 
 ### Added
