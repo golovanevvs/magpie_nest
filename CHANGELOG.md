@@ -10,6 +10,11 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 **snippets:** Make Settings responsive — full-screen page on compact, dialog on desktop
 
+
+### Misc
+
+**release:** Bump version to 0.2.1
+
 ## [0.2.0] - 2026-11-02
 
 ### Added
