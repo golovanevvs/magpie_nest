@@ -8,6 +8,8 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 **snippets:** Adapt StatusBar for Android (safe-area insets + compact overflow)
 
+**snippets:** Make Settings responsive — full-screen page on compact, dialog on desktop
+
 ## [0.2.0] - 2026-11-02
 
 ### Added
