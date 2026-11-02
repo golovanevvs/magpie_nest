@@ -8,6 +8,11 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 **android:** Add INTERNET permission to release manifest
 
+
+### Misc
+
+**release:** Bump version to 0.3.0
+
 ## [0.2.1] - 2026-11-02
 
 ### Fixed
