@@ -63,9 +63,14 @@ class _MainScreenState extends State<MainScreen> {
           builder: (context, constraints) {
             final mode = adaptiveLayoutFor(constraints.maxWidth);
             final isExpanded = mode == AdaptiveLayout.expanded;
+            final showBack =
+                mode == AdaptiveLayout.compact &&
+                widget.controller.selectedSnippet != null;
             return Scaffold(
               key: _scaffoldKey,
-              appBar: isExpanded ? null : _buildAppBar(l10n),
+              appBar: isExpanded
+                  ? null
+                  : _buildAppBar(l10n, showBack: showBack),
               drawer: isExpanded ? null : _buildDrawer(),
               body: Column(
                 children: [
@@ -87,12 +92,17 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  AppBar _buildAppBar(AppLocalizations l10n) {
+  AppBar _buildAppBar(AppLocalizations l10n, {required bool showBack}) {
     return AppBar(
-      leading: AdaptiveIconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-      ),
+      leading: showBack
+          ? AdaptiveIconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => widget.controller.selectSnippet(null),
+            )
+          : AdaptiveIconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+            ),
       title: Text(l10n.appTitle),
     );
   }
@@ -106,8 +116,17 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildPanels(AdaptiveLayout mode) {
     return switch (mode) {
       AdaptiveLayout.expanded => _buildExpandedPane(),
-      AdaptiveLayout.medium || AdaptiveLayout.compact => _buildTwoPane(),
+      AdaptiveLayout.medium => _buildTwoPane(),
+      AdaptiveLayout.compact => _buildCompactPane(),
     };
+  }
+
+  Widget _buildCompactPane() {
+    final snippet = widget.controller.selectedSnippet;
+    if (snippet == null) {
+      return SnippetList(controller: widget.controller);
+    }
+    return SnippetPreview(controller: widget.controller);
   }
 
   Widget _buildExpandedPane() {
