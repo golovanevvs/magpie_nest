@@ -1,3 +1,4 @@
+import 'package:magpie_nest/core/constants/breakpoints.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
@@ -84,34 +85,66 @@ class _SettingsScreenState extends State<SettingsScreen> {
       (icon: Icons.cloud, title: l10n.settingsCloud),
     ];
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          width: 220,
-          child: ListView.builder(
-            itemCount: menuItems.length,
-            itemBuilder: (context, index) {
-              final item = menuItems[index];
-              return AdaptiveListTile(
-                leading: Icon(item.icon),
-                title: Text(item.title),
-                selected: _selectedMenuIndex == index,
-                onTap: () => setState(() => _selectedMenuIndex = index),
-              );
-            },
-          ),
-        ),
-        const VerticalDivider(width: 1),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: _buildContent(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final mode = adaptiveLayoutFor(constraints.maxWidth);
+        if (mode == AdaptiveLayout.compact) {
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: _buildContent(),
+                ),
+              ),
+              SafeArea(
+                top: false,
+                child: NavigationBar(
+                  selectedIndex: _selectedMenuIndex,
+                  onDestinationSelected: (index) =>
+                      setState(() => _selectedMenuIndex = index),
+                  destinations: [
+                    for (final item in menuItems)
+                      NavigationDestination(
+                        icon: Icon(item.icon),
+                        label: item.title,
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: 220,
+              child: ListView.builder(
+                itemCount: menuItems.length,
+                itemBuilder: (context, index) {
+                  final item = menuItems[index];
+                  return AdaptiveListTile(
+                    leading: Icon(item.icon),
+                    title: Text(item.title),
+                    selected: _selectedMenuIndex == index,
+                    onTap: () => setState(() => _selectedMenuIndex = index),
+                  );
+                },
+              ),
             ),
-          ),
-        ),
-      ],
+            const VerticalDivider(width: 1),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: _buildContent(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -517,8 +550,8 @@ class _CloudPanelState extends State<_CloudPanel> {
                   AdaptiveOutlinedButton(
                     onPressed:
                         cloud.busy || widget.sync.syncing || widget.sync.purging
-                            ? null
-                            : _confirmDisconnect,
+                        ? null
+                        : _confirmDisconnect,
                     child: Text(l10n.cloudDisconnect),
                   ),
                   const SizedBox(height: 16),
@@ -533,8 +566,9 @@ class _CloudPanelState extends State<_CloudPanel> {
                             ? const SizedBox(
                                 width: 16,
                                 height: 16,
-                                child:
-                                    AdaptiveProgressIndicator(strokeWidth: 2),
+                                child: AdaptiveProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               )
                             : const Icon(Icons.sync, size: 16),
                         const SizedBox(width: 8),

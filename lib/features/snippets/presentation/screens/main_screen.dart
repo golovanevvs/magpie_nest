@@ -213,7 +213,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _openSettings(SettingsSection section) {
-    showSettingsDialog(
+    showSettings(
       context,
       cloud: widget.cloud,
       sync: widget.sync,
