@@ -6,6 +6,12 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 ### Fixed
 
+**android:** Add INTERNET permission to release manifest
+
+## [0.2.1] - 2026-11-02
+
+### Fixed
+
 **snippets:** Adapt StatusBar for Android (safe-area insets + compact overflow)
 
 **snippets:** Make Settings responsive — full-screen page on compact, dialog on desktop
