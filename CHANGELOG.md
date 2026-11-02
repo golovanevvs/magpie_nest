@@ -8,6 +8,8 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 Add adaptive layout breakpoints
 
+Add navigation drawer and app bar for non-expanded layouts
+
 ## [0.1.0] - 2026-11-01
 
 ### Added
