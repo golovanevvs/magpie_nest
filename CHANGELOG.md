@@ -10,6 +10,8 @@ Add adaptive layout breakpoints
 
 Add navigation drawer and app bar for non-expanded layouts
 
+Master-detail layout for compact mode
+
 ## [0.1.0] - 2026-11-01
 
 ### Added
