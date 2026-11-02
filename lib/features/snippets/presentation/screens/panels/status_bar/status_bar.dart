@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:intl/intl.dart';
+import 'package:magpie_nest/core/constants/breakpoints.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:magpie_nest/core/l10n/generated/app_localizations.dart';
 import 'package:magpie_nest/core/platform/design_language.dart';
@@ -28,22 +29,33 @@ class StatusBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      height: 32,
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         border: Border(top: BorderSide(color: theme.dividerColor)),
       ),
-      child: ListenableBuilder(
-        listenable: Listenable.merge([cloud, sync]),
-        builder: (context, _) {
-          return Row(
-            children: [
-              Expanded(child: _buildCloudStatus(context)),
-              _buildSyncButton(context),
-              _buildSettingsButton(context),
-            ],
-          );
-        },
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 32,
+          child: ListenableBuilder(
+            listenable: Listenable.merge([cloud, sync]),
+            builder: (context, _) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final mode = adaptiveLayoutFor(constraints.maxWidth);
+                  final isCompact = mode == AdaptiveLayout.compact;
+                  return Row(
+                    children: [
+                      Expanded(child: _buildCloudStatus(context)),
+                      _buildSyncButton(context, compact: isCompact),
+                      _buildSettingsButton(context),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -153,9 +165,9 @@ class StatusBar extends StatelessWidget {
     );
   }
 
-  Widget _buildSyncButton(BuildContext context) {
+  Widget _buildSyncButton(BuildContext context, {required bool compact}) {
     final l10n = AppLocalizations.of(context)!;
-    return AdaptiveButton(
+    final Widget content = AdaptiveButton(
       onPressed: sync.canSync ? () => sync.syncNow() : null,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -167,14 +179,20 @@ class StatusBar extends StatelessWidget {
                   child: AdaptiveProgressIndicator(strokeWidth: 2),
                 )
               : const Icon(Icons.sync, size: 16),
-          const SizedBox(width: 8),
-          Text(
-            l10n.cloudSyncNow,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          if (!compact) ...[
+            const SizedBox(width: 8),
+            Text(
+              l10n.cloudSyncNow,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
         ],
       ),
     );
+    if (compact) {
+      return Tooltip(message: l10n.cloudSyncNow, child: content);
+    }
+    return content;
   }
 
   Widget _buildSettingsButton(BuildContext context) {
