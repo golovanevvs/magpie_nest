@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https://semver.org/).
 ## [Unreleased]
 
+### Fixed
+
+**snippets:** Adapt StatusBar for Android (safe-area insets + compact overflow)
+
+## [0.2.0] - 2026-11-02
+
 ### Added
 
 Add adaptive layout breakpoints
