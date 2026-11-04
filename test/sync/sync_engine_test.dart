@@ -87,6 +87,49 @@ void main() {
   );
 
   test(
+    'pull of a snippet referencing a missing folder reparents it to root',
+    () async {
+      final orphanPayload = <String, Object?>{
+        'id': 'snip-orphan',
+        'name': 'Orphaned',
+        'description': null,
+        'activeFragmentId': null,
+        'folderId': 'missing-folder',
+        'isFavorite': false,
+        'isDeleted': false,
+        'createdAt': '2026-01-01T00:00:00.000Z',
+        'updatedAt': '2026-01-01T00:00:00.000Z',
+        'revision': 1,
+        'deletedAt': null,
+      };
+      await cloud.pushBatch(
+        SyncBatch(
+          batchId: 'batch-orphan',
+          deviceId: 'device-A',
+          createdAt: DateTime.utc(2026, 1, 1),
+          changes: [
+            SyncChange.upsert(
+              entityType: Outbox.entityTypeSnippet,
+              entityId: 'snip-orphan',
+              row: orphanPayload,
+            ),
+          ],
+        ),
+      );
+
+      await engineB.pullRemote();
+
+      final row = await (dbB.select(dbB.snippets)
+        ..where((t) => t.id.equals('snip-orphan'))).getSingleOrNull();
+      expect(row, isNotNull);
+      expect(row!.folderId, isNull);
+
+      final cursor = await dbB.getSyncMeta('lastPulledJournalFile');
+      expect(cursor, isNotEmpty);
+    },
+  );
+
+  test(
     'two edits without sync produce one coalesced upsert with final state',
     () async {
       final repoA = DriftSnippetRepository(dbA);

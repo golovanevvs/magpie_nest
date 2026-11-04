@@ -57,9 +57,11 @@ class SyncEngine {
       lastFile = entry.file;
       if (entry.batch.deviceId == myDeviceId) continue;
 
-      for (final change in entry.batch.changes) {
-        await _applyRemoteChange(change, originDeviceId: entry.batch.deviceId);
-      }
+      await _db.transaction(() async {
+        for (final change in entry.batch.changes) {
+          await _applyRemoteChange(change, originDeviceId: entry.batch.deviceId);
+        }
+      });
     }
 
     if (lastFile != null) {
@@ -274,6 +276,15 @@ class SyncEngine {
             .into(_db.folders)
             .insertOnConflictUpdate(folderFromPayload(payload));
       case Outbox.entityTypeSnippet:
+        final folderId = payload['folderId'] as String?;
+        if (folderId != null) {
+          final folder = await (_db.select(
+            _db.folders,
+          )..where((t) => t.id.equals(folderId))).getSingleOrNull();
+          if (folder == null) {
+            payload['folderId'] = null;
+          }
+        }
         await _db
             .into(_db.snippets)
             .insertOnConflictUpdate(snippetFromPayload(payload));
