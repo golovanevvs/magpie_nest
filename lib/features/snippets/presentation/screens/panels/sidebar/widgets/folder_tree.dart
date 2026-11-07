@@ -15,6 +15,7 @@ class FolderTree extends StatefulWidget {
   final String searchQuery;
   final String? editingFolderId;
   final VoidCallback onFinishEditing;
+  final VoidCallback? onNavigated;
 
   const FolderTree({
     super.key,
@@ -22,6 +23,7 @@ class FolderTree extends StatefulWidget {
     required this.searchQuery,
     this.editingFolderId,
     required this.onFinishEditing,
+    this.onNavigated,
   });
 
   @override
@@ -136,7 +138,10 @@ class _FolderTreeState extends State<FolderTree> {
                       ? Icons.keyboard_arrow_down
                       : Icons.chevron_right
                 : null,
-            onTap: () => widget.controller.selectFolder(folder),
+            onTap: () {
+              widget.controller.selectFolder(folder);
+              widget.onNavigated?.call();
+            },
             onExpandTap: hasChildren
                 ? () => _toggleFolderExpansion(folder.id)
                 : null,

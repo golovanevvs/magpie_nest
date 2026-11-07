@@ -5,8 +5,9 @@ import 'package:magpie_nest/features/snippets/presentation/screens/panels/sideba
 
 class LibraryItems extends StatelessWidget {
   final AppController controller;
+  final VoidCallback? onNavigated;
 
-  const LibraryItems({super.key, required this.controller});
+  const LibraryItems({super.key, required this.controller, this.onNavigated});
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +21,37 @@ class LibraryItems extends StatelessWidget {
           icon: Icons.inbox,
           label: l10n.sidebarInbox,
           selected: selectedFolder == null && section == SidebarSection.inbox,
-          onTap: () => controller.selectSection(SidebarSection.inbox),
+          onTap: () {
+            controller.selectSection(SidebarSection.inbox);
+            onNavigated?.call();
+          },
         ),
         SidebarItem(
           icon: Icons.star,
           label: l10n.navFavorites,
           selected: section == SidebarSection.favorites,
-          onTap: () => controller.selectSection(SidebarSection.favorites),
+          onTap: () {
+            controller.selectSection(SidebarSection.favorites);
+            onNavigated?.call();
+          },
         ),
         SidebarItem(
           icon: Icons.all_inbox,
           label: l10n.navAllSnippets,
           selected: selectedFolder == null && section == SidebarSection.all,
-          onTap: () => controller.selectSection(SidebarSection.all),
+          onTap: () {
+            controller.selectSection(SidebarSection.all);
+            onNavigated?.call();
+          },
         ),
         SidebarItem(
           icon: Icons.delete,
           label: l10n.navTrash,
           selected: section == SidebarSection.trash,
-          onTap: () => controller.selectSection(SidebarSection.trash),
+          onTap: () {
+            controller.selectSection(SidebarSection.trash);
+            onNavigated?.call();
+          },
         ),
       ],
     );

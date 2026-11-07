@@ -9,11 +9,9 @@ import 'package:magpie_nest/features/snippets/presentation/screens/panels/sideba
 
 class Sidebar extends StatefulWidget {
   final AppController controller;
+  final VoidCallback? onNavigated;
 
-  const Sidebar({
-    super.key,
-    required this.controller,
-  });
+  const Sidebar({super.key, required this.controller, this.onNavigated});
 
   @override
   State<Sidebar> createState() => _SidebarState();
@@ -48,7 +46,10 @@ class _SidebarState extends State<Sidebar> {
             onChanged: (value) => setState(() => _searchQuery = value),
           ),
           SidebarSectionHeader(title: l10n.sidebarLibrary),
-          LibraryItems(controller: widget.controller),
+          LibraryItems(
+            controller: widget.controller,
+            onNavigated: widget.onNavigated,
+          ),
           FoldersHeader(controller: widget.controller),
           Expanded(
             child: FolderTree(
@@ -56,6 +57,7 @@ class _SidebarState extends State<Sidebar> {
               searchQuery: _searchQuery,
               editingFolderId: _editingFolderId,
               onFinishEditing: () => setState(() => _editingFolderId = null),
+              onNavigated: widget.onNavigated,
             ),
           ),
         ],

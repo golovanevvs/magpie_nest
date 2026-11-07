@@ -109,7 +109,12 @@ class _MainScreenState extends State<MainScreen> {
 
   Drawer _buildDrawer() {
     return Drawer(
-      child: SafeArea(child: Sidebar(controller: widget.controller)),
+      child: SafeArea(
+        child: Sidebar(
+          controller: widget.controller,
+          onNavigated: () => _scaffoldKey.currentState?.closeDrawer(),
+        ),
+      ),
     );
   }
 
