@@ -6,6 +6,12 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 ### Fixed
 
+Close navigation drawer after selection in responsive layouts
+
+## [0.3.1] - 2026-11-04
+
+### Fixed
+
 **sync:** Reparent orphaned snippet to root on pull
 
 ## [0.3.0] - 2026-11-02
