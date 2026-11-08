@@ -66,24 +66,31 @@ class _MainScreenState extends State<MainScreen> {
             final showBack =
                 mode == AdaptiveLayout.compact &&
                 widget.controller.selectedSnippet != null;
-            return Scaffold(
-              key: _scaffoldKey,
-              appBar: isExpanded
-                  ? null
-                  : _buildAppBar(l10n, showBack: showBack),
-              drawer: isExpanded ? null : _buildDrawer(),
-              body: Column(
-                children: [
-                  Expanded(child: _buildPanels(mode)),
-                  StatusBar(
-                    cloud: widget.cloud,
-                    sync: widget.sync,
-                    onCloudStatusTap: () =>
-                        _openSettings(SettingsSection.cloud),
-                    onSettingsTap: () =>
-                        _openSettings(SettingsSection.language),
-                  ),
-                ],
+            return PopScope(
+              canPop: !showBack,
+              onPopInvokedWithResult: (didPop, result) {
+                if (didPop) return;
+                widget.controller.selectSnippet(null);
+              },
+              child: Scaffold(
+                key: _scaffoldKey,
+                appBar: isExpanded
+                    ? null
+                    : _buildAppBar(l10n, showBack: showBack),
+                drawer: isExpanded ? null : _buildDrawer(),
+                body: Column(
+                  children: [
+                    Expanded(child: _buildPanels(mode)),
+                    StatusBar(
+                      cloud: widget.cloud,
+                      sync: widget.sync,
+                      onCloudStatusTap: () =>
+                          _openSettings(SettingsSection.cloud),
+                      onSettingsTap: () =>
+                          _openSettings(SettingsSection.language),
+                    ),
+                  ],
+                ),
               ),
             );
           },
