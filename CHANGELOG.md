@@ -6,6 +6,12 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 ### Fixed
 
+Handle system back in compact snippet preview
+
+## [0.3.2] - 2026-11-07
+
+### Fixed
+
 Close navigation drawer after selection in responsive layouts
 
 ## [0.3.1] - 2026-11-04
