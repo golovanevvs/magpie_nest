@@ -171,4 +171,35 @@ class AppController extends ChangeNotifier {
     fragmentId,
     newLanguage,
   );
+
+  Future<void> refresh() async {
+    final selectedFolderId = foldersController.selectedFolder?.id;
+    final selectedSnippetId = snippetsController.selectedSnippet?.id;
+    final section = snippetsController.activeSection;
+
+    await foldersController.loadFolders();
+
+    Folder? restoredFolder;
+    for (final folder in foldersController.folders) {
+      if (folder.id == selectedFolderId) {
+        restoredFolder = folder;
+        break;
+      }
+    }
+    foldersController.selectFolder(restoredFolder);
+
+    await snippetsController.loadSnippets(
+      section: selectedFolderId == null ? section : SidebarSection.all,
+      folderId: restoredFolder?.id,
+    );
+
+    if (selectedSnippetId != null) {
+      for (final snippet in snippetsController.snippets) {
+        if (snippet.id == selectedSnippetId) {
+          snippetsController.selectSnippet(snippet);
+          break;
+        }
+      }
+    }
+  }
 }

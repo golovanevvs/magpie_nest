@@ -47,7 +47,10 @@ Future<void> main() async {
     ),
   );
   final sync = SyncController(
-    runner: syncEngine.syncNow,
+    runner: () async {
+      await syncEngine.syncNow();
+      await appController.refresh();
+    },
     cloud: cloud,
     purgeRunner: syncEngine.purgeRemote,
   );
