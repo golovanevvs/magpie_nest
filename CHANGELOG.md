@@ -6,6 +6,17 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 ### Fixed
 
+**sidebar:** Keep new folder edit field above the keyboard
+
+
+### Misc
+
+**release:** Bump version to 0.3.5
+
+## [0.3.4] - 2026-11-10
+
+### Fixed
+
 Refresh folders and snippets after sync
 
 
