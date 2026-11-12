@@ -33,11 +33,47 @@ class FolderTree extends StatefulWidget {
 class _FolderTreeState extends State<FolderTree> {
   final Set<String> _expandedFolderIds = {};
   final fluent.FlyoutController _flyoutController = fluent.FlyoutController();
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _editFieldKey = GlobalKey();
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _flyoutController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant FolderTree oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.editingFolderId != null &&
+        widget.editingFolderId != oldWidget.editingFolderId) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _revealEditField();
+      });
+    }
+  }
+
+  Future<void> _revealEditField() async {
+    for (var attempt = 0; attempt < 3; attempt++) {
+      if (!mounted) return;
+      final editContext = _editFieldKey.currentContext;
+      if (editContext != null && editContext.mounted) {
+        await Scrollable.ensureVisible(
+          editContext,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        );
+        return;
+      }
+      if (!_scrollController.hasClients) return;
+      await _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
@@ -55,6 +91,7 @@ class _FolderTreeState extends State<FolderTree> {
       );
     } else {
       tree = ListView.builder(
+        controller: _scrollController,
         itemCount: rootFolders.length,
         itemBuilder: (context, index) =>
             _buildFolderItem(context, rootFolders[index]),
@@ -113,6 +150,7 @@ class _FolderTreeState extends State<FolderTree> {
 
     if (isEditing) {
       return FolderEditField(
+        key: _editFieldKey,
         folder: folder,
         depth: depth,
         onSubmitted: (name) {

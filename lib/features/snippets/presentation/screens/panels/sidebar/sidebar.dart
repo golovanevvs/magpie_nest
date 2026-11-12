@@ -31,6 +31,7 @@ class _SidebarState extends State<Sidebar> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return NotificationListener<StartFolderEditNotification>(
       onNotification: (notification) {
@@ -39,28 +40,31 @@ class _SidebarState extends State<Sidebar> {
         });
         return true;
       },
-      child: Column(
-        children: [
-          SearchField(
-            controller: _searchController,
-            onChanged: (value) => setState(() => _searchQuery = value),
-          ),
-          SidebarSectionHeader(title: l10n.sidebarLibrary),
-          LibraryItems(
-            controller: widget.controller,
-            onNavigated: widget.onNavigated,
-          ),
-          FoldersHeader(controller: widget.controller),
-          Expanded(
-            child: FolderTree(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: Column(
+          children: [
+            SearchField(
+              controller: _searchController,
+              onChanged: (value) => setState(() => _searchQuery = value),
+            ),
+            SidebarSectionHeader(title: l10n.sidebarLibrary),
+            LibraryItems(
               controller: widget.controller,
-              searchQuery: _searchQuery,
-              editingFolderId: _editingFolderId,
-              onFinishEditing: () => setState(() => _editingFolderId = null),
               onNavigated: widget.onNavigated,
             ),
-          ),
-        ],
+            FoldersHeader(controller: widget.controller),
+            Expanded(
+              child: FolderTree(
+                controller: widget.controller,
+                searchQuery: _searchQuery,
+                editingFolderId: _editingFolderId,
+                onFinishEditing: () => setState(() => _editingFolderId = null),
+                onNavigated: widget.onNavigated,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
