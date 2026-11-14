@@ -102,20 +102,23 @@ class _AdaptiveListTileState extends State<AdaptiveListTile> {
       );
     }
 
-    return ListTile(
-      leading: widget.leading,
-      title: widget.title,
-      subtitle: widget.subtitle,
-      trailing: widget.trailing,
-      selected: widget.selected,
-      selectedTileColor: Theme.of(
-        context,
-      ).colorScheme.primaryContainer.withAlpha(51),
-      dense: widget.dense,
-      minLeadingWidth: 0,
-      contentPadding: widget.contentPadding,
-      visualDensity: VisualDensity.compact,
-      onTap: widget.onTap,
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        leading: widget.leading,
+        title: widget.title,
+        subtitle: widget.subtitle,
+        trailing: widget.trailing,
+        selected: widget.selected,
+        selectedTileColor: Theme.of(
+          context,
+        ).colorScheme.primaryContainer.withAlpha(51),
+        dense: widget.dense,
+        minLeadingWidth: 0,
+        contentPadding: widget.contentPadding,
+        visualDensity: VisualDensity.compact,
+        onTap: widget.onTap,
+      ),
     );
   }
 
