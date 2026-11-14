@@ -56,13 +56,15 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return ListenableBuilder(
-      listenable: widget.controller,
-      builder: (context, child) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final mode = adaptiveLayoutFor(constraints.maxWidth);
-            final isExpanded = mode == AdaptiveLayout.expanded;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final mode = adaptiveLayoutFor(constraints.maxWidth);
+        final isExpanded = mode == AdaptiveLayout.expanded;
+
+        return ListenableBuilder(
+          listenable: widget.controller.snippetsController,
+          builder: (context, _) {
             final showBack =
                 mode == AdaptiveLayout.compact &&
                 widget.controller.selectedSnippet != null;

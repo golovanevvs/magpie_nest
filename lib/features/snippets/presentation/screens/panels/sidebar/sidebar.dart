@@ -33,39 +33,48 @@ class _SidebarState extends State<Sidebar> {
     final l10n = AppLocalizations.of(context)!;
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
-    return NotificationListener<StartFolderEditNotification>(
-      onNotification: (notification) {
-        setState(() {
-          _editingFolderId = notification.folderId;
-        });
-        return true;
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        widget.controller.foldersController,
+        widget.controller.snippetsController,
+      ]),
+      builder: (context, _) {
+        return NotificationListener<StartFolderEditNotification>(
+          onNotification: (notification) {
+            setState(() {
+              _editingFolderId = notification.folderId;
+            });
+            return true;
+          },
+          child: Padding(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: Column(
+              children: [
+                SearchField(
+                  controller: _searchController,
+                  onChanged: (value) => setState(() => _searchQuery = value),
+                ),
+                SidebarSectionHeader(title: l10n.sidebarLibrary),
+                LibraryItems(
+                  controller: widget.controller,
+                  onNavigated: widget.onNavigated,
+                ),
+                FoldersHeader(controller: widget.controller),
+                Expanded(
+                  child: FolderTree(
+                    controller: widget.controller,
+                    searchQuery: _searchQuery,
+                    editingFolderId: _editingFolderId,
+                    onFinishEditing: () =>
+                        setState(() => _editingFolderId = null),
+                    onNavigated: widget.onNavigated,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottomInset),
-        child: Column(
-          children: [
-            SearchField(
-              controller: _searchController,
-              onChanged: (value) => setState(() => _searchQuery = value),
-            ),
-            SidebarSectionHeader(title: l10n.sidebarLibrary),
-            LibraryItems(
-              controller: widget.controller,
-              onNavigated: widget.onNavigated,
-            ),
-            FoldersHeader(controller: widget.controller),
-            Expanded(
-              child: FolderTree(
-                controller: widget.controller,
-                searchQuery: _searchQuery,
-                editingFolderId: _editingFolderId,
-                onFinishEditing: () => setState(() => _editingFolderId = null),
-                onNavigated: widget.onNavigated,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

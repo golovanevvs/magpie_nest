@@ -16,63 +16,72 @@ class SnippetList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final snippets = controller.snippets;
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      children: [
-        // Header with "New Snippet" button
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: AdaptiveFilledButton(
-                  onPressed: () => controller.createDefaultSnippet(
-                    l10n.defaultSnippetName,
-                    defaultFragmentBaseName: l10n.fragmentNameBase,
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        controller.foldersController,
+        controller.snippetsController,
+      ]),
+      builder: (context, _) {
+        final snippets = controller.snippets;
+
+        return Column(
+          children: [
+            // Header with "New Snippet" button
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AdaptiveFilledButton(
+                      onPressed: () => controller.createDefaultSnippet(
+                        l10n.defaultSnippetName,
+                        defaultFragmentBaseName: l10n.fragmentNameBase,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.add, size: 18),
+                          const SizedBox(width: 8),
+                          Text(l10n.buttonNewSnippet),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.add, size: 18),
-                      const SizedBox(width: 8),
-                      Text(l10n.buttonNewSnippet),
-                    ],
-                  ),
-                ),
+                  if (controller.activeSection == SidebarSection.trash) ...[
+                    const SizedBox(width: 8),
+                    AdaptiveIconButton(
+                      icon: const Icon(Icons.delete_sweep_outlined),
+                      tooltip: l10n.buttonEmptyTrash,
+                      onPressed: () => _confirmEmptyTrash(context, controller),
+                    ),
+                  ],
+                ],
               ),
-              if (controller.activeSection == SidebarSection.trash) ...[
-                const SizedBox(width: 8),
-                AdaptiveIconButton(
-                  icon: const Icon(Icons.delete_sweep_outlined),
-                  tooltip: l10n.buttonEmptyTrash,
-                  onPressed: () => _confirmEmptyTrash(context, controller),
-                ),
-              ],
-            ],
-          ),
-        ),
-        // Snippet list
-        Expanded(
-          child: snippets.isEmpty
-              ? Center(child: Text(l10n.listNoSnippets))
-              : ListView.builder(
-                  itemCount: snippets.length,
-                  itemBuilder: (context, index) {
-                    final snippet = snippets[index];
-                    final selected =
-                        controller.selectedSnippet?.id == snippet.id;
-                    return _SnippetListItem(
-                      snippet: snippet,
-                      folders: controller.folders,
-                      selected: selected,
-                      onTap: () => controller.selectSnippet(snippet),
-                    );
-                  },
-                ),
-        ),
-      ],
+            ),
+            // Snippet list
+            Expanded(
+              child: snippets.isEmpty
+                  ? Center(child: Text(l10n.listNoSnippets))
+                  : ListView.builder(
+                      itemCount: snippets.length,
+                      itemBuilder: (context, index) {
+                        final snippet = snippets[index];
+                        final selected =
+                            controller.selectedSnippet?.id == snippet.id;
+                        return _SnippetListItem(
+                          snippet: snippet,
+                          folders: controller.folders,
+                          selected: selected,
+                          onTap: () => controller.selectSnippet(snippet),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

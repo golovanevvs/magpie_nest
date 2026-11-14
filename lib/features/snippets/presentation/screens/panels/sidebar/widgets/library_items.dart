@@ -18,6 +18,7 @@ class LibraryItems extends StatelessWidget {
     return Column(
       children: [
         SidebarItem(
+          key: ValueKey('sidebar-section-inbox'),
           icon: Icons.inbox,
           label: l10n.sidebarInbox,
           selected: selectedFolder == null && section == SidebarSection.inbox,
@@ -27,6 +28,7 @@ class LibraryItems extends StatelessWidget {
           },
         ),
         SidebarItem(
+          key: ValueKey('sidebar-section-favorites'),
           icon: Icons.star,
           label: l10n.navFavorites,
           selected: section == SidebarSection.favorites,
@@ -36,6 +38,7 @@ class LibraryItems extends StatelessWidget {
           },
         ),
         SidebarItem(
+          key: ValueKey('sidebar-section-all'),
           icon: Icons.all_inbox,
           label: l10n.navAllSnippets,
           selected: selectedFolder == null && section == SidebarSection.all,
@@ -45,6 +48,7 @@ class LibraryItems extends StatelessWidget {
           },
         ),
         SidebarItem(
+          key: ValueKey('sidebar-section-trash'),
           icon: Icons.delete,
           label: l10n.navTrash,
           selected: section == SidebarSection.trash,

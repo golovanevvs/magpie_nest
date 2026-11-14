@@ -163,6 +163,7 @@ class _FolderTreeState extends State<FolderTree> {
     return Column(
       children: [
         GestureDetector(
+          key: ValueKey(folder.id),
           onDoubleTap: () => _startEditing(folder),
           onSecondaryTapUp: (details) =>
               _showFolderContextMenu(context, folder, details.globalPosition),
