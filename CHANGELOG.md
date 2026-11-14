@@ -6,6 +6,17 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 ### Fixed
 
+**sidebar:** Stop drawer flicker and row highlight drift
+
+
+### Misc
+
+**release:** Bump version to 0.3.6
+
+## [0.3.5] - 2026-11-12
+
+### Fixed
+
 **sidebar:** Keep new folder edit field above the keyboard
 
 
