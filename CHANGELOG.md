@@ -6,6 +6,17 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 ### Fixed
 
+**ui:** Localize list tile ink layer to stop highlight drift
+
+
+### Misc
+
+**release:** Bump version to 0.3.7
+
+## [0.3.6] - 2026-11-14
+
+### Fixed
+
 **sidebar:** Stop drawer flicker and row highlight drift
 
 
