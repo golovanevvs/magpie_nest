@@ -6,6 +6,17 @@ See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https:
 
 ### Fixed
 
+**sidebar:** Disable per-item raster cache in folder tree
+
+
+### Misc
+
+**release:** Bump version to 0.3.8
+
+## [0.3.7] - 2026-11-14
+
+### Fixed
+
 **ui:** Localize list tile ink layer to stop highlight drift
 
 
