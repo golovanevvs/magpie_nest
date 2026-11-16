@@ -92,7 +92,6 @@ class _FolderTreeState extends State<FolderTree> {
     } else {
       tree = ListView.builder(
         controller: _scrollController,
-        addRepaintBoundaries: false,
         itemCount: rootFolders.length,
         itemBuilder: (context, index) =>
             _buildFolderItem(context, rootFolders[index]),
