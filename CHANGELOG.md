@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 See [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [SemVer](https://semver.org/).
 ## [Unreleased]
 
+### Revert
+
+**sidebar:** Restore per-item repaint boundaries in folder tree
+
+## [0.3.8] - 2026-11-15
+
 ### Fixed
 
 **sidebar:** Disable per-item raster cache in folder tree
